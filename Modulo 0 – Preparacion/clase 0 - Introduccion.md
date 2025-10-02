@@ -229,4 +229,49 @@ Formato: Dame los comandos recomendados y explícame por qué.
 
 ---
 
-👉 Si quieres, mañana hacemos un mini-ejercicio donde tú avanzas en `main` y después actualizas tu `feature` primero con `merge` y luego con `rebase`, para que veas la diferencia real en el `git log`.
+## ¿Estás a punto de hacer Merge?
+
+Perfecto, entonces estás en el punto **de decisión real**: tu rama `feature/descripcion-manu` ya contiene tus apuntes en `.md`, pero el PR aún no lo has mergeado.
+
+Aquí tienes dos caminos:
+
+### 1. Haces **Merge directo del PR**
+
+- Lo más seguro y habitual.
+- En GitHub: dale a **Merge pull request**.
+- Luego en tu PC:
+    
+    ```bash
+    git switch main
+    git pull origin main
+    git branch -d feature/descripcion-manu   # opcional, para limpiar
+    git push origin --delete feature/descripcion-manu  # opcional, limpia en remoto
+    
+    ```
+    
+- Con eso tu rama `main` queda con tus apuntes y la rama feature se archiva.
+
+### 2. Cancelas el PR y pruebas **Rebase** para practicar
+
+- Imagina que en `main` alguien hizo commits después de que abriste tu rama (aunque ahora no sea el caso). Podrías rebasear para poner tus commits encima de los últimos.
+- Flujo:
+    
+    ```bash
+    git fetch origin
+    git switch feature/descripcion-manu
+    git rebase origin/main
+    git push --force-with-lease
+    
+    ```
+    
+- Luego el PR mostraría un historial limpio y lineal.
+
+---
+
+👉 Como es un repo de práctica, mi consejo es:
+
+1. Haz ahora el **Merge normal** en GitHub para que `main` tenga tu trabajo.
+2. Luego, crea otra rama (`feature/rebase-test`), haz unos cambios, y allí practicamos rebase contra `main` para que veas cómo queda el historial diferente.
+
+¿Quieres que te prepare un mini-ejercicio de laboratorio con pasos exactos para que compares cómo se ve el `git log` con merge vs con rebase?
+
