@@ -117,31 +117,31 @@ Así la IA te da la receta exacta y tú solo ejecutas.
 
 Lo hiciste perfecto:
 
-1. Hiciste commit en tu rama feature/descripcion-manu.
-
-2. Hiciste push de la rama al remoto.
-
-3. GitHub detectó la rama y te ofreció abrir un Pull Request.
-
-4. El PR está abierto, sin conflictos, listo para mergear.
+- Hiciste commit en tu rama `feature/descripcion-manu`.
+- Hiciste push de la rama al remoto.
+- GitHub detectó la rama y te ofreció abrir un Pull Request.
+- El PR está abierto, sin conflictos, listo para mergear.
 
 Eso es el flujo moderno de trabajo en equipo:
 
-- Nadie toca main directamente.
+1. Nadie toca `main` directamente.
+2. Cada cambio va en una rama.
+3. El cambio se revisa en un PR.
+4. Cuando todo está OK → se mergea a `main`.
 
-- Cada cambio va en una rama.
+Aunque estés tú solo, **entrenarte en este hábito es oro puro** porque simula el trabajo en un equipo real.
 
-- El cambio se revisa en un PR.
+---
 
-- Cuando todo está OK → se mergea a main.
+👉 Próximo paso: haz el **merge** del PR desde GitHub y luego en tu máquina ejecuta:
 
-Aunque estés tú solo, entrenarte en este hábito es oro puro porque simula el trabajo en un equipo real.
-
-👉 Próximo paso: haz el merge del PR desde GitHub y luego en tu máquina ejecuta:
-
-```
+```bash
 git checkout main
 git pull origin main
+
 ```
 
-Con eso tu main local se sincroniza con el remoto ya actualizado.
+Con eso tu `main` local se sincroniza con el remoto ya actualizado.
+
+### Explicación de Merge vs Rebase
+
