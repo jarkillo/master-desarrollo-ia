@@ -357,4 +357,104 @@ En tu repo haz lo siguiente:
 5. Intenta hacer `git push` normal → verás que Git se queja.
 6. Haz `git push --force-with-lease` → verás cómo actualiza bien el remoto.
 
-En la siguiente clase daremos la solución explicando cada comando exacto para este ejercicio
+---
+
+## ¿No te deja borrar la rama?
+
+¿Has borrado la rama desde github haciendo squash and merge?
+
+Grande, esto que te pasó es el clásico “¿por qué no me deja borrar la rama si ya hice merge?”. Te dejo el **bloque listo en Markdown** para pegar en tu repo.
+
+---
+
+# Limpieza de ramas tras Merge (y por qué a veces falla)
+
+## ¿Por qué `git branch -d` falló?
+
+Hiciste **Squash & Merge** en GitHub. Eso crea **un commit nuevo** en `main` con la suma de tus cambios, pero **no contiene** los commits originales de tu rama (`feature/descripcion-manu`).
+
+Para Git, tu rama **no está “fully merged”** (sus SHA no están en `main`), así que `-d` (borrado “seguro”) se niega:
+
+```
+error: the branch 'feature/descripcion-manu' is not fully merged
+```
+
+Esto no significa que vayas a perder trabajo: el PR ya metió los cambios. Solo que los commits de la rama no son alcanzables desde `main` por el squash.
+
+## Cómo borrarla con seguridad
+
+Primero asegúrate de que el PR está **merged** (verde en GitHub) y que no hay diff:
+
+```bash
+git switch main
+git pull origin main
+git diff main..feature/descripcion-manu   # debería no mostrar cambios útiles
+
+```
+
+Si está todo OK, bórrala **forzando** (porque sabemos que el contenido ya está en `main` vía squash):
+
+```bash
+git branch -D feature/descripcion-manu           # borra la rama local
+git push origin --delete feature/descripcion-manu # si aún existe en remoto
+
+```
+
+> Notas útiles:
+> 
+> - `d` = borrado seguro (solo si Git detecta merge por SHA).
+> - `D` = fuerza el borrado (útil tras squash merge).
+> - Para limpiar referencias remotas obsoletas: `git fetch --prune` (o deja fijo `git config --global fetch.prune true`).
+
+## Orden recomendado tras mergear un PR
+
+```bash
+git switch main
+git pull origin main
+git branch -D <mi-rama>                 # si fue squash, usa -D
+git push origin --delete <mi-rama>      # opcional, limpia remoto
+git fetch --prune                       # limpia refs obsoletas
+
+```
+
+---
+
+## Te has dado cuenta de que te dejaste un detalle por añadir y piensas… ¿Ahora tengo que crear una rama, y hacer toda la parafernalia para añadir este detalle?
+
+---
+
+# ¿Para cada cambio pequeño creo una rama y PR? ¿No es un rollo?
+
+Depende del contexto. Tres estrategias válidas (elige 1 por defecto y usa las otras según el caso):
+
+### 1) Rama corta por cambio + PR (recomendado como hábito)
+
+- **Pros:** historial claro, revisable; te entrenas en flujo de equipo; fácil revertir.
+- **Con qué:** `feature/manu-descripcion-ajustes`, PR con **Squash & Merge**.
+- **Cuándo:** cambios de contenido, ejemplos de código, archivos nuevos.
+
+### 2) Rama “docs” continua y PR periódico
+
+- **Pros:** menos PRs; agrupas microcambios de documentación.
+- **Con qué:** `docs/mod0`, vas haciendo commits y abres **un PR** que vas actualizando; lo mergeas al final del día/semana.
+- **Cuándo:** si vas a hacer muchas micro-ediciones seguidas en docs.
+
+### 3) Commit directo a `main` (excepción consciente) *(normalmente iria a dev, pero eso lo veremos mas adelante).*
+
+- **Pros:** ultra-rápido.
+- **Con qué:** commits triviales y atómicos (p. ej., typos). Usa mensajes claros tipo **Conventional Commits**:
+    - `docs(mod0): corrige typo en introducción`
+- **Cuándo:** solo si estás **solo en el repo** y no rompe nada (docs, README, cambios no ejecutables). Si hay CI, que esté verde.
+
+> Regla simple: si el cambio merece 2+ frases de explicación, rama + PR. Si es un typo o un enlace roto, puede ir directo a main
+> 
+
+---
+
+## Tips de productividad
+
+- Activa prune global: `git config --global fetch.prune true`.
+- Lista qué ramas ya están fusionadas: `git branch --merged main`.
+- Crea ramas con prefijos: `feature/`, `fix/`, `docs/`.
+- Mensajes de commit con Conventional Commits: `docs:`, `feat:`, `fix:`, etc.
+- Para PRs de docs, usa **Squash & Merge** para mantener `main` limpio.
