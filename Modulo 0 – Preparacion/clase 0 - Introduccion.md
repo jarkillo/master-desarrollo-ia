@@ -275,3 +275,86 @@ Aquí tienes dos caminos:
 
 ¿Quieres que te prepare un mini-ejercicio de laboratorio con pasos exactos para que compares cómo se ve el `git log` con merge vs con rebase?
 
+---
+
+### ¿Merge o rebase ahora?
+
+En **tu situación actual** ya tienes el PR abierto y sin conflictos. Haz **Merge del PR en GitHub**. Es el flujo estándar y seguro.
+
+- Si tus commits en la rama son “limpios”, usa **Merge** normal.
+- Si hay muchos commits pequeños (“fix typo”, “otra prueba”), usa **Squash and merge** para que en `main` entre **un solo commit** con un buen mensaje.
+
+Después sincroniza local:
+
+```bash
+git switch main
+git pull origin main
+git branch -d feature/descripcion-manu   # opcional: borra la rama local
+git push origin --delete feature/descripcion-manu  # opcional: borra la rama remota
+
+```
+
+### ¿Cuándo rebase, entonces?
+
+Cuando **tu rama de feature se quede atrás** porque `main` avanzó y quieres un historial lineal antes de abrir el PR:
+
+```bash
+git fetch origin
+git switch mi-rama
+git rebase origin/main
+# resuelves conflictos si los hay: editar → git add <archivo> → git rebase --continue
+git push --force-with-lease
+
+```
+
+Rebase reescribe historia; úsalo en **ramas tuyas** (no compartidas) y siempre con `--force-with-lease` para no pisar trabajo ajeno.
+
+## ¿Qué hace —force with lease?
+
+Esa es una muy buena pregunta, porque ahí está la diferencia entre usar Git de forma segura o hacer un destrozo en el repo.
+
+### `git push --force`
+
+Obliga a sobreescribir la rama remota con lo que tienes en local, **sin mirar si alguien más subió cambios**. Es como decir: “me da igual lo que haya en GitHub, pon lo mío encima”.
+
+Si otro compañero subió un commit en la misma rama, lo borras del remoto. 💥
+
+### `git push --force-with-lease`
+
+Es la versión “educada”. Antes de sobreescribir, Git comprueba:
+
+- “¿El remoto tiene exactamente el commit que yo tenía la última vez que lo bajé?”
+- Si **sí**, entonces es seguro pisarlo porque nadie lo tocó.
+- Si **no**, te avisa y no hace el push, para que primero revises qué cambió.
+
+En otras palabras:
+
+- `-force` = martillazo.
+- `-force-with-lease` = martillazo con seguro, que sólo baja si no hay nadie debajo.
+
+### ¿Cuándo se usa?
+
+Principalmente cuando haces **rebase** en una rama que ya subiste a remoto:
+
+```bash
+git rebase origin/main
+git push --force-with-lease
+
+```
+
+Ese `--force-with-lease` actualiza el remoto con tu nueva historia reescrita, pero evita que borres trabajo ajeno sin darte cuenta.
+
+---
+
+Te lanzo un mini-reto:
+
+En tu repo haz lo siguiente:
+
+1. Crea rama `feature/test-rebase`.
+2. Haz 2 commits pequeños ahí.
+3. Mientras tanto, mete un commit directo en `main`.
+4. En `feature/test-rebase`, haz `git rebase main`.
+5. Intenta hacer `git push` normal → verás que Git se queja.
+6. Haz `git push --force-with-lease` → verás cómo actualiza bien el remoto.
+
+En la siguiente clase daremos la solución explicando cada comando exacto para este ejercicio
