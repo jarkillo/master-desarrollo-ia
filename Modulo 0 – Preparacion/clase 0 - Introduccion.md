@@ -145,3 +145,88 @@ Con eso tu `main` local se sincroniza con el remoto ya actualizado.
 
 ### Explicación de Merge vs Rebase
 
+Vale, vamos con calma porque este es uno de esos temas que confunde hasta a seniors 😅.
+
+
+**Merge**
+
+- Une dos ramas creando un nuevo commit especial que mezcla las historias.
+- La historia queda con ramas que se cruzan.
+- Ventaja: no pierdes nada, todo el historial tal cual pasó.
+- Desventaja: el log puede llenarse de “commits de merge” y verse menos lineal.
+
+Ejemplo:
+
+```
+A---B---C---D (main)
+         \
+          E---F (feature)
+
+```
+
+Si haces `git merge feature` en `main`, quedará:
+
+```
+A---B---C---D---M (main)
+         \     /
+          E---F
+
+```
+
+Donde `M` es el commit de merge.
+
+---
+
+**Rebase**
+
+- Coge los commits de tu rama y los “reaplica” como si hubieran nacido encima de otra rama.
+- La historia queda limpia y lineal, como si nunca hubiera habido bifurcación.
+- Ventaja: un log muy ordenado.
+- Desventaja: puede ser peligroso si lo usas en ramas compartidas, porque **reescribe historia**.
+
+Mismo ejemplo inicial:
+
+```
+A---B---C---D (main)
+         \
+          E---F (feature)
+
+```
+
+Si estando en `feature` haces `git rebase main`, quedará:
+
+```
+A---B---C---D (main)
+              \
+               E'---F' (feature)
+
+```
+
+Git reescribió tus commits como nuevos (`E'`, `F'`), ahora la historia parece lineal.
+
+---
+
+### Cuándo usar cada uno
+
+- **Merge**: seguro, colaborativo, perfecto para trabajo en equipo → “quiero juntar estas ramas sin líos”.
+- **Rebase**: útil cuando quieres un historial bonito y limpio, por ejemplo antes de abrir un PR, o para tu repo personal.
+
+Regla de oro: **Nunca rebases una rama que otros ya han descargado**, porque a ellos les cambia la historia y se arma un caos.
+
+---
+
+### Aplicación con IA
+
+Un prompt que puedes usar cuando dudes:
+
+```
+Rol: Experto en Git.
+Tarea: Explícame si en este caso debería usar merge o rebase.
+Contexto: Estoy en la rama feature/x, main avanzó con varios commits nuevos, y quiero actualizar mi rama antes de hacer PR.
+Formato: Dame los comandos recomendados y explícame por qué.
+
+```
+
+---
+
+👉 Si quieres, mañana hacemos un mini-ejercicio donde tú avanzas en `main` y después actualizas tu `feature` primero con `merge` y luego con `rebase`, para que veas la diferencia real en el `git log`.
