@@ -612,3 +612,4 @@ Si hubieras empezado directamente con la segunda, te habrías perdido la compren
     - `feature/cli-argparse` → la versión refactorizada por IA.
 - Documenta en `notes.md` (con el esquema que te pasé) **qué entiendes y qué dudas te deja la versión IA**.
 - En la **Clase 3** vamos a atacar justo esas dudas: refactorizar para **Clean Code** y meter **tests automáticos** (para que puedas verificar que ambas versiones se comportan igual).
+Con esto ya tienes un CLI **mínimo pero funcional**.
