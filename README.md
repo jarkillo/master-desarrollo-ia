@@ -29,6 +29,7 @@ Cada módulo termina con un mini-proyecto entregable que se reutiliza y evolucio
 - Ecosistema dev moderno: terminal, Git, GitHub, IDEs.
 - Fundamentos de programación (estructuras de control, funciones, modularidad).
 - Buenas prácticas: Clean Code, refactor, testing inicial.
+- (Bonus) – Testing ampliado y primeras nociones de SOLID
 
 **Mini-proyecto:**
 - **CLI app sencilla** (ej. gestor de gastos, inventario o TODOs):
