@@ -1,6 +1,6 @@
 # Máster de Desarrollo con IA
 
-# Máster Ayla en Desarrollo con IA aplicada
+# Máster en Desarrollo con IA aplicada
 
 Este repositorio recoge el programa, apuntes y proyectos prácticos del máster.  
 Cada módulo termina con un mini-proyecto entregable que se reutiliza y evoluciona en el siguiente.  
