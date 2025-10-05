@@ -47,8 +47,8 @@ jobs:
       - name: Ruff (fast linter)
         working-directory: ${{ matrix.class_dir }}
         run: |
-          # Ruff check — rápido, moderno. Saldrá con código != 0 si hay problemas.
-          ruff check api/
+          # Ruff scan — rápido, moderno. Saldrá con código != 0 si hay problemas.
+          ruff scan api/
 
       - name: Auditoría de seguridad
         working-directory: ${{ matrix.class_dir }}
