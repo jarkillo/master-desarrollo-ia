@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
+          - "Modulo 3 – Calidad y Seguridad/Clase 6 – Defensa completa y CICD inteligente"
 
     steps:
       - name: Checkout
