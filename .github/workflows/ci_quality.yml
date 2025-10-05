@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 6 – Defensa completa y CICD inteligente"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"
 
     steps:
       - name: Checkout
@@ -70,6 +70,10 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Validar variables de entorno
+        working-directory: ${{ matrix.class_dir }}
+        run: python infra/check_env.py
         
         
      # - name: Flake8 (reglas clásicas)

@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 6 – Defensa completa y CICD inteligente"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"
 
     steps:
       - name: Checkout
