@@ -73,7 +73,7 @@ jobs:
       
       - name: Validar variables de entorno
         working-directory: ${{ matrix.class_dir }}
-        run: bash infra/check_env.py
+        run: python infra/check_env.py
         
         
      # - name: Flake8 (reglas clásicas)
