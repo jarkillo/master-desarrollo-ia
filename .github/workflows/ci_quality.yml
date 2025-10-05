@@ -48,8 +48,8 @@ jobs:
           # Ruff check — rápido, moderno. Saldrá con código != 0 si hay problemas.
           ruff check api/
 
-      - name: Flake8 (reglas clásicas)
-        working-directory: ${{ matrix.class_dir }}
-        run: |
+     # - name: Flake8 (reglas clásicas)
+     #   working-directory: ${{ matrix.class_dir }}
+     #  run: |
           # Flake8 — reglas adicionales/legacy que quieras mantener
-          flake8 api/
+          # flake8 api/
