@@ -70,6 +70,10 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Validar variables de entorno
+        working-directory: ${{ matrix.class_dir }}
+        run: bash infra/check_env.py
         
         
      # - name: Flake8 (reglas clásicas)
