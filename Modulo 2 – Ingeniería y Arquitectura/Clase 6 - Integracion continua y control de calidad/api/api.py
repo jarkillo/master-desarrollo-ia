@@ -1,9 +1,16 @@
+# api/api.py
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from api.servicio_tareas import ServicioTareas
+from api.repositorio_memoria import RepositorioMemoria
+from api.repositorio_json import RepositorioJSON
 
 app = FastAPI()
-servicio = ServicioTareas()
+
+
+# repositorio = RepositorioMemoria()
+repositorio = RepositorioJSON("tareas.json")  # por ejemplo, dentro de /data
+servicio = ServicioTareas(repositorio)
 
 
 class CrearTareaRequest(BaseModel):
