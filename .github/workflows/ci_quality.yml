@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 3 - Auditoria continua y defensa inteligente con IA"
+          - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
 
     steps:
       - name: Checkout
@@ -55,6 +55,23 @@ jobs:
         run: |
             pip install bandit
             bandit -r api/ -ll
+
+      - name: Auditoría de dependencias
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+          pip install safety
+          safety check --full-report
+
+      - name: Auditoría de dependencias (Safety)
+      
+        uses: pyupio/safety-action@v1
+        with:
+          api-key: ${{ secrets.SAFETY_API_KEY }}
+
+      - name: Detección de secretos
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          args: detect --source . --no-git
 
      # - name: Flake8 (reglas clásicas)
      #   working-directory: ${{ matrix.class_dir }}
