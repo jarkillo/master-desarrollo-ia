@@ -229,3 +229,6 @@ jobs:
 ```
 
 Si no es tu caso, deberian pasar los test como ya lo habiamos explicado.
+
+Haz el PR de esta clase y pasamos al siguiente bloque.
+
