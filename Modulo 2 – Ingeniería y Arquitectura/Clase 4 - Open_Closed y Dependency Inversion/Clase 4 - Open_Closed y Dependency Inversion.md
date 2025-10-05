@@ -33,9 +33,10 @@ Vamos a practicar este cambio paso a paso.
 Tu clase `ServicioTareas` de la clase anterior podría verse así:
 
 ```python
-# servicio_tareas.py
-from pydantic import BaseModel
+# api/servicio_tareas.py
 from typing import List
+from pydantic import BaseModel
+from api.repositorio_base import RepositorioTareas
 
 class Tarea(BaseModel):
     id: int
@@ -43,18 +44,16 @@ class Tarea(BaseModel):
     completada: bool = False
 
 class ServicioTareas:
-    def __init__(self):
-        self._tareas: List[Tarea] = []
-        self._contador = 0
+    def __init__(self, repositorio: RepositorioTareas):
+        self._repo = repositorio
 
     def crear(self, nombre: str) -> Tarea:
-        self._contador += 1
-        tarea = Tarea(id=self._contador, nombre=nombre)
-        self._tareas.append(tarea)
-        return tarea
+        nueva = Tarea(id=0, nombre=nombre)  # el repo asigna ID real
+        self._repo.guardar(nueva)
+        return nueva
 
     def listar(self) -> List[Tarea]:
-        return self._tareas
+        return self._repo.listar()
 
 ```
 
@@ -69,42 +68,50 @@ Queremos que sea **abierto** a nuevas formas de guardar sin tener que reescribir
 Creamos una interfaz (o “contrato”) que cualquier repositorio deberá cumplir:
 
 ```python
-# repositorio_base.py
-from typing import Protocol, List
-from api.servicio_tareas import Tarea
+# api/repositorio_base.py
+from typing import Protocol, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # Solo para tipos (no se ejecuta en runtime, evita el ciclo)
+    from api.servicio_tareas import Tarea
 
 class RepositorioTareas(Protocol):
-    def guardar(self, tarea: Tarea) -> None: ...
-    def listar(self) -> List[Tarea]: ...
+    def guardar(self, tarea: "Tarea") -> None: ...
+    def listar(self) -> List["Tarea"]: ...
 
 ```
 
 Ahora, en el servicio, en lugar de crear su lista interna, **recibe un repositorio**:
 
 ```python
-# servicio_tareas.py
+# api/servicio_tareas.py
 from typing import List
+from pydantic import BaseModel
 from api.repositorio_base import RepositorioTareas
-from api.servicio_tareas import Tarea
+
+class Tarea(BaseModel):
+    id: int
+    nombre: str
+    completada: bool = False
 
 class ServicioTareas:
     def __init__(self, repositorio: RepositorioTareas):
-        self._repositorio = repositorio
+        self._repo = repositorio
 
     def crear(self, nombre: str) -> Tarea:
-        tarea = Tarea(id=0, nombre=nombre)
-        self._repositorio.guardar(tarea)
-        return tarea
+        nueva = Tarea(id=0, nombre=nombre)  # el repo asigna ID real
+        self._repo.guardar(nueva)
+        return nueva
 
     def listar(self) -> List[Tarea]:
-        return self._repositorio.listar()
+        return self._repo.listar()
 
 ```
 
 Y el repositorio concreto (por ejemplo, el que guarda en memoria) implementa ese contrato:
 
 ```python
-# repositorio_memoria.py
+# api/repositorio_memoria.py
 from typing import List
 from api.servicio_tareas import Tarea
 
@@ -126,15 +133,14 @@ class RepositorioMemoria:
 Ahora, tu API elige qué repositorio usar sin cambiar el servicio:
 
 ```python
-# api.py
+# api/api.py
 from fastapi import FastAPI
+from pydantic import BaseModel, Field
 from api.servicio_tareas import ServicioTareas
 from api.repositorio_memoria import RepositorioMemoria
-from pydantic import BaseModel, Field
 
 app = FastAPI()
-repositorio = RepositorioMemoria()
-servicio = ServicioTareas(repositorio)
+servicio = ServicioTareas(RepositorioMemoria())
 
 class CrearTareaRequest(BaseModel):
     nombre: str = Field(..., min_length=1)
@@ -146,7 +152,7 @@ def crear_tarea(cuerpo: CrearTareaRequest):
 
 @app.get("/tareas")
 def listar_tareas():
-    return [t.model_dump() for t in servicio.listar()]
+    return [tarea.model_dump() for tarea in servicio.listar()]
 
 ```
 
