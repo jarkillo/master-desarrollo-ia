@@ -14,11 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 2 – Ingeniería y Arquitectura/Clase 2 - Principios SOLID y paradigmas de programacion"
-          - "Modulo 2 – Ingeniería y Arquitectura/Clase 3 - Arquitectura limpia"
-          - "Modulo 2 – Ingeniería y Arquitectura/Clase 4 - Open_Closed y Dependency Inversion"
-          - "Modulo 2 – Ingeniería y Arquitectura/Clase 5 - Integracion y pruebas de arquitectura"
-          - "Modulo 2 – Ingeniería y Arquitectura/Clase 6 - Integracion continua y control de calidad"
+          - "Modulo 3 – Calidad y Seguridad/Clase 1 - El codigo que se defiende solo"
 
     steps:
       - name: Checkout

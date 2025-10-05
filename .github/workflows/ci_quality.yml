@@ -1,0 +1,55 @@
+name: CI - Tests con cobertura y linters por clase
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        class_dir:
+          - "Modulo 3 – Calidad y Seguridad/Clase 1 - El codigo que se defiende solo"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+          pip install ruff flake8
+
+      - name: Run tests with coverage
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+          # Limpieza de cachés
+          find . -type d -name "__pycache__" -exec rm -rf {} +
+          find . -type f -name "*.pyc" -delete
+
+          # Ejecutar pytest con cobertura y fallar si la cobertura es menor a 80%
+          pytest --cov=api --cov-report=term-missing --cov-fail-under=80
+
+      - name: Ruff (fast linter)
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+          # Ruff check — rápido, moderno. Saldrá con código != 0 si hay problemas.
+          ruff check api/
+
+     # - name: Flake8 (reglas clásicas)
+     #   working-directory: ${{ matrix.class_dir }}
+     #  run: |
+          # Flake8 — reglas adicionales/legacy que quieras mantener
+          # flake8 api/
