@@ -1,7 +1,7 @@
-# integration_tests/conftest.py
+# conftest.py (colócalo DENTRO de la carpeta tests de cada clase)
 import sys
 from pathlib import Path
 
-# Subimos dos niveles desde esta carpeta hasta la raíz del proyecto
-raiz_proyecto = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(raiz_proyecto))
+# Raíz de la clase (la carpeta que contiene 'api/')
+CLASE_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(CLASE_ROOT))
