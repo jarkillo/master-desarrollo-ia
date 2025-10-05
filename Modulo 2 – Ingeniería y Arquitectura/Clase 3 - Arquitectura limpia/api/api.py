@@ -18,4 +18,4 @@ def crear_tarea(cuerpo: CrearTareaRequest):
 
 @app.get("/tareas")
 def listar_tareas():
-    return [t.model_dump() for tarea in servicio.listar()]
+    return [tarea.model_dump() for tarea in servicio.listar()]
