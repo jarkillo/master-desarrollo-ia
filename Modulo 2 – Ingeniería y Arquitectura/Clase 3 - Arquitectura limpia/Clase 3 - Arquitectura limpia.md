@@ -1,4 +1,5 @@
 # 🎬 Clase 3 – Arquitectura limpia: del caos al orden
+
 *(Módulo 2)*
 
 Estamos en la **Clase 3 del Módulo 2**, así que debes venir ya con esta mochila en la cabeza:
@@ -231,11 +232,11 @@ Rol: Arquitecto Python.
 Contexto: Tengo una API FastAPI con servicio_tareas.py que maneja las tareas en memoria.
 Objetivo: Implementar un repositorio que guarde las tareas en archivo JSON,
 y modificar el servicio para poder alternar entre repositorio en memoria o en disco sin cambiar la API.
-
 Restricciones:
 - Usa SOLID (Dependency Inversion).
 - No rompas los tests existentes.
 Formato: Código explicado con clases y dependencias claras.
+
 ```
 
 La IA te devolverá probablemente dos piezas nuevas:
