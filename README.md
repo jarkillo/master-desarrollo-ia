@@ -23,36 +23,53 @@ Cada módulo termina con un mini-proyecto entregable que se reutiliza y evolucio
 
 ---
 
-### Módulo 1 – Fundamentos del desarrollo (3 semanas)
+### Módulo 1 – Fundamentos del desarrollo (4 clases)
 **Objetivos:**
-- Pensamiento computacional → descomponer problemas.
+- Pensamiento computacional y descomposición de problemas.
 - Ecosistema dev moderno: terminal, Git, GitHub, IDEs.
-- Fundamentos de programación (estructuras de control, funciones, modularidad).
-- Buenas prácticas: Clean Code, refactor, testing inicial.
-- (Bonus) – Testing ampliado y primeras nociones de SOLID
+- Fundamentos de programación, estructuras y persistencia.
+- Buenas prácticas: Clean Code, refactor, testing básico.
+- Introducción a principios SOLID y TDD.
+
+**Clases:**
+1. Pensamiento computacional y ecosistema dev.
+2. Fundamentos de programación y persistencia JSON.
+3. Clean Code y testing inicial.
+4. Testing ampliado y primeros principios SOLID (SRP).
 
 **Mini-proyecto:**
-- **CLI app sencilla** (ej. gestor de gastos, inventario o TODOs):
+- CLI app de tareas:
   - Implementación manual.
   - Refactor con Clean Code.
-  - Tests básicos unitarios.
-  - Uso de la IA para refactor y generación de tests.
+  - Tests unitarios + TDD básico.
+  - Ampliación con prioridades y SRP.
 
 ---
 
-### Módulo 2 – Ingeniería y Arquitectura (2 semanas)
+### Módulo 2 – Ingeniería y Arquitectura (6 clases)
 **Objetivos:**
-- Ciclo de vida del software (ágil, backlog, sprints).
-- Principios SOLID y paradigmas de programación.
-- Arquitecturas: monolito modular, microservicios, eventos.
+- Ciclo de vida del software, backlog ágil y gestión de entregas.
+- Principios SOLID aplicados a APIs.
+- Arquitectura limpia: separación de capas (API, servicio, repositorio).
+- Open/Closed y Dependency Inversion (repositorios intercambiables).
+- Tests de integración y control de contratos entre capas.
+- Integración continua (CI) y control de calidad automatizado.
+
+**Clases:**
+1. Ciclo de vida del software y backlog ágil.
+2. Principios SOLID y paradigmas de programación (TDD con FastAPI).
+3. Arquitectura limpia.
+4. Open/Closed y Dependency Inversion.
+5. Integración y pruebas de arquitectura.
+6. Integración continua y control de calidad.
 
 **Mini-proyecto:**
-- **Mini-API REST** con arquitectura limpia:
-  - 2–3 endpoints básicos.
-  - Aplicación de SOLID.
-  - ADRs (Architecture Decision Records).
-  - Diagramas generados con ayuda de IA.
-  - Agents configurados para revisar commits bajo SOLID.
+- Mini API REST con FastAPI:
+  - Endpoints `/tareas` con tests TDD.
+  - Arquitectura limpia con inyección de dependencias.
+  - Repositorios en memoria y JSON.
+  - Pipeline CI con GitHub Actions.
+
 
 ---
 
