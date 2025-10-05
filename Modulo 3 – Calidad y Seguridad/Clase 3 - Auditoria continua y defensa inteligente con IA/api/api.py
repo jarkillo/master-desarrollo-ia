@@ -1,31 +1,48 @@
 # api/api.py
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel, Field, constr
-from api.servicio_tareas import ServicioTareas
-from api.repositorio_json import RepositorioJSON
-from fastapi import Depends
-from api.dependencias import verificar_api_key
 
+from api.servicio_tareas import ServicioTareas
+from api.repositorio_memoria import RepositorioMemoria
+from api.seguridad_jwt import crear_token, verificar_jwt  # <- NUEVO
 
 app = FastAPI()
+servicio = ServicioTareas(RepositorioMemoria())
 
 
-# repositorio = RepositorioMemoria()
-repositorio = RepositorioJSON("tareas.json")  # por ejemplo, dentro de /data
-servicio = ServicioTareas(repositorio)
+# ====== Login ======
+class LoginRequest(BaseModel):
+    usuario: constr(min_length=1)
+    password: constr(min_length=1)
 
 
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+@app.post("/login", response_model=LoginResponse)
+def login(cuerpo: LoginRequest):
+    # Demo: credenciales fijas. En producción, valida contra tu store de usuarios.
+    if cuerpo.usuario == "demo" and cuerpo.password == "demo":
+        token = crear_token({"sub": cuerpo.usuario})
+        return LoginResponse(access_token=token)
+    raise HTTPException(status_code=401, detail="Credenciales inválidas")
+
+
+# ====== Tareas ======
 class CrearTareaRequest(BaseModel):
     nombre: constr(min_length=1, max_length=100)
-    prioridad: str = Field(default="media", pattern="^(alta|media|baja)$")
+    # si ya usabas prioridad, mantenla con default válido para no disparar 422:
+    # prioridad: str = Field(default="media", pattern="^(alta|media|baja)$")
 
 
-@app.post("/tareas", status_code=201, dependencies=[Depends(verificar_api_key)])
+@app.post("/tareas", status_code=201, dependencies=[Depends(verificar_jwt)])
 def crear_tarea(cuerpo: CrearTareaRequest):
     tarea = servicio.crear(cuerpo.nombre)
     return tarea.model_dump()
 
 
-@app.get("/tareas", dependencies=[Depends(verificar_api_key)])
+@app.get("/tareas", dependencies=[Depends(verificar_jwt)])
 def listar_tareas():
-    return [tarea.model_dump() for tarea in servicio.listar()]
+    return [t.model_dump() for t in servicio.listar()]
