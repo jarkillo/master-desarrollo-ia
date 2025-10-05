@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 2 - Seguridad básica en tu API"
+          - "Modulo 3 – Calidad y Seguridad/Clase 3 - Auditoria continua y defensa inteligente con IA"
 
     steps:
       - name: Checkout
@@ -50,8 +50,16 @@ jobs:
           # Ruff check — rápido, moderno. Saldrá con código != 0 si hay problemas.
           ruff check api/
 
+      - name: Auditoría de seguridad
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+            pip install bandit
+            bandit -r api/ -ll
+
      # - name: Flake8 (reglas clásicas)
      #   working-directory: ${{ matrix.class_dir }}
      #  run: |
           # Flake8 — reglas adicionales/legacy que quieras mantener
           # flake8 api/
+
+
