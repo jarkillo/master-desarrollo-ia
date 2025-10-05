@@ -253,11 +253,153 @@ Pasa tus tests. Si se rompen, corrige los headers o los datos.
 - [ ]  Tu CI sigue funcionando.
 
 ---
+## ⚠️ ⚠️  Error en los Test ⚠️ ⚠️
 
-## Qué viene ahora
+Si acabas de hacer el PR te habras dado cuenta de que los test no han pasado:
 
-En la siguiente clase atacamos lo que ya empieza a sonar más profesional:
+Vale, el fallo es justo el que esperabas en una clase de seguridad: **422 porque falta la cabecera requerida**. En FastAPI, cuando una dependencia exige un header y no lo mandas, la validación de entrada falla → **422 Unprocessable Entity** (si la cabecera llega pero es incorrecta, entonces sería **401**).
 
-- Tokens JWT.
-- Autenticación real (por usuario, no solo por clave fija).
-- Buenas prácticas OWASP aplicadas a tu API.
+Vamos a arreglarlo en dos frentes:
+
+# 1) Asegurar que la dependencia lee la API key “en tiempo de petición”
+
+Para que los tests puedan fijar `API_KEY` al vuelo, lee el valor del entorno **dentro** de la función (no al importar el módulo).
+
+```python
+# api/dependencias.py
+import os
+from fastapi import Header, HTTPException
+
+def verificar_api_key(x_api_key: str = Header(..., alias="x-api-key")):
+    esperada = os.getenv("API_KEY")  # leer en cada petición
+    if not esperada or x_api_key != esperada:
+        raise HTTPException(status_code=401, detail="API key inválida")
+
+```
+
+Notas:
+
+- Uso `alias="x-api-key"` para que no haya dudas con el nombre exacto del header.
+- Si `API_KEY` no está en el entorno y la exigimos, devolverá 401 (correcto: no hay clave de servidor configurada).
+
+# 2) Ajustar los tests para enviar el header y preparar el entorno
+
+Añade la API key al entorno **antes** de crear el `TestClient`, y mándala en cada petición.
+
+**tests/test_crear_tarea_clase7.py**
+
+```python
+import os
+from fastapi.testclient import TestClient
+from api import api as api_mod
+from api.servicio_tareas import ServicioTareas
+from api.repositorio_memoria import RepositorioMemoria
+
+def test_crear_tarea_minima_devuelve_201_y_cuerpo_esperado():
+    os.environ["API_KEY"] = "test-key"     # 1) fijar clave
+    api_mod.servicio = ServicioTareas(RepositorioMemoria())
+    cliente = TestClient(api_mod.app)
+
+    r = cliente.post(
+        "/tareas",
+        json={"nombre": "Estudiar SOLID"},
+        headers={"x-api-key": "test-key"}  # 2) mandar cabecera
+    )
+    assert r.status_code == 201
+    cuerpo = r.json()
+    assert cuerpo["id"] == 1
+    assert cuerpo["nombre"] == "Estudiar SOLID"
+    assert cuerpo["completada"] is False
+
+```
+
+**tests_integrations/test_integracion_repositorios_clase7.py**
+
+```python
+import os, tempfile
+from fastapi.testclient import TestClient
+from api import api as api_mod
+from api.servicio_tareas import ServicioTareas
+from api.repositorio_json import RepositorioJSON
+
+def test_crear_tarea_con_repositorio_json_temporal():
+    os.environ["API_KEY"] = "test-key"
+    tmp = tempfile.NamedTemporaryFile(delete=False); tmp.close()
+    try:
+        api_mod.servicio = ServicioTareas(RepositorioJSON(tmp.name))
+        cliente = TestClient(api_mod.app)
+
+        r = cliente.post(
+            "/tareas",
+            json={"nombre": "Aprender tests con IA"},
+            headers={"x-api-key": "test-key"}
+        )
+
+        assert r.status_code == 201
+        cuerpo = r.json()
+        assert cuerpo["id"] == 1
+        assert cuerpo["nombre"] == "Aprender tests con IA"
+        assert cuerpo["completada"] is False
+    finally:
+        os.remove(tmp.name)
+
+```
+
+# 3) Revisa el modelo de entrada
+
+Si en esta clase metiste validación extra con Pydantic (por ejemplo, `prioridad` con patrón) y **la hiciste obligatoria**, también disparará 422. Deja **valor por defecto**:
+
+```python
+# api/api.py (o donde definas los modelos)
+from pydantic import BaseModel, Field, constr
+
+class CrearTareaRequest(BaseModel):
+    nombre: constr(min_length=1, max_length=100)
+    prioridad: str = Field(default="media", pattern="^(alta|media|baja)$")
+
+```
+
+## Añadir la clave en github
+
+**Si metes tu clave directamente en el YAML del workflow, la estás exponiendo en tu repo.**
+
+Aunque esté dentro del `.github/workflows`, ese archivo es público si tu repo lo es.
+
+Y aunque fuera privado, sigue siendo **una mala práctica**, porque las claves deben rotar y estar fuera del control de versiones.
+
+Así que lo correcto es: **nunca pongas la clave real en el YAML ni en el codigo.**
+
+---
+
+## 🧭 Cómo se hace bien
+
+### 🧱usar “secrets” de GitHub
+
+GitHub tiene una sección en cada repositorio llamada **Settings → Secrets and variables → Actions**.
+
+Ahí puedes crear una variable segura, por ejemplo:
+
+```
+Name: API_KEY
+Value: miclaveultrasecreta123
+
+```
+
+Y luego, en tu workflow (`.github/workflows/ci.yml`) añade:
+
+```yaml
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+```
+
+Eso hace que la clave se inyecte **solo en el entorno del pipeline**, pero no se vea en los logs, ni se pueda leer desde el YAML.
+
+GitHub la cifra internamente.
+
+Perfecto para producción o proyectos reales.
+
+---
+
+Y en GitHub → Settings → Secrets → Actions → “New repository secret”
+
+pones `API_KEY = test-key` o el valor que uses en tus pruebas.
