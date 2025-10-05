@@ -1,102 +1,127 @@
-# 📘 Glosario – Clase 3: Auditoría continua y defensa inteligente
+# 🧠 Glosario – Clase 4: Seguridad avanzada y autenticación con JWT
 
-# 🧩 Auditoría de seguridad
+### 🔐 JWT (JSON Web Token)
 
-Proceso de análisis del código fuente para detectar **vulnerabilidades, malas prácticas o patrones de riesgo** antes de que lleguen a producción.
+Es un **token firmado digitalmente** que contiene información sobre la identidad del usuario.
 
-En esta clase se automatiza usando **Bandit**, integrado en el pipeline CI.
+Permite a la API verificar quién eres sin mantener sesiones en memoria.
+
+**Estructura:**
+
+1. **Header** – Tipo de token y algoritmo (ej. `HS256`).
+2. **Payload** – Datos o *claims* (ej. `sub: "usuario"`, `exp: timestamp`).
+3. **Signature** – Prueba criptográfica de que el token no fue modificado.
+
+El servidor lo firma con una **clave secreta** (guardada en variables de entorno), y el cliente lo manda en cada petición con:
+
+`Authorization: Bearer <token>`.
 
 ---
 
-### 🧠 Bandit
+### 🕒 Expiración
 
-Herramienta de análisis estático desarrollada por la comunidad OpenStack.
+Todo JWT debe tener una fecha de expiración (`exp`).
 
-Lee tu código Python y busca errores comunes de seguridad como:
+Pasado ese tiempo, deja de ser válido → el usuario debe volver a autenticarse.
 
-- Contraseñas o claves escritas en texto plano.
-- Uso inseguro de `os.system()` o `eval()`.
-- Archivos o sockets abiertos sin cierre seguro.
+Esto evita accesos indefinidos si el token se filtra.
 
-Ejemplo de uso manual:
+---
 
-```bash
-bandit -r api/
+### 🔑 Variables de entorno
+
+Datos sensibles como `JWT_SECRET` o la duración del token (`JWT_MINUTOS`) **no se escriben en el código**.
+
+Se guardan en el entorno o en `.env` para evitar exponer claves.
+
+---
+
+### ⚙️ Funciones principales
+
+- **`crear_token(datos)`**
+    
+    Genera un JWT nuevo con `exp` y firma.
+    
+    Ejemplo:
+    
+    ```python
+    token = crear_token({"sub": "usuario123"})
+    
+    ```
+    
+- **`verificar_jwt(authorization)`**
+    
+    Extrae el token del header `Authorization: Bearer ...`,
+    
+    lo decodifica, y lanza `HTTPException(401)` si no es válido o está expirado.
+    
+
+---
+
+### 🧩 Endpoint `/login`
+
+Ruta pública que recibe credenciales (usuario, contraseña) y devuelve un token firmado.
+
+Ejemplo de respuesta:
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIs...",
+  "token_type": "bearer"
+}
 
 ```
 
 ---
 
-### ⚙️ Análisis estático
+### 🧰 Dependencia `Depends(verificar_jwt)`
 
-Tipo de auditoría que **no ejecuta el código**, sino que lo inspecciona leyendo los archivos fuente.
+Protege las rutas que requieren autenticación:
 
-Busca patrones sospechosos (por sintaxis, imports o funciones conocidas).
+```python
+@app.get("/tareas", dependencies=[Depends(verificar_jwt)])
 
-Complementa a los tests, que son análisis **dinámico** (el código se ejecuta y se observa su comportamiento).
+```
 
----
-
-### 🚦 Severidad
-
-Clasificación del impacto potencial de un problema detectado.
-
-Los niveles más comunes son:
-
-- **Low:** detalles menores o recomendaciones.
-- **Medium:** potenciales vulnerabilidades con bajo riesgo.
-- **High:** fallos críticos que pueden comprometer el sistema.
+Así, si el cliente no envía un token válido, FastAPI devuelve automáticamente `401 Unauthorized`.
 
 ---
 
-### 📊 Confianza
+### 🧪 Tests críticos
 
-Indica la certeza que tiene la herramienta de que el hallazgo es realmente un problema:
+1. **Login válido devuelve token.**
+2. **Acceso con token → 200 o 201.**
+3. **Token inválido → 401.**
+4. **Token expirado → 401.**
 
-- **Low:** podría ser un falso positivo.
-- **Medium:** probable riesgo real.
-- **High:** muy probable que sea un fallo genuino.
-
-Bandit muestra ambos valores (severidad y confianza) en cada informe.
-
----
-
-### 🧰 CI/CD de calidad
-
-Extensión del pipeline de Integración Continua donde no solo se ejecutan tests, sino también **auditorías y linters**.
-
-El objetivo es que **GitHub rechace automáticamente** un PR si contiene vulnerabilidades o código inseguro.
+Esto garantiza que la seguridad funcione igual que cualquier otra feature.
 
 ---
 
-### 🤖 Auditoría con IA
+### ⚖️ Diferencias clave
 
-Uso de modelos como ChatGPT o agentes automáticos para generar **informes de calidad y seguridad**.
-
-El objetivo no es reemplazar al auditor humano, sino tener una capa adicional que:
-
-- Señale riesgos lógicos o de diseño que Bandit no detecta.
-- Proponga refactorizaciones.
-- Cree documentación o issues automáticamente.
-
----
-
-### 🛡️ Defensa inteligente
-
-Filosofía de diseño donde el código no solo **funciona**, sino que **se protege**:
-
-- Tests automáticos → evitan romper lo que ya existía.
-- CI/CD → evita merges sin control.
-- Auditoría estática → busca patrones de riesgo.
-- IA → revisa la estructura y legibilidad.
+| Concepto | API Key | JWT |
+| --- | --- | --- |
+| Alcance | Global (una sola clave) | Individual (por usuario) |
+| Duración | Permanente | Expira |
+| Portabilidad | Simple pero insegura | Más segura y escalable |
+| Ideal para | Microservicios internos | Autenticación de usuarios finales |
 
 ---
 
-### 🧾 Resultado esperado
+### 💡 Buenas prácticas
 
-Al final de esta clase tu repositorio debe:
+- No guardes la clave JWT en el repo.
+- Usa HTTPS siempre (los tokens viajan por cabeceras).
+- Si el token expira, devuelve 401 y pide re-login.
+- Nunca reutilices un JWT viejo.
 
-- Pasar Bandit sin errores.
-- Tener un pipeline CI que incluya la auditoría.
-- Contar con un informe o `notes.md` con los hallazgos y próximos pasos.
-- Entender cómo usar la IA para automatizar la revisión continua.
+---
+
+### 🧾 Resumen mental
+
+> “La API Key protege la casa.
+> 
+> 
+> El JWT da una llave única y con fecha de caducidad a cada visitante.
+>
