@@ -56,12 +56,6 @@ jobs:
             pip install bandit
             bandit -r api/ -ll
 
-      - name: Auditoría de dependencias
-        working-directory: ${{ matrix.class_dir }}
-        run: |
-          pip install safety
-          safety scan --full-report
-
       - name: Auditoría de dependencias (Safety)
       
         uses: pyupio/safety-action@v1
