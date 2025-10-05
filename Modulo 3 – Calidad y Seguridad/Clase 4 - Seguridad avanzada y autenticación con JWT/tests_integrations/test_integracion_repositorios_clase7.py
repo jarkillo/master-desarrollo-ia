@@ -6,19 +6,19 @@ from api.repositorio_json import RepositorioJSON
 
 
 def test_crear_tarea_con_repositorio_json_temporal():
-    os.environ["API_KEY"] = "test-key"
+    os.environ["JWT_SECRET"] = "secret-test"
     tmp = tempfile.NamedTemporaryFile(delete=False)
     tmp.close()
     try:
         api_mod.servicio = ServicioTareas(RepositorioJSON(tmp.name))
-        cliente = TestClient(api_mod.app)
+        c = TestClient(api_mod.app)
 
-        r = cliente.post(
-            "/tareas",
-            json={"nombre": "Aprender tests con IA"},
-            headers={"x-api-key": "test-key"},
-        )
+        token = c.post("/login", json={"usuario": "demo", "password": "demo"}).json()[
+            "access_token"
+        ]
+        h = {"Authorization": f"Bearer {token}"}
 
+        r = c.post("/tareas", json={"nombre": "Aprender tests con IA"}, headers=h)
         assert r.status_code == 201
         cuerpo = r.json()
         assert cuerpo["id"] == 1
