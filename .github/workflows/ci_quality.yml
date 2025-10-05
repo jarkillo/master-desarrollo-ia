@@ -62,11 +62,16 @@ jobs:
         with:
           api-key: ${{ secrets.SAFETY_API_KEY }}
 
-      - name: Detección de secretos
-        uses: zricethezav/gitleaks-action@v2
+      - uses: actions/checkout@v4
         with:
-          args: detect --source . --no-git
-
+          fetch-depth: 0
+        
+      - name: Secret scanning
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+        
      # - name: Flake8 (reglas clásicas)
      #   working-directory: ${{ matrix.class_dir }}
      #  run: |

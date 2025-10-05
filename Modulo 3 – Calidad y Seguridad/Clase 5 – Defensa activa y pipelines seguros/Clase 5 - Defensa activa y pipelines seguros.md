@@ -167,3 +167,126 @@ Tú decides hasta dónde llevarlo.
 - [ ]  Entiendes cómo aplicar DevSecOps sin sobrecargar el flujo.
 - [ ]  Tu rama principal está protegida por CI y revisión.
 - [ ]  Has documentado tu auditoría en `notes.md`.
+
+## Errores en los test:
+
+```sql
+Warning: Unexpected input(s) 'args', valid inputs are ['']
+Run zricethezav/gitleaks-action@v2
+[user] is an individual user. No license key is required.
+gitleaks version: 8.24.3
+Version to install: 8.24.3 (target directory: /tmp/gitleaks-8.24.3)
+Downloading gitleaks from https://github.com/zricethezav/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz
+/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /tmp/gitleaks-8.24.3 -f /tmp/gitleaks.tmp
+/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/master-ia-manu/master-ia-manu --files-from manifest.txt --use-compress-program zstdmt
+Sent 5717455 of 5717455 (100.0%), 14.0 MBs/sec
+event type: pull_request
+Error: 🛑 GITHUB_TOKEN is now required to scan pull requests. You can use the automatically created token as shown in the [README](https://github.com/gitleaks/gitleaks-action#usage-example). For more info about the recent breaking update, see [here](https://github.com/gitleaks/gitleaks-action#-announcement).
+```
+
+## Qué pasa
+
+- Tu workflow usa una acción de Gitleaks **con `args`**, pero **esa versión ya no acepta `args`**.
+- Además, **en PRs exige `GITHUB_TOKEN`** o peta.
+
+## Parche
+
+Si lo quieres como **paso dentro de tu CI existente**, mételo **después** del `checkout`:
+
+```yaml
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+
+- name: Secret scanning
+  uses: gitleaks/gitleaks-action@v2
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+```
+
+## Por qué (rápido)
+
+- **`fetch-depth: 0`**: Gitleaks necesita ver el historial para detectar secretos.
+- **`GITHUB_TOKEN`**: desde hace poco lo requieren en PRs.
+- **Sin `args`**: la acción v2 no usa `with: args:`; si luego quieres reglas, añade un `.gitleaks.toml`.
+
+## Comprobación en 30s
+
+1. Commit & push del YAML.
+2. Abre/actualiza un PR → el job **Gitleaks** debe correr sin ese error.
+3. Si falla por “falsos positivos”, creamos `.gitleaks.toml` o `.gitleaksignore` y afinamos.
+
+## 🧩 Qué es ese `GITHUB_TOKEN`
+
+GitHub **ya te lo da gratis y automático** en cada workflow.
+
+No tienes que crearlo ni copiarlo de ningún sitio.
+
+Solo tienes que **usarlo bien** dentro del YAML.
+
+Por defecto, GitHub Actions genera un token temporal para cada ejecución, y lo expone en la variable:
+
+```
+${{ secrets.GITHUB_TOKEN }}
+
+```
+
+Ese token tiene permisos limitados, pero suficientes para:
+
+- Acceder al código del repo.
+- Leer/escribir en los PR.
+- Comentar en issues.
+- Ejecutar acciones (como Gitleaks, Dependabot, etc).
+
+---
+
+## ✅ Cómo se usa
+
+En tu YAML, **no lo creas tú** — simplemente lo pasas así:
+
+```yaml
+- name: Secret scanning
+  uses: gitleaks/gitleaks-action@v2
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+```
+
+Y ya está.
+
+No lo copias de ningún sitio, **GitHub lo inyecta automáticamente** al ejecutar el workflow.
+
+---
+
+## ⚙️ ¿Y si quisiera usar uno propio?
+
+Si en algún momento necesitas un **token personal** (por ejemplo, porque el automático no tiene permisos para otro repo o organización), entonces sí lo creas tú:
+
+1. Ve a tu perfil → **Settings → Developer settings → Personal access tokens → Tokens (classic)**.
+2. Crea uno nuevo con permisos:
+    - `repo`
+    - `workflow`
+3. Copia el token (solo se muestra una vez).
+4. Entra a tu repositorio → **Settings → Secrets and variables → Actions → New repository secret**
+5. Llámalo, por ejemplo, `MY_GITHUB_TOKEN`
+    
+    Y pega ahí el valor.
+    
+
+Entonces podrías usarlo así en el YAML:
+
+```yaml
+env:
+  GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+
+```
+
+---
+
+## 💡 En resumen
+
+| Situación | Qué hacer |
+| --- | --- |
+| Workflow del propio repo | Solo pon `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` |
+| Workflow que necesita más permisos o accede a otro repo | Crea un token manual y guárdalo en `Settings → Secrets` |
