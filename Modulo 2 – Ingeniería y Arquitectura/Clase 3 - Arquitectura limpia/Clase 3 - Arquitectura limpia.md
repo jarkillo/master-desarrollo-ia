@@ -95,9 +95,29 @@ Modulo2/
 
 ```
 
-### Paso 1 – La capa de negocio
+Imagina tu código como un taller mecánico:
 
-`servicio_tareas.py`:
+- La **API** es el mostrador donde el cliente deja el coche.
+- El **servicio** es el mecánico que arregla.
+- El **repositorio** es el almacén donde se guardan las piezas.
+
+### Paso 1 – La capa de negocio`servicio_tareas.py` (el “mecánico”)
+
+**Problema a resolver:** mezclar validación, reglas y almacenamiento en la capa API acaba en spaghetti.
+
+**Solución:** mover la lógica a un **servicio** con un **modelo** claro.
+
+- `class Tarea(BaseModel)`: usamos **Pydantic** para definir la “forma” de una tarea.
+    - Campos: `id`, `nombre`, `completada`.
+    - Beneficio: entrada/salida **tipada y validada**; cuando devuelves `Tarea`, FastAPI sabe convertirla a JSON sin dolores.
+- `class ServicioTareas`: encapsula las **reglas de negocio** (crear, listar…).
+    - `_tareas: list[Tarea]` y `_contador`: estado **en memoria**. Es perfecto para empezar y testear sin BD.
+    - `crear(nombre)`: incrementa el contador, construye una `Tarea` válida y la guarda.
+        - Regla oculta que ya aplicas: **una función = una acción**. No imprime, no habla HTTP, no sabe de FastAPI.
+    - `listar()`: devuelve la lista tal cual, como datos (no como texto). Eso lo hace fácil de testear.
+
+> Idea fuerza: aquí vive el “qué” del negocio (crear y listar tareas), no el “cómo HTTP” ni el “dónde se guardan” los datos. Eso es SRP en miniatura.
+> 
 
 ```python
 from pydantic import BaseModel
@@ -124,9 +144,24 @@ class ServicioTareas:
 
 ```
 
-### Paso 2 – La capa de API
+### Paso 2 – La capa de API `api.py` (el “mostrador”)
 
-`api.py`:
+**Problema a resolver:** la API no debe decidir reglas ni persistencia; solo **recibir peticiones** y **delegar**.
+
+**Solución:** un controlador finito que orquesta.
+
+- `app = FastAPI()`: creas la app que escucha peticiones.
+- `servicio = ServicioTareas()`: inyectas la **dependencia** (por ahora a mano). Más adelante cambiaremos esto a **inyección configurable** para elegir memoria/JSON/BD sin tocar endpoints.
+- `class CrearTareaRequest(BaseModel)`: contrato de **entrada**.
+    - `min_length=1` evita nombre vacío → si no se cumple, FastAPI responde **422** automáticamente.
+- `@app.post("/tareas", status_code=201)`: **contrato HTTP** del endpoint.
+    - Dentro: `servicio.crear(...)` hace el trabajo.
+    - `.model_dump()`: convierte la `Tarea` (objeto Pydantic) a **dict** listo para JSON (en Pydantic v2 es `model_dump`; antes era `.dict()`).
+- `@app.get("/tareas")`: devuelve una lista de tareas.
+    - `[t.model_dump() for t in servicio.listar()]`: la API solo **traduce** datos a JSON.
+
+> Idea fuerza: la API no sabe cómo se generan IDs ni dónde se guardan; solo sabe hablar HTTP. El día que cambiemos a fichero o base de datos, este archivo casi no se toca.
+> 
 
 ```python
 from fastapi import FastAPI
@@ -158,13 +193,25 @@ No cambiaste el comportamiento, solo **limpiaste el mapa**.
 
 ---
 
+## Por qué esta separación te salva (y a tus tests también)
+
+- **Tests estables:** tus tests HTTP de la clase 2 siguen pasando porque **el contrato no cambió** (201/422 y el JSON esperado).
+- **Refactors seguros:** si mañana mueves el almacenamiento a JSON, tocarás el servicio/repositorio, **no los endpoints ni los tests de contrato**.
+- **Escalado mental:** cada capa cuenta **una historia**: API (habla), Servicio (decide), Repositorio (guarda). Menos carga cognitiva.
+
 ## 5. La metáfora del taller
 
-Imagina tu código como un taller mecánico:
+## Qué viene después (mini–mapa mental)
 
-- La **API** es el mostrador donde el cliente deja el coche.
-- El **servicio** es el mecánico que arregla.
-- El **repositorio** es el almacén donde se guardan las piezas.
+- Añadir un **Repositorio**: una clase que guarde/cargue tareas (primero JSON).
+    - El **Servicio** dependerá de una **interfaz** de repositorio (Dependency Inversion).
+    - Cambiar de “memoria” a “JSON” o “PostgreSQL” será solo cambiar **la implementación inyectada**, no el servicio ni la API.
+
+## Pequeñas trampas típicas (y cómo evitarlas)
+
+- **Estado en memoria**: se pierde al reiniciar y no es concurrente; bien para aprender y testear, no para producción.
+- **Devolver imprimibles**: nunca `print` en el servicio; **devuelve datos**. La API imprime/serializa.
+- **Pydantic v1 vs v2**: en v2 usa `model_dump()`. Mantén esto igual en todas las capas.
 
 ¿Ves la magia?
 
