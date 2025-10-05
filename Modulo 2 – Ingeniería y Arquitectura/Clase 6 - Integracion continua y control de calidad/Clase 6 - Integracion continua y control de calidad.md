@@ -45,6 +45,9 @@ No más “¡en mi máquina funciona!” ni “se me olvidó correr los tests”
 mkdir -p .github/workflows
 
 ```
+Importante, esto es en la raiz de tu proyecto
+
+Y… ¿recuerdas que en la clase 2 generamos un requirements.txt? metelo tambien en la raiz
 
 ### 2. Dentro, crea el archivo `ci.yml`:
 
