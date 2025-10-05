@@ -3,13 +3,6 @@ from api import api as api_mod  # accedemos al módulo, no solo al app
 from api.servicio_tareas import ServicioTareas
 from api.repositorio_memoria import RepositorioMemoria
 
-import sys
-from pathlib import Path
-
-# Añadimos la raíz del proyecto al path
-RAIZ_PROYECTO = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(RAIZ_PROYECTO))
-
 
 def test_crear_tarea_minima_devuelve_201_y_cuerpo_esperado():
     # 1. Resetear el servicio a uno limpio
