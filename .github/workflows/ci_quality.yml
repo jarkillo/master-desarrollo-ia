@@ -9,12 +9,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
 
     strategy:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 1 - El codigo que se defiende solo"
+          - "Modulo 3 – Calidad y Seguridad/Clase 2 - Seguridad básica en tu API"
 
     steps:
       - name: Checkout
