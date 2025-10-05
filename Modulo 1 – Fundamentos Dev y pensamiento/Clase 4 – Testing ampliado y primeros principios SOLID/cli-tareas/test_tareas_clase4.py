@@ -4,7 +4,9 @@
 # 0. IMPORTAR LIBRERIAS
 # ================================
 
-import os, tempfile, unittest
+import os
+import tempfile
+import unittest
 from tareas import (
     guardar_tareas,
     cargar_tareas,
@@ -30,7 +32,7 @@ class TestTareas(unittest.TestCase):
         os.remove(self.tmp)
 
     def test_agregar_tarea_con_prioridad(self):
-        tarea = agregar_tarea(self.tmp, "Estudiar IA", "alta")
+        agregar_tarea(self.tmp, "Estudiar IA", "alta")
         tareas = cargar_tareas(self.tmp)
         self.assertEqual(len(tareas), 1)
         self.assertEqual(tareas[0]["nombre"], "Estudiar IA")

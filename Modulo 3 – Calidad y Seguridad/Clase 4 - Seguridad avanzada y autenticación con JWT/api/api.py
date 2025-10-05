@@ -1,6 +1,6 @@
 # api/api.py
 from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, constr
 
 from api.servicio_tareas import ServicioTareas
 from api.repositorio_memoria import RepositorioMemoria
