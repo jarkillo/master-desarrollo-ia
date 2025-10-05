@@ -1,4 +1,4 @@
-name: CI - Tests por clase
+name: CI - Tests con cobertura y linters por clase
 
 on:
   push:
@@ -30,15 +30,31 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest pytest-cov
+          pip install ruff flake8
 
-      - name: Pytest (tests)
+      - name: Run tests with coverage
         working-directory: ${{ matrix.class_dir }}
         run: |
-          # Opcional: limpiar cachés por si vinieran del repo
+          # Limpieza de cachés
           find . -type d -name "__pycache__" -exec rm -rf {} +
           find . -type f -name "*.pyc" -delete
-          pytest -q
+
+          # Ejecutar pytest con cobertura y fallar si la cobertura es menor a 80%
+          pytest --cov=api --cov-report=term-missing --cov-fail-under=80
+
+      - name: Ruff (fast linter)
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+          # Ruff check — rápido, moderno. Saldrá con código != 0 si hay problemas.
+          ruff check api/
+
+      - name: Flake8 (reglas clásicas)
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+          # Flake8 — reglas adicionales/legacy que quieras mantener
+          flake8 api/
