@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 3 - Auditoria continua y defensa inteligente con IA"
+          - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
 
     steps:
       - name: Checkout

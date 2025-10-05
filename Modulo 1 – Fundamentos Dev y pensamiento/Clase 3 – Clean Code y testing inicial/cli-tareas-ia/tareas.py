@@ -8,7 +8,9 @@ from typing import (
     TypedDict,
     List,
 )  # Esta libreria nos permite crear tipos de datos (para hacer legible el codigo)
-import json, os, sys
+import json
+import os
+import sys
 
 # ================================
 # 1. VARIABLES GLOBALES

@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 3 – Calidad y Seguridad/Clase 3 - Auditoria continua y defensa inteligente con IA"
+          - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
 
     steps:
       - name: Checkout
@@ -56,6 +56,22 @@ jobs:
             pip install bandit
             bandit -r api/ -ll
 
+      - name: Auditoría de dependencias (Safety)
+      
+        uses: pyupio/safety-action@v1
+        with:
+          api-key: ${{ secrets.SAFETY_API_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        
+      - name: Secret scanning
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+        
      # - name: Flake8 (reglas clásicas)
      #   working-directory: ${{ matrix.class_dir }}
      #  run: |
