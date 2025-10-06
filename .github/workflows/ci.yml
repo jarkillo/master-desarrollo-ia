@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 2 - Tu API en un contenedor"
 
     steps:
       - name: Checkout
