@@ -111,21 +111,36 @@ echo ""
 
 # 5. Validación de secretos (gitleaks)
 echo "🔍 Buscando secretos en el código (gitleaks)..."
+
+# Buscar gitleaks en PATH y en ubicación de Scoop (Windows)
+GITLEAKS_CMD=""
 if command -v gitleaks &> /dev/null; then
-    if gitleaks detect --source . --no-git --quiet; then
+    GITLEAKS_CMD="gitleaks"
+elif [[ -f "$HOME/scoop/shims/gitleaks.exe" ]]; then
+    GITLEAKS_CMD="$HOME/scoop/shims/gitleaks.exe"
+elif [[ -f "/c/Users/$USER/scoop/shims/gitleaks.exe" ]]; then
+    GITLEAKS_CMD="/c/Users/$USER/scoop/shims/gitleaks.exe"
+fi
+
+if [[ -n "$GITLEAKS_CMD" ]]; then
+    if $GITLEAKS_CMD detect --source . --no-git --quiet; then
         print_success "No se encontraron secretos"
     else
         print_error "¡SECRETOS DETECTADOS EN EL CÓDIGO!"
         echo ""
         echo "💡 Revisa los archivos marcados por gitleaks"
-        echo "💡 NO hagas commit de API keys, tokens, contraseñas, etc."
+        echo "💡 Si son falsos positivos, agrégalos a .gitleaksignore"
+        echo "💡 NO hagas commit de API keys, tokens, contraseñas reales"
+        echo ""
+        echo "Para ver detalles: $GITLEAKS_CMD detect --source . --verbose"
         echo ""
         echo "Para saltar este hook (PELIGROSO): git push --no-verify"
         exit 1
     fi
 else
     print_warning "Gitleaks no está instalado, saltando validación de secretos"
-    echo "💡 Instala desde: https://github.com/gitleaks/gitleaks"
+    echo "💡 Instala con: scoop install gitleaks"
+    echo "💡 O descarga desde: https://github.com/gitleaks/gitleaks"
 fi
 echo ""
 
