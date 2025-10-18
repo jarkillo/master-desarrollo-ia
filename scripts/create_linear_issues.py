@@ -11,9 +11,7 @@ Usage:
 
 import os
 import re
-import json
 import time
-import sys
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 from pathlib import Path
@@ -494,10 +492,10 @@ def main():
         # Sort issues by priority (P0 first, then P1, P2, P3)
         priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
         issues.sort(key=lambda x: priority_order.get(x.priority, 4))
-        print(f"✅ Issues sorted by priority (P0 → P1 → P2 → P3)")
+        print("✅ Issues sorted by priority (P0 → P1 → P2 → P3)")
 
         # Create issues in batches
-        print(f"\n🎯 Creating issues in priority order...")
+        print("\n🎯 Creating issues in priority order...")
         print("=" * 60)
 
         created_count = 0

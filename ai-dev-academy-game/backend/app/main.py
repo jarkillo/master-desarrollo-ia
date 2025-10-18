@@ -3,8 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import init_db, engine
-from app.models import Player, Progress, Achievement, PlayerStats, UnlockedTool
+from app.database import init_db
 
 # Import routes (will create next)
 # from app.routes import player, progress, achievements, minigames

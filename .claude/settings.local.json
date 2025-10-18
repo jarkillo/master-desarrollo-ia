@@ -5,7 +5,11 @@
       "mcp__Linear__get_issue",
       "mcp__Linear__list_issue_statuses",
       "mcp__Linear__update_issue",
-      "mcp__Linear__create_issue"
+      "mcp__Linear__create_issue",
+      "mcp__linear__list_projects",
+      "mcp__linear__create_issue_label",
+      "mcp__linear__create_issue",
+      "mcp__linear__list_issue_labels"
     ],
     "deny": [],
     "ask": []
