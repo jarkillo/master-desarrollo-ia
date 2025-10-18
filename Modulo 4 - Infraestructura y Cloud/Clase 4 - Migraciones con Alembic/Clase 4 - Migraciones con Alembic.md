@@ -690,6 +690,80 @@ alembic -c alembic_prod.ini upgrade head
 alembic -c alembic_prod.ini downgrade -1
 ```
 
+### 6. Índices y Performance
+
+**¿Cuándo agregar índices en migrations?**
+
+Los índices mejoran la velocidad de las queries, pero tienen trade-offs:
+
+✅ **Casos para indexar**:
+- **Foreign keys**: Casi siempre (mejora JOIN performance)
+- **Campos en WHERE frecuentes**: `WHERE user_id = 5`, `WHERE status = 'active'`
+- **Campos en ORDER BY**: `ORDER BY created_at DESC`
+- **Campos únicos**: `UNIQUE(email)` automáticamente crea índice
+
+❌ **Casos para NO indexar**:
+- **Baja cardinalidad**: Boolean (solo 2 valores), `prioridad` con 3 valores
+- **Tablas pequeñas**: <1000 rows no necesitan índices
+- **Campos que nunca se filtran**: Campos solo de display
+- **Write-heavy tables**: Cada índice ralentiza INSERT/UPDATE
+
+**Ejemplo**: Agregar índice en un campo de fecha
+
+```python
+# alembic/versions/xxx_add_index_created_at.py
+def upgrade() -> None:
+    """Agregar índice en created_at para ordenamiento rápido."""
+    op.create_index(
+        'ix_tareas_creado_en',
+        'tareas',
+        ['creado_en'],
+        unique=False
+    )
+
+
+def downgrade() -> None:
+    """Remover índice."""
+    op.drop_index('ix_tareas_creado_en', table_name='tareas')
+```
+
+**Medir impacto** (PostgreSQL):
+
+```sql
+-- Sin índice
+EXPLAIN ANALYZE SELECT * FROM tareas ORDER BY creado_en DESC LIMIT 10;
+-- Resultado: Seq Scan + Sort (SLOW en tablas grandes)
+
+-- Con índice
+EXPLAIN ANALYZE SELECT * FROM tareas ORDER BY creado_en DESC LIMIT 10;
+-- Resultado: Index Scan using ix_tareas_creado_en (FAST)
+```
+
+**Índices compuestos** (múltiples columnas):
+
+```python
+# Útil si filtras por usuario Y estado frecuentemente
+op.create_index(
+    'ix_tareas_usuario_estado',
+    'tareas',
+    ['usuario_id', 'completada']
+)
+
+# Query optimizada:
+# SELECT * FROM tareas WHERE usuario_id = 5 AND completada = False
+```
+
+**Trade-offs de índices**:
+
+| Aspecto | Sin Índice | Con Índice |
+|---------|------------|------------|
+| SELECT (WHERE, ORDER BY) | 🐌 Lento (Full Table Scan) | ⚡ Rápido (Index Scan) |
+| INSERT | ⚡ Rápido | 🐌 Más lento (actualizar índice) |
+| UPDATE | ⚡ Rápido | 🐌 Más lento (si se modifica columna indexada) |
+| Espacio en disco | ✅ Poco | ⚠️ Más (índice ocupa espacio) |
+
+**Regla general**: Indexa cuando las queries de lectura son **10x más frecuentes** que writes.
+
 ---
 
 ## 🧪 Ejercicios prácticos

@@ -4,6 +4,19 @@ Revision ID: 05702ef4b618
 Revises: 58cbce442bf6
 Create Date: 2025-10-19 01:26:47.872651
 
+⚠️ NOTA EDUCATIVA:
+Esta migración añade una columna NOT NULL sin default.
+Esto funciona SOLO porque la tabla está vacía en desarrollo.
+
+En producción con datos existentes, esta migración FALLARÍA con:
+    IntegrityError: NOT NULL constraint failed: tareas.prioridad
+
+Estrategia correcta para producción (2 pasos):
+1. Migration 1: ADD COLUMN prioridad INTEGER NULL DEFAULT 2
+2. Migration 2: ALTER COLUMN prioridad SET NOT NULL
+
+Ver Clase 4 - Sección "Migraciones en Producción" para más detalles.
+
 """
 from typing import Sequence, Union
 

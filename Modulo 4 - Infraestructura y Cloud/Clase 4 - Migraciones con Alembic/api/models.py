@@ -59,4 +59,7 @@ class TareaModel(Base):
 
     def __repr__(self) -> str:
         """Representación legible del modelo para debugging"""
-        return f"<TareaModel(id={self.id}, nombre='{self.nombre}', completada={self.completada})>"
+        return (
+            f"<TareaModel(id={self.id}, nombre='{self.nombre}', "
+            f"completada={self.completada}, prioridad={self.prioridad})>"
+        )

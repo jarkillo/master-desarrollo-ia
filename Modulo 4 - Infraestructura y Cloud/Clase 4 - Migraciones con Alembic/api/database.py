@@ -40,8 +40,19 @@ def crear_tablas():
     """
     Crea todas las tablas definidas en los modelos.
 
-    ⚠️ IMPORTANTE: En producción usarías Alembic (migrations).
-    Este método es solo para desarrollo y aprendizaje.
+    ⚠️ DEPRECATED: Este método NO debe usarse en Clase 4+.
+
+    En Clase 4+ usamos Alembic migrations:
+        alembic upgrade head
+
+    Este método existe solo para compatibilidad con Clases 2-3 donde
+    aún no habíamos aprendido migraciones.
+
+    Razones para usar Alembic en lugar de create_all():
+    - create_all() no actualiza tablas existentes
+    - No hay historial de cambios
+    - No es reversible (no hay rollback)
+    - Imposible gestionar cambios incrementales en producción
     """
     Base.metadata.create_all(bind=engine)
 
