@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Linear__list_issues",
+      "mcp__Linear__get_issue",
+      "mcp__Linear__list_issue_statuses",
+      "mcp__Linear__update_issue",
+      "mcp__Linear__create_issue"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
