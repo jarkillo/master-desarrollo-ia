@@ -136,8 +136,24 @@ gh pr create
 ```
 
 **5. Merge PR** (after CI passes):
+
+⚠️ **IMPORTANTE: Claude NUNCA debe hacer merge de Pull Requests**
+
+**Razón**: El merge debe ser una decisión humana deliberada. Claude puede:
+- ✅ Crear ramas
+- ✅ Hacer commits
+- ✅ Push de ramas
+- ✅ Crear Pull Requests
+- ❌ **NUNCA hacer merge** (ni `gh pr merge`, ni merge manual)
+
+El usuario (humano) es quien decide cuándo mergear después de revisar:
+- El código generado
+- Los tests
+- El PR completo
+- La documentación
+
 ```bash
-# Merge when CI is green
+# EL USUARIO ejecuta esto (NO Claude):
 gh pr merge --squash  # Squash commits
 gh pr merge --merge   # Merge commit
 gh pr merge --rebase  # Rebase
