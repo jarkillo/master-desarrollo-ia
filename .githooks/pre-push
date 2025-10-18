@@ -1,0 +1,115 @@
+#!/bin/bash
+# Pre-push hook para validar código antes de push
+# Ejecuta: linting (ruff), tests con coverage, y validación de secretos
+
+set -e  # Exit on error
+
+echo "🔍 Pre-push validation started..."
+
+# Colores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Función para imprimir errores
+error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+# Función para imprimir éxitos
+success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+# Función para imprimir warnings
+warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+# 1. Verificar que estamos en el directorio raíz del repo
+if [ ! -d ".git" ]; then
+    error "Not in repository root directory"
+    exit 1
+fi
+
+# 2. Ruff linting en archivos Python modificados
+echo ""
+echo "📝 Running Ruff linting..."
+if command -v ruff &> /dev/null; then
+    if ruff check . --quiet; then
+        success "Ruff linting passed"
+    else
+        error "Ruff linting failed"
+        echo "Fix linting errors with: ruff check . --fix"
+        exit 1
+    fi
+else
+    if python -m ruff check . --quiet; then
+        success "Ruff linting passed"
+    else
+        error "Ruff linting failed"
+        echo "Fix linting errors with: python -m ruff check . --fix"
+        exit 1
+    fi
+fi
+
+# 3. Ejecutar tests en clases con tests (si existen archivos Python modificados)
+echo ""
+echo "🧪 Running tests with coverage..."
+
+# Obtener lista de directorios de clases que tienen tests
+CLASS_DIRS=(
+    "Modulo 4 - Infraestructura y Cloud/Clase 2 - Tu API en un contenedor"
+)
+
+TESTS_PASSED=true
+
+for class_dir in "${CLASS_DIRS[@]}"; do
+    if [ -d "$class_dir/tests" ]; then
+        echo "  Testing: $class_dir"
+
+        cd "$class_dir"
+
+        # Limpiar cachés
+        find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+        find . -type f -name "*.pyc" -delete 2>/dev/null || true
+
+        # Ejecutar tests
+        if python -m pytest --cov=api --cov-report=term-missing --cov-fail-under=80 -q; then
+            success "Tests passed in $class_dir"
+        else
+            error "Tests failed in $class_dir"
+            TESTS_PASSED=false
+        fi
+
+        cd - > /dev/null
+    fi
+done
+
+if [ "$TESTS_PASSED" = false ]; then
+    error "Some tests failed. Fix tests before pushing."
+    exit 1
+fi
+
+# 4. Validación de secretos (opcional, solo si gitleaks está instalado)
+echo ""
+echo "🔐 Checking for secrets..."
+if command -v gitleaks &> /dev/null; then
+    if gitleaks detect --no-git --quiet; then
+        success "No secrets detected"
+    else
+        error "Secrets detected in code!"
+        warning "Review gitleaks output and remove sensitive data"
+        exit 1
+    fi
+else
+    warning "gitleaks not installed, skipping secret scanning"
+    warning "Install with: https://github.com/gitleaks/gitleaks#installing"
+fi
+
+echo ""
+success "✨ All pre-push validations passed! Pushing..."
+echo ""
+
+exit 0
