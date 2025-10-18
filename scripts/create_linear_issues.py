@@ -213,7 +213,6 @@ def parse_master_plan(file_path: str) -> List[Issue]:
         content = f.read()
 
     issues = []
-    current_module = None
 
     # Find all issue sections (headers with M1-1, M2-1, etc.)
     pattern = r'### (M\d+-\d+|GAME-\d+|FIX-\d+): (.+?)\n\*\*Prioridad\*\*: (P\d+).+?\n\*\*Labels\*\*: (.+?)\n\*\*Estimación\*\*: (.+?)\n(.+?)(?=\n### |\n## |$)'
@@ -240,7 +239,7 @@ def parse_master_plan(file_path: str) -> List[Issue]:
             module = "other"
 
         # Parse labels
-        labels = [l.strip().strip('`') for l in labels_str.split(',')]
+        labels = [label.strip().strip('`') for label in labels_str.split(',')]
 
         # Determine recommended agent workflow
         agent_workflow = determine_agent_workflow(title, labels, body)
