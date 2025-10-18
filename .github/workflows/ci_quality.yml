@@ -37,8 +37,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Necesario para gitleaks (historial completo)
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -74,16 +72,6 @@ jobs:
             pip install bandit
             bandit -r api/ -ll
 
-      - name: Auditoría de dependencias (Safety)
-        uses: pyupio/safety-action@v1
-        with:
-          api-key: ${{ secrets.SAFETY_API_KEY }}
-
-      - name: Secret scanning
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Check if infra/check_env.py exists
         id: check_env_file
         working-directory: ${{ matrix.class_dir }}
@@ -107,4 +95,28 @@ jobs:
           # Flake8 — reglas adicionales/legacy que quieras mantener
           # flake8 api/
 
+  # Job separado para Safety (escanea todo el repo, no por clase)
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Auditoría de dependencias (Safety)
+        uses: pyupio/safety-action@v1
+        with:
+          api-key: ${{ secrets.SAFETY_API_KEY }}
+
+  # Job separado para Gitleaks (escanea todo el repo, no por clase)
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necesario para gitleaks (historial completo)
+
+      - name: Secret scanning
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
