@@ -4,16 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a **Master's degree repository on AI-Assisted Development** organized into progressive modules (0-4). Each module builds upon the previous one, teaching software engineering fundamentals through cloud deployment. The same "tareas" (tasks) application is implemented multiple times across modules, each time with increased sophistication.
+This is a **Master's degree repository on AI-Assisted Development** organized into progressive modules (0-5). Each module builds upon the previous one, teaching **software engineering fundamentals + AI as a force multiplier**. The vision: **"A solo developer with an army of agents"**.
+
+The same "tareas" (tasks) application is implemented multiple times across modules, each time with increased sophistication, using AI assistants progressively.
 
 ## Project Structure
 
 ### Module Organization
-- **Modulo 0 - Preparacion**: Git workflows, documentation, foundational materials
-- **Modulo 1 - Fundamentos**: CLI applications, basic Python, testing introduction
-- **Modulo 2 - Ingeniería y Arquitectura**: FastAPI, SOLID principles, clean architecture
-- **Modulo 3 - Calidad y Seguridad**: Security hardening, JWT, Sentry, auditing
-- **Modulo 4 - Infraestructura y Cloud**: Docker, deployment, infrastructure as code
+- **Modulo 0 - IA Development Foundations**: AI tools setup, prompt engineering, first agents, Git + IA workflow
+- **Modulo 1 - Fundamentos + IA Assistant**: CLI applications, Python basics, testing with AI assistance
+- **Modulo 2 - Arquitectura + Agent Orchestration**: FastAPI, SOLID, clean architecture, specialized agent teams
+- **Modulo 3 - Seguridad + IA con Criterio**: Security hardening, JWT, auditing AI-generated code
+- **Modulo 4 - Infrastructure + AI DevOps**: Docker, databases, cloud deployment with AI agents
+- **Modulo 5 - Full-Stack + Agent Mastery**: Complete projects with orchestrated agent teams
 
 ### Self-Contained Class Design
 Each class folder is **completely independent** and can be run/tested in isolation. Every class from Module 2+ follows this structure:
@@ -229,17 +232,43 @@ Comprehensive quality pipeline:
 
 - **`docs/reviews/REVIEW_COMPLETENESS.md`**: Missing components, inconsistencies, incomplete modules
 - **`docs/reviews/REVIEW_PEDAGOGICAL.md`**: Conceptual gaps, learning progression issues
+- **`docs/reviews/REVIEW_AI_INTEGRATION.md`**: **CRITICAL** - AI integration gaps, curriculum redesign
 - **`docs/reviews/AGENTS_RECOMMENDED.md`**: Recommended specialist agents for educational support
+
+### 🤖 The AI Integration Gap
+
+**CRITICAL FINDING**: The program currently teaches excellent software engineering but **lacks AI dimension entirely**.
+
+Current state:
+- ✅ Clean Code, SOLID, FastAPI, Docker
+- ❌ How to use Claude Code effectively
+- ❌ Agent design and orchestration
+- ❌ Prompt engineering for development
+- ❌ Security review of AI-generated code
+- ❌ Dividing projects for AI assistance
+
+**Vision**: After this master, you should be **"a solo developer with an army of agents"** - able to build production applications alone using specialized AI agents.
+
+**See `docs/reviews/REVIEW_AI_INTEGRATION.md`** for complete analysis and redesigned curriculum.
 
 ### Critical Gaps to Be Aware Of
 
-1. **Module 4 is only 25% complete** - Only Classes 1-2 exist, Classes 3-8 (database, cloud deployment) are missing
-2. **Module 5 is completely absent** - DevSecOps and full-stack content not yet implemented
-3. **Test naming inconsistency** - Module 3-4 tests incorrectly named `test_crear_tarea_clase7.py`
-4. **CI/CD only tests one class** - Most implemented classes are not in the CI matrix
-5. **Async Python not taught** - FastAPI is used synchronously, async/await patterns missing
-6. **No database integration** - Promised in Module 4 but not implemented (SQLAlchemy, Alembic)
-7. **Error handling patterns missing** - No custom exceptions, HTTPException handlers
+**AI Integration**:
+1. **Module 0 needs complete redesign** - Currently too technical, doesn't teach AI fundamentals
+2. **No AI teaching in any module** - Modules 1-4 are pure software engineering
+3. **No agent library** - Educational agents not yet created
+4. **No prompt engineering** - Core skill for AI-assisted development missing
+
+**Implementation**:
+5. **Module 4 is only 25% complete** - Only Classes 1-2 exist, Classes 3-8 (database, cloud deployment) are missing
+6. **Module 5 is completely absent** - Full-stack + agent orchestration content not yet implemented
+7. **Test naming inconsistency** - Module 3-4 tests incorrectly named `test_crear_tarea_clase7.py`
+8. **CI/CD only tests one class** - Most implemented classes are not in the CI matrix
+
+**Technical Gaps**:
+9. **Async Python not taught** - FastAPI is used synchronously, async/await patterns missing
+10. **No database integration** - Promised in Module 4 but not implemented (SQLAlchemy, Alembic)
+11. **Error handling patterns missing** - No custom exceptions, HTTPException handlers
 
 ### Working Around Gaps
 
@@ -310,12 +339,12 @@ These agents **teach and explain**, not just validate. They provide context and 
 
 | Module | Status | Classes | Notes |
 |--------|--------|---------|-------|
-| Module 0 | ✅ Complete | - | Git, setup, documentation |
-| Module 1 | ✅ Complete | 4/4 | CLI, fundamentals, basic testing |
-| Module 2 | ⚠️ Mostly Complete | 5/6 | Class 1 only has notes, no code |
-| Module 3 | ✅ Complete | 7/7 | All classes implemented (test naming issue) |
-| Module 4 | 🔴 25% Complete | 2/8 | Missing DB, cloud deployment, LangChain |
-| Module 5 | ❌ Not Started | 0/6+ | DevSecOps, full-stack completely absent |
+| Module 0 | 🔴 Needs Redesign | - | Has Git content, missing ALL AI teaching |
+| Module 1 | ⚠️ Complete (no AI) | 4/4 | CLI, fundamentals, needs AI integration |
+| Module 2 | ⚠️ Mostly Complete (no AI) | 5/6 | Class 1 only has notes, needs AI agents |
+| Module 3 | ⚠️ Complete (no AI) | 7/7 | Security implemented, needs AI security review |
+| Module 4 | 🔴 25% Complete | 2/8 | Missing DB, cloud deployment, LangChain, AI DevOps |
+| Module 5 | ❌ Not Started | 0/6+ | Agent orchestration mastery completely absent |
 
 **Overall**: ~65% complete
 
@@ -323,10 +352,20 @@ These agents **teach and explain**, not just validate. They provide context and 
 
 If you're continuing this project, prioritize:
 
-1. **Fix critical inconsistencies** (1-2 days): Rename tests, update CI matrix, add `.md` extensions
-2. **Complete Module 4** (3-4 weeks): Database integration, migrations, cloud deployment
-3. **Add async/await teaching** (1 week): Critical gap in Module 2
-4. **Implement error handling** (1 week): Custom exceptions, HTTPException patterns
-5. **Create Module 5** (2-3 weeks): Full-stack, DevSecOps, final project
+**Phase 1 - AI Integration (CRITICAL)**:
+1. **Redesign Module 0** (1-2 weeks): 6 classes on AI development foundations (see REVIEW_AI_INTEGRATION.md)
+2. **Create Agent Library** (3-5 days): Educational agents (test-coverage-strategist, clean-architecture-enforcer, etc.)
+3. **Add AI sections to Modules 1-3** (1-2 weeks): 40% AI integration in each class
+4. **Prompt Library** (2-3 days): 50+ effective prompts for common tasks
 
-See `docs/reviews/REVIEW_COMPLETENESS.md` for detailed action items and estimates.
+**Phase 2 - Implementation Gaps**:
+5. **Fix critical inconsistencies** (1-2 days): Rename tests, update CI matrix, add `.md` extensions
+6. **Complete Module 4** (3-4 weeks): Database integration, migrations, cloud deployment, AI DevOps
+7. **Add async/await teaching** (1 week): Critical gap in Module 2
+8. **Implement error handling** (1 week): Custom exceptions, HTTPException patterns
+
+**Phase 3 - Completion**:
+9. **Create Module 5** (3-4 weeks): Full-stack, agent orchestration mastery, final project
+10. **Testing & Refinement** (1-2 weeks): Validate with students, iterate
+
+See review documents for detailed action items and estimates.
