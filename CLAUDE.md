@@ -2,6 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## IMPORTANTE: Commits sin Co-Autoría de Claude
+
+**NUNCA incluyas la línea de co-autoría de Claude en los commits:**
+
+❌ **NO hacer esto:**
+```
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+✅ **Hacer esto:**
+- Commits limpios sin referencias a Claude
+- Solo el mensaje descriptivo del cambio
+- Seguir Conventional Commits (feat:, fix:, docs:, etc.)
+
+**Razón**: Este es un repositorio educativo profesional. Los commits deben reflejar únicamente el contenido del cambio, no la herramienta utilizada para crearlo.
+
 ## Repository Overview
 
 This is a **Master's degree repository on AI-Assisted Development** organized into progressive modules (0-5). Each module builds upon the previous one, teaching **software engineering fundamentals + AI as a force multiplier**. The vision: **"A solo developer with an army of agents"**.

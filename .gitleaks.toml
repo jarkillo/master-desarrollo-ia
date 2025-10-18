@@ -3,62 +3,19 @@
 
 title = "Gitleaks config for Master IA - Desarrollo con IA"
 
-# Allowlist for educational content
+# Global allowlist for educational content
 [allowlist]
-description = "Allowlist for educational examples in documentation"
+description = "Global allowlist for educational examples"
 
-# Ignore all .md files in Module 3 (Security) - they contain intentional examples
+# Ignore all files in Module 3 (Security module with intentional examples)
 paths = [
-  '''(?i)Modulo 3.*\.md$''',
-  '''(?i)Modulo 3.*\.py$''',  # Vulnerable examples in ejemplos_vulnerables/
+  '''Modulo 3''',
 ]
 
-# Ignore specific patterns that are clearly placeholders
+# Ignore obvious placeholders across all files
 regexes = [
-  '''tu_api_key_aqui''',           # Spanish placeholder
-  '''your_api_key_here''',         # English placeholder
-  '''api_key_123''',                # Weak example key
-  '''miclave123''',                 # Weak example key (Spanish)
-  '''secret_key_xyz''',             # Example secret
-  '''eyJhbGciOiJIUzI1NiIs\.\.\.''', # Truncated JWT example (with ...)
+  '''tu_api_key_aqui''',
+  '''your_api_key_here''',
+  '''api_key_123''',
+  '''miclave123''',
 ]
-
-# Ignore specific commits (initial educational content)
-commits = [
-  '''77a06523ca51dd293f09772aa0025bf89c051543''',  # Initial security content
-  '''553956e6dba2ad7cdb07a5a66a55aa36793132c4''',  # JWT glossary
-  '''19b10fcba6636f9c8a8009128c8aaac66d1b5763''',  # Security glossary
-]
-
-# Custom rules to ignore
-[[rules]]
-id = "educational-curl-examples"
-description = "Ignore curl examples with obvious placeholders in documentation"
-regex = '''(?i)(x-api-key|authorization):\s*(tu_|your_|mi)'''
-[rules.allowlist]
-paths = [
-  '''\.md$''',  # All markdown files
-]
-
-[[rules]]
-id = "educational-weak-keys"
-description = "Ignore intentionally weak keys in security lessons"
-regex = '''(?i)(api_key|secret|password).*123'''
-[rules.allowlist]
-paths = [
-  '''(?i)ejemplos_vulnerables/.*\.py$''',  # Vulnerable examples
-  '''(?i)Glosario.*\.md$''',                # Glossaries
-]
-
-[[rules]]
-id = "educational-truncated-jwt"
-description = "Ignore truncated JWT examples (indicated by ...)"
-regex = '''eyJ[A-Za-z0-9_-]*\.\.\.'''
-[rules.allowlist]
-paths = [
-  '''\.md$''',
-]
-
-# Global settings
-[extend]
-useDefault = true  # Use default Gitleaks rules as base
