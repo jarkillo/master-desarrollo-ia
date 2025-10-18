@@ -129,7 +129,7 @@ if [[ -n "$GITLEAKS_CMD" ]]; then
         GITLEAKS_CONFIG="--config .gitleaks.toml"
     fi
 
-    if $GITLEAKS_CMD detect --source . $GITLEAKS_CONFIG --no-banner --redact 2>&1 | grep -q "leaks found: 0"; then
+    if $GITLEAKS_CMD detect --source . $GITLEAKS_CONFIG --no-banner --redact 2>&1 | grep -q "no leaks found"; then
         print_success "No se encontraron secretos"
     else
         print_error "¡SECRETOS DETECTADOS EN EL CÓDIGO!"
