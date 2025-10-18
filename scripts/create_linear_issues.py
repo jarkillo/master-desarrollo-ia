@@ -13,8 +13,10 @@ import os
 import re
 import json
 import time
+import sys
 from typing import Dict, List, Optional
 from dataclasses import dataclass
+from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
@@ -23,7 +25,9 @@ load_dotenv()
 
 LINEAR_API_KEY = os.getenv("LINEAR_API_KEY")
 LINEAR_API_URL = "https://api.linear.app/graphql"
-TEAM_KEY = os.getenv("LINEAR_TEAM_KEY", "TEAM")  # Your team key (e.g., "ENG")
+TEAM_KEY = os.getenv("LINEAR_TEAM_KEY", "JAR")  # Team key (JAR for JAR-XXX issues)
+TEAM_ID = "d6e60bff-96b3-4393-8894-d9eb72899539"  # Team Jarko ID
+PROJECT_ID = "3237de8a-8c51-425a-9af7-b4f219cca458"  # Master desarrollo con IA project
 PROJECT_NAME = "Master desarrollo con IA"
 
 @dataclass
@@ -35,6 +39,7 @@ class Issue:
     priority: str  # P0, P1, P2, P3
     estimate: str  # 1-2h, 3-4h, etc.
     module: str
+    agent_workflow: str = ""  # Recommended agent workflow
 
 class LinearAPI:
     """Linear GraphQL API client."""
@@ -239,16 +244,152 @@ def parse_master_plan(file_path: str) -> List[Issue]:
         # Parse labels
         labels = [l.strip().strip('`') for l in labels_str.split(',')]
 
+        # Determine recommended agent workflow
+        agent_workflow = determine_agent_workflow(title, labels, body)
+
+        # Append agent workflow to description
+        full_description = body + agent_workflow
+
         issues.append(Issue(
             title=title,
-            description=body,
+            description=full_description,
             labels=labels,
             priority=priority_str,
             estimate=estimate,
-            module=module
+            module=module,
+            agent_workflow=agent_workflow
         ))
 
     return issues
+
+
+def determine_agent_workflow(title: str, labels: List[str], description: str) -> str:
+    """Determine recommended agent workflow based on issue type and content."""
+
+    agents = []
+    workflow_description = ""
+
+    # Detectar tipo de issue basado en labels y contenido
+    is_ai_integration = "ai-integration" in labels
+    is_content_creation = "content-creation" in labels
+    is_bug_fix = "bug-fix" in labels
+    is_game = "game" in labels
+
+    # Detectar tecnología basada en título y descripción
+    has_fastapi = "FastAPI" in title or "CRUD" in title or "API" in title or "endpoint" in title.lower()
+    has_database = "Database" in title or "SQLAlchemy" in title or "Alembic" in title or "ORM" in title
+    has_docker = "Docker" in title or "contenedor" in title.lower() or "Dockerfile" in description
+    has_react = "React" in title or "Frontend" in title or "UI" in title
+    has_testing = "Test" in title or "Testing" in title or "Pytest" in title
+    has_security = "Security" in title or "JWT" in title or "Auth" in title
+    has_performance = "Performance" in title or "Optimization" in title or "Cache" in title
+
+    # Module-specific patterns
+    module_num = None
+    for label in labels:
+        if label.startswith("module-"):
+            module_num = label.split("-")[1]
+            break
+
+    # Build agent workflow based on context
+
+    # 1. Core agents for Python code quality (almost always needed)
+    if is_ai_integration or is_content_creation:
+        agents.append("python-best-practices-coach")
+
+    # 2. Technology-specific agents
+    if has_fastapi:
+        agents.append("fastapi-design-coach")
+        agents.append("api-design-reviewer")
+
+    if has_database:
+        agents.append("database-orm-specialist")
+
+    if has_docker:
+        agents.append("docker-infrastructure-guide")
+
+    if has_react:
+        agents.append("react-integration-coach")
+
+    if has_testing:
+        workflow_description = "Use Test Coverage Strategist for test design, "
+
+    if has_security:
+        workflow_description += "Security Hardening Mentor for validation, "
+
+    if has_performance:
+        agents.append("performance-optimizer")
+
+    # 3. Module-specific workflows
+    if module_num == "1":
+        # Module 1: Fundamentals + AI Assistant
+        if "Clase 1" in title:
+            agents.extend(["python-best-practices-coach"])
+        elif "Clase 2" in title:
+            workflow_description = "Test Coverage Strategist for test generation, "
+
+    elif module_num == "2":
+        # Module 2: Architecture + Clean Code
+        workflow_description += "Clean Architecture Enforcer for layering, "
+        if not has_fastapi:
+            agents.append("fastapi-design-coach")
+
+    elif module_num == "3":
+        # Module 3: Security
+        workflow_description += "Security Hardening Mentor for security review, "
+        if has_fastapi:
+            agents.append("api-design-reviewer")
+
+    elif module_num == "4":
+        # Module 4: Infrastructure
+        if "Clase 3" in title or "Clase 4" in title:
+            agents.extend(["database-orm-specialist", "performance-optimizer"])
+        elif "Clase 2" in title or has_docker:
+            agents.append("docker-infrastructure-guide")
+
+    elif module_num == "5":
+        # Module 5: Full-Stack
+        agents.extend(["react-integration-coach", "api-design-reviewer", "performance-optimizer"])
+
+    # 4. Game issues
+    if is_game:
+        agents.extend(["react-integration-coach", "api-design-reviewer", "fastapi-design-coach"])
+
+    # 5. Bug fixes
+    if is_bug_fix:
+        agents.append("python-best-practices-coach")
+        workflow_description += "Debug with profiling tools, "
+
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_agents = []
+    for agent in agents:
+        if agent not in seen:
+            seen.add(agent)
+            unique_agents.append(agent)
+
+    # Build markdown workflow section
+    if not unique_agents and not workflow_description:
+        return ""
+
+    workflow_md = "\n\n---\n\n## 🤖 Recommended Agent Workflow\n\n"
+
+    if workflow_description:
+        workflow_md += f"**Workflow**: {workflow_description.rstrip(', ')}\n\n"
+
+    if unique_agents:
+        workflow_md += "**Agents to use** (in order):\n\n"
+        for i, agent in enumerate(unique_agents, 1):
+            agent_name = agent.replace("-", " ").title()
+            workflow_md += f"{i}. **{agent_name}** (`.claude/agents/educational/{agent}.md`)\n"
+
+        workflow_md += "\n**How to use**:\n"
+        workflow_md += "1. Review existing code/content with each agent\n"
+        workflow_md += "2. Address feedback and anti-patterns identified\n"
+        workflow_md += "3. Iterate until agents approve (no critical issues)\n"
+        workflow_md += "4. Document learnings in commit message\n"
+
+    return workflow_md
 
 
 def priority_to_number(priority_str: str) -> int:
@@ -266,36 +407,30 @@ def setup_labels(api: LinearAPI, team_id: str) -> Dict[str, str]:
     """Create all necessary labels and return mapping of name -> ID."""
     print("\n📋 Setting up labels...")
 
-    label_colors = {
+    # Use pre-existing label IDs provided by user
+    label_map = {
         # Modules
-        "module-0": "#00FF00",  # Green
-        "module-1": "#0000FF",  # Blue
-        "module-2": "#8B00FF",  # Violet
-        "module-3": "#FFA500",  # Orange
-        "module-4": "#FF0000",  # Red
-        "module-5": "#FF69B4",  # Pink
+        "module-1": "3e781400-6c0e-4797-a399-fdbdb8ff3699",
+        "module-2": "01def120-73a8-4e2b-ab09-496f747118db",
+        "module-3": "3d653956-9d0c-4d9b-b909-03c72654543d",
+        "module-4": "d8b71ba9-d9ea-4615-9858-fa9c81641434",
+        "module-5": "ab5b4c45-e01b-4670-94e5-4a490c82b60a",
 
         # Types
-        "content-creation": "#FFFF00",  # Yellow
-        "ai-integration": "#00FFFF",    # Cyan
-        "bug-fix": "#FF0000",           # Red
-        "documentation": "#808080",     # Gray
-        "game": "#800080",              # Purple
-        "security": "#DC143C",          # Crimson
+        "content-creation": "e726e4c4-8ab3-4c27-abde-5fdf35d8211f",
+        "ai-integration": "c3b87c19-deb6-4976-a86e-8310680c15bc",
+        "bug-fix": "5a1d9058-6453-49fb-871f-defe3e5d45bd",
+        "documentation": "e5fb6f1b-d60c-4b2b-8f83-dc8c5681bdb6",
+        "game": "44124dd8-677b-4998-bcd4-7226c502cb02",
 
         # Priorities
-        "P0-critical": "#8B0000",  # Dark Red
-        "P1-high": "#FFA500",      # Orange
-        "P2-medium": "#FFFF00",    # Yellow
-        "P3-low": "#00FF00",       # Green
+        "P0-critical": "23379306-9a94-4f05-9c14-8b89362db644",
+        "P1-high": "d4df4574-568a-47ac-852a-fb30f60369b8",
+        "P2-medium": "2619d671-acb8-42c0-ae59-4f1fba9800c0",
+        "P3-low": "cde37e07-5d16-484e-9baf-defadee3dab7",
     }
 
-    label_map = {}
-    for label_name, color in label_colors.items():
-        label_id = api.get_or_create_label(team_id, label_name, color)
-        label_map[label_name] = label_id
-
-    print(f"✅ Labels ready: {len(label_map)} labels")
+    print(f"✅ Labels ready: {len(label_map)} pre-existing labels")
     return label_map
 
 
@@ -314,27 +449,55 @@ def main():
     # Initialize API client
     api = LinearAPI(LINEAR_API_KEY)
 
-    try:
-        # Get team ID
-        print(f"\n🔍 Finding team: {TEAM_KEY}")
-        team_id = api.get_team_id(TEAM_KEY)
-        print(f"✅ Team found: {team_id}")
+    # Issues already created (to skip)
+    ALREADY_CREATED = [
+        "M2-1",  # JAR-201
+        "M3-2",  # JAR-202
+        "M4-3",  # JAR-203
+        "M4-4",  # JAR-204
+        "M5-5",  # JAR-205
+        "M5-6",  # JAR-206
+        "M1-1",  # JAR-207
+        "M1-2",  # JAR-208
+    ]
 
-        # Get or create project
-        print(f"\n🔍 Finding/creating project: {PROJECT_NAME}")
-        project_id = api.get_or_create_project(team_id, PROJECT_NAME)
+    try:
+        # Use pre-configured IDs
+        print(f"\n✅ Using Team: {TEAM_KEY} (ID: {TEAM_ID})")
+        print(f"✅ Using Project: {PROJECT_NAME} (ID: {PROJECT_ID})")
 
         # Setup labels
-        label_map = setup_labels(api, team_id)
+        label_map = setup_labels(api, TEAM_ID)
 
         # Parse issues from master plan
-        plan_file = "../docs/LINEAR_ISSUES_MASTER_PLAN.md"
+        # Get absolute path to master plan
+        script_dir = Path(__file__).parent
+        plan_file = script_dir.parent / "docs" / "LINEAR_ISSUES_MASTER_PLAN.md"
+
         print(f"\n📖 Parsing master plan: {plan_file}")
-        issues = parse_master_plan(plan_file)
-        print(f"✅ Found {len(issues)} issues to create")
+        all_issues = parse_master_plan(str(plan_file))
+
+        # Filter out already created issues
+        issues = []
+        skipped = []
+        for issue in all_issues:
+            issue_id = issue.title.split(":")[0]
+            if issue_id in ALREADY_CREATED:
+                skipped.append(issue_id)
+            else:
+                issues.append(issue)
+
+        print(f"✅ Found {len(all_issues)} total issues")
+        print(f"⏭️  Skipped {len(skipped)} already created: {', '.join(skipped)}")
+        print(f"🎯 Creating {len(issues)} remaining issues")
+
+        # Sort issues by priority (P0 first, then P1, P2, P3)
+        priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+        issues.sort(key=lambda x: priority_order.get(x.priority, 4))
+        print(f"✅ Issues sorted by priority (P0 → P1 → P2 → P3)")
 
         # Create issues in batches
-        print(f"\n🎯 Creating issues...")
+        print(f"\n🎯 Creating issues in priority order...")
         print("=" * 60)
 
         created_count = 0
@@ -349,7 +512,7 @@ def main():
                         label_ids.append(label_map[label_name])
                     else:
                         # Try to create label on the fly
-                        label_id = api.get_or_create_label(team_id, label_name)
+                        label_id = api.get_or_create_label(TEAM_ID, label_name)
                         label_map[label_name] = label_id
                         label_ids.append(label_id)
 
@@ -363,8 +526,8 @@ def main():
 
                 # Create issue
                 issue_id, identifier = api.create_issue(
-                    team_id=team_id,
-                    project_id=project_id,
+                    team_id=TEAM_ID,
+                    project_id=PROJECT_ID,
                     title=issue.title,
                     description=issue.description,
                     label_ids=label_ids,
