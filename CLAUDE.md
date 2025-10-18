@@ -63,6 +63,111 @@ The codebase demonstrates SOLID principles through a layered architecture:
 - All tests use `conftest.py` to add parent directory to `sys.path` for imports
 - Tests use FastAPI's `TestClient` for endpoint testing
 
+## Git Workflow & Branch Protection
+
+### Branch Protection Rules
+
+**Protected branches**: `main` and `dev`
+
+Both branches require Pull Requests - **direct pushes are blocked**. This ensures:
+- All code passes pre-push hooks (linting, tests, coverage)
+- Changes are reviewed via PR (even in solo projects for audit trail)
+- CI/CD runs before merging
+
+### Development Workflow
+
+**1. Setup (one-time)**:
+```bash
+# Configure Git hooks
+bash scripts/setup-hooks.sh
+
+# Activate virtual environment
+.venv/Scripts/activate  # Windows
+source .venv/bin/activate  # Linux/Mac
+```
+
+**2. Start new feature**:
+```bash
+# Create feature branch from dev
+git checkout dev
+git pull origin dev
+git checkout -b feature/descripcion-corta
+```
+
+**3. Develop with validation**:
+```bash
+# Make changes
+# ...
+
+# Validate locally BEFORE committing
+bash scripts/pre-pr-check.sh
+
+# Commit (follow conventional commits)
+git add .
+git commit -m "feat: descripción del cambio"
+
+# Push (pre-push hook validates automatically)
+git push origin feature/descripcion-corta
+```
+
+**4. Create Pull Request**:
+```bash
+# Create PR to dev
+gh pr create --base dev --title "feat: Título del PR" --body "Descripción"
+
+# Or create PR interactively
+gh pr create
+```
+
+**5. Merge PR** (after CI passes):
+```bash
+# Merge when CI is green
+gh pr merge --squash  # Squash commits
+gh pr merge --merge   # Merge commit
+gh pr merge --rebase  # Rebase
+
+# Delete feature branch after merge
+git branch -d feature/descripcion-corta
+git push origin --delete feature/descripcion-corta
+```
+
+**6. Release to main** (from dev):
+```bash
+# Create PR from dev to main
+git checkout dev
+gh pr create --base main --title "release: v1.2.0" --body "Release notes"
+
+# Merge after final validation
+gh pr merge --merge
+```
+
+### Pre-push Hook
+
+The `.githooks/pre-push` hook automatically runs:
+- ✅ **Ruff linting**: Ensures code style compliance
+- ✅ **Pytest with coverage**: Runs tests with 80% minimum coverage
+- ✅ **Gitleaks**: Scans for secrets (if installed)
+
+**Bypass hook** (NOT recommended):
+```bash
+git push --no-verify
+```
+
+### Pre-PR Validation Script
+
+Before creating a PR, run the complete validation:
+```bash
+bash scripts/pre-pr-check.sh
+```
+
+This runs:
+- Git status
+- Ruff linting
+- All tests with coverage
+- Bandit security audit
+- Gitleaks secret scanning
+- Environment validation
+
 ## Common Development Commands
 
 ### Running Tests
