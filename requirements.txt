@@ -20,7 +20,7 @@ typing_extensions==4.15.0
 uvicorn==0.37.0
 httpx==0.27.2
 pytest-cov
-python-jose[cryptography]
+python-jose[cryptography]==3.5.0
 safety
 bandit
 sentry-sdk[fastapi]
