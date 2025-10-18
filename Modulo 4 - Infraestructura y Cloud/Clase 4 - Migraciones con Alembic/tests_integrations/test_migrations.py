@@ -7,6 +7,8 @@ Estos tests verifican que:
 - El schema resultante es el esperado
 - Los modelos ORM funcionan con la BD migrada
 """
+import os
+import subprocess
 import pytest
 from pathlib import Path
 from sqlalchemy import create_engine, inspect, text, Integer, String, Boolean, DateTime
