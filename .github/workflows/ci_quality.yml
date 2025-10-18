@@ -16,6 +16,22 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
+          # Módulo 2 - Ingeniería y Arquitectura (5 clases)
+          - "Modulo 2 – Ingeniería y Arquitectura/Clase 2 - Principios SOLID y paradigmas de programacion"
+          - "Modulo 2 – Ingeniería y Arquitectura/Clase 3 - Arquitectura limpia"
+          - "Modulo 2 – Ingeniería y Arquitectura/Clase 4 - Open_Closed y Dependency Inversion"
+          - "Modulo 2 – Ingeniería y Arquitectura/Clase 5 - Integracion y pruebas de arquitectura"
+          - "Modulo 2 – Ingeniería y Arquitectura/Clase 6 - Integracion continua y control de calidad"
+          # Módulo 3 - Calidad y Seguridad (7 clases)
+          - "Modulo 3 – Calidad y Seguridad/Clase 1 - El codigo que se defiende solo"
+          - "Modulo 3 – Calidad y Seguridad/Clase 2 - Seguridad básica en tu API"
+          - "Modulo 3 – Calidad y Seguridad/Clase 3 - Auditoria continua y defensa inteligente con IA"
+          - "Modulo 3 – Calidad y Seguridad/Clase 4 - Seguridad avanzada y autenticación con JWT"
+          - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
+          - "Modulo 3 – Calidad y Seguridad/Clase 6 – Defensa completa y CICD inteligente"
+          - "Modulo 3 – Calidad y Seguridad/Clase 7 - Clase Bonus – Observabilidad y alertas con Sentry"
+          # Módulo 4 - Infraestructura y Cloud (2 clases)
+          - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"
           - "Modulo 4 - Infraestructura y Cloud/Clase 2 - Tu API en un contenedor"
 
     steps:
@@ -56,22 +72,19 @@ jobs:
             pip install bandit
             bandit -r api/ -ll
 
-      - name: Auditoría de dependencias (Safety)
-      
-        uses: pyupio/safety-action@v1
-        with:
-          api-key: ${{ secrets.SAFETY_API_KEY }}
+      - name: Check if infra/check_env.py exists
+        id: check_env_file
+        working-directory: ${{ matrix.class_dir }}
+        run: |
+          if [ -f "infra/check_env.py" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
 
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-        
-      - name: Secret scanning
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Validar variables de entorno
+        if: steps.check_env_file.outputs.exists == 'true'
         working-directory: ${{ matrix.class_dir }}
         run: python infra/check_env.py
         
@@ -82,4 +95,28 @@ jobs:
           # Flake8 — reglas adicionales/legacy que quieras mantener
           # flake8 api/
 
+  # Job separado para Safety (escanea todo el repo, no por clase)
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Auditoría de dependencias (Safety)
+        uses: pyupio/safety-action@v1
+        with:
+          api-key: ${{ secrets.SAFETY_API_KEY }}
+
+  # Job separado para Gitleaks (escanea todo el repo, no por clase)
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necesario para gitleaks (historial completo)
+
+      - name: Secret scanning
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
