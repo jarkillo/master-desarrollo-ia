@@ -1,0 +1,12 @@
+# Gitleaks ignore file
+# Ignora falsos positivos en documentación educacional
+
+# Ejemplos de curl con placeholders en documentación
+Modulo 3 – Calidad y Seguridad/Clase 2 - Seguridad básica en tu API/Clase 2 - Seguridad básica en tu API.md:curl-auth-header:1782
+Modulo 3 – Calidad y Seguridad/Clase 2 - Seguridad básica en tu API/Clase 2 - Seguridad básica en tu API.md:curl-auth-header:1792
+
+# Ejemplos de JWT en glosarios (con "..." indicando truncamiento)
+Modulo 3 – Calidad y Seguridad/Clase 4 - Seguridad avanzada y autenticación con JWT/Glosario - Clase 4.md:generic-api-key:69
+
+# Ejemplos de API Keys débiles en glosarios (para enseñar qué NO hacer)
+Modulo 3 – Calidad y Seguridad/Clase 2 - Seguridad básica en tu API/Glosario - Clase 2:curl-auth-header:34
