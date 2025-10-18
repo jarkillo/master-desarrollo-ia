@@ -2,6 +2,40 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚨 URGENTE: SIEMPRE trabajar en el entorno virtual
+
+**ANTES DE HACER CUALQUIER COSA, activa el entorno virtual:**
+
+```bash
+# Windows
+.venv\Scripts\activate
+
+# Linux/Mac
+source .venv/bin/activate
+```
+
+**NUNCA trabajes fuera del entorno virtual. NUNCA.**
+
+**Razón**:
+- Sin el venv, instalas dependencias globalmente (contaminas el sistema)
+- Los tests pueden fallar por versiones incorrectas de librerías
+- El pre-push hook puede no encontrar herramientas (ruff, pytest, etc.)
+- Rompes la reproducibilidad del proyecto
+
+**Cómo verificar que estás en el venv**:
+```bash
+# Deberías ver (.venv) al inicio del prompt
+(.venv) E:\master-ia-manu>
+
+# O verificar con:
+python -c "import sys; print(sys.prefix)"
+# Debería mostrar la ruta del .venv
+```
+
+**Si el pre-push hook dice "No estás en un entorno virtual", DETENTE y actívalo ANTES de continuar.**
+
+---
+
 ## IMPORTANTE: Commits sin Co-Autoría de Claude
 
 **NUNCA incluyas la línea de co-autoría de Claude en los commits:**
