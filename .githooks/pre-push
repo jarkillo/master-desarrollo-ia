@@ -123,7 +123,13 @@ elif [[ -f "/c/Users/$USER/scoop/shims/gitleaks.exe" ]]; then
 fi
 
 if [[ -n "$GITLEAKS_CMD" ]]; then
-    if $GITLEAKS_CMD detect --source . --no-banner --redact 2>&1 | grep -q "leaks found: 0"; then
+    # Use .gitleaks.toml if it exists, otherwise use default config
+    GITLEAKS_CONFIG=""
+    if [[ -f ".gitleaks.toml" ]]; then
+        GITLEAKS_CONFIG="--config .gitleaks.toml"
+    fi
+
+    if $GITLEAKS_CMD detect --source . $GITLEAKS_CONFIG --no-banner --redact 2>&1 | grep -q "leaks found: 0"; then
         print_success "No se encontraron secretos"
     else
         print_error "¡SECRETOS DETECTADOS EN EL CÓDIGO!"
