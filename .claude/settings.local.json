@@ -9,7 +9,8 @@
       "mcp__linear__list_projects",
       "mcp__linear__create_issue_label",
       "mcp__linear__create_issue",
-      "mcp__linear__list_issue_labels"
+      "mcp__linear__list_issue_labels",
+      "mcp__linear__get_issue"
     ],
     "deny": [],
     "ask": []
