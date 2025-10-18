@@ -9,4 +9,6 @@ __pycache__/
 *.pyz
 *.pywz
 *.pyzw
-*.pyzwz
+*.pyzwz.venv/
+*.coverage
+__pycache__/

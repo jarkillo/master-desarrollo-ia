@@ -1,5 +1,9 @@
 # al inicio del archivo
 import os
+
+# IMPORTANTE: Configurar JWT_SECRET ANTES de importar la API
+os.environ["JWT_SECRET"] = "secret-test"
+
 from fastapi.testclient import TestClient
 from api import api as api_mod
 from api.servicio_tareas import ServicioTareas
@@ -7,7 +11,7 @@ from api.repositorio_memoria import RepositorioMemoria
 
 
 def _cliente_y_headers():
-    os.environ["JWT_SECRET"] = "secret-test"
+    # Resetear servicio para cada test (aislamiento)
     api_mod.servicio = ServicioTareas(RepositorioMemoria())
     c = TestClient(api_mod.app)
     token = c.post("/login", json={"usuario": "demo", "password": "demo"}).json()[
