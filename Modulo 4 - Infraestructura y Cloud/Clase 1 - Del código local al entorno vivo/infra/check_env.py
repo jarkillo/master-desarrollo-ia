@@ -1,5 +1,7 @@
 # infra/check_env.py
-import re, sys, os
+import re
+import sys
+import os
 
 TEMPLATE_PATH = os.path.join("infra", ".env.template")
 ENV_PATH = ".env"
