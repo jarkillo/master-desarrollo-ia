@@ -254,10 +254,10 @@ Current state:
 ### Critical Gaps to Be Aware Of
 
 **AI Integration**:
-1. **Module 0 needs complete redesign** - Currently too technical, doesn't teach AI fundamentals
-2. **No AI teaching in any module** - Modules 1-4 are pure software engineering
-3. **No agent library** - Educational agents not yet created
-4. **No prompt engineering** - Core skill for AI-assisted development missing
+1. ~~**Module 0 needs complete redesign**~~ - ✅ **COMPLETED**: Module 0 redesigned with 6 classes (Clase 0-6) teaching AI development foundations
+2. **No AI teaching in any module** - Modules 1-4 are pure software engineering (needs 40% AI integration)
+3. ~~**No agent library**~~ - ✅ **COMPLETED**: 7 educational agents created in `.claude/agents/educational/`
+4. **No prompt engineering** - Core skill for AI-assisted development (partially addressed in Module 0 Clase 5)
 
 **Implementation**:
 5. **Module 4 is only 25% complete** - Only Classes 1-2 exist, Classes 3-8 (database, cloud deployment) are missing
@@ -317,46 +317,139 @@ This repository is designed for **progressive learning** where students:
 - **Security** is integrated progressively, not bolted on
 - **Real tools** are used (GitHub Actions, Sentry, Docker) not simplified versions
 
-## Recommended Specialist Agents
+## Educational Specialist Agents
 
-For complex educational tasks, consider using specialized agents (see `docs/reviews/AGENTS_RECOMMENDED.md`):
+This repository includes a library of **educational agents** designed to teach, not just validate. All agents are located in `.claude/agents/educational/` and follow a consistent teaching methodology: identify anti-patterns, explain why they're problematic, show the correct solution, and teach the underlying principle.
 
-**Tier 1 (Critical)**:
-- **FastAPI Design Coach**: REST API design, Pydantic, async patterns
-- **Test Coverage Strategist**: Test architecture, coverage optimization
-- **Clean Architecture Enforcer**: SOLID principles, layering
-- **Docker & Infrastructure Guide**: Containers, deployment
+### Available Educational Agents
 
-**Tier 2 (High Value)**:
-- **Security Hardening Mentor**: Explains security findings educationally
-- **CI/CD Pipeline Optimizer**: GitHub Actions, quality gates
-- **Python Best Practices Coach**: Type hints, pythonic patterns
-- **Database Design & ORM Specialist**: SQLAlchemy, migrations (when Module 4 DB classes exist)
+**Backend & API Development:**
 
-These agents **teach and explain**, not just validate. They provide context and "why", not just "what's wrong".
+1. **Python Best Practices Coach** (`.claude/agents/educational/python-best-practices-coach.md`)
+   - Teaches Pythonic code patterns (list comprehensions, f-strings, pathlib)
+   - Type hints and PEP 8 compliance
+   - Modern Python patterns (dataclasses, context managers)
+   - Detects: manual loops, missing type hints, old string formatting
+
+2. **FastAPI Design Coach** (`.claude/agents/educational/fastapi-design-coach.md`)
+   - Professional REST API design patterns
+   - Pydantic validation best practices
+   - Async/await usage in FastAPI
+   - Dependency injection patterns
+   - Detects: non-RESTful endpoints, incomplete validation, blocking I/O in async
+
+3. **API Design Reviewer** (`.claude/agents/educational/api-design-reviewer.md`)
+   - RESTful principles and HTTP semantics
+   - Status code correctness (200, 201, 404, 409, etc.)
+   - Response format consistency
+   - API versioning strategies
+   - Pagination, filtering, rate limiting
+   - OpenAPI/Swagger documentation
+
+4. **Database ORM Specialist** (`.claude/agents/educational/database-orm-specialist.md`)
+   - SQLAlchemy 2.0 patterns and relationships
+   - N+1 query detection and resolution
+   - Index optimization
+   - Alembic migrations (safe, backward-compatible)
+   - When to use ORM vs raw SQL
+
+5. **Performance Optimizer** (`.claude/agents/educational/performance-optimizer.md`)
+   - Profiling Python code (cProfile, line_profiler)
+   - Async/await optimization
+   - Caching strategies (Redis, in-memory, HTTP)
+   - Database query optimization
+   - React performance (useMemo, useCallback, React.memo)
+   - Load testing and monitoring
+
+**Infrastructure & DevOps:**
+
+6. **Docker Infrastructure Guide** (`.claude/agents/educational/docker-infrastructure-guide.md`)
+   - Dockerfile optimization (multi-stage builds, layer caching)
+   - docker-compose best practices
+   - Security hardening (non-root users, secrets management)
+   - Image size optimization
+   - Health checks and restart policies
+
+**Frontend Integration:**
+
+7. **React Integration Coach** (`.claude/agents/educational/react-integration-coach.md`)
+   - React + FastAPI integration patterns
+   - State management (Context, Zustand, React Query)
+   - TypeScript with React (types, interfaces, generics)
+   - Forms and validation (React Hook Form, Zod)
+   - API client patterns and error handling
+
+### How to Use Educational Agents
+
+These agents are designed for learning contexts. Invoke them when:
+
+- **Reviewing student code**: Provide educational feedback with explanations
+- **Teaching best practices**: Show anti-patterns and better alternatives
+- **Code review**: Explain *why* changes are needed, not just *what* to change
+
+**Example usage scenarios:**
+
+```markdown
+# Reviewing a FastAPI endpoint with performance issues
+→ Use: performance-optimizer + fastapi-design-coach
+
+# Student implemented database queries in a loop
+→ Use: database-orm-specialist (detects N+1, teaches eager loading)
+
+# Dockerfile is 2GB and runs as root
+→ Use: docker-infrastructure-guide (teaches multi-stage, security)
+
+# React components re-render on every keystroke
+→ Use: react-integration-coach (teaches useMemo, React.memo)
+
+# API returns 200 OK for all responses (even errors)
+→ Use: api-design-reviewer (teaches HTTP status codes)
+```
+
+### Agent Design Philosophy
+
+All educational agents follow these principles:
+
+✅ **Teach, don't just validate**: Explain *why* something is an anti-pattern
+✅ **Show before/after**: Code examples with clear comparisons
+✅ **Provide context**: When to use each pattern, trade-offs
+✅ **Encourage best practices**: Link to PEPs, docs, industry standards
+✅ **Practical examples**: Real-world scenarios from the master curriculum
+
+**Tone**: Encouraging, educational, never condescending. "This works, but here's a more Pythonic way..." not "This is wrong."
+
+### Integration with Linear Issues
+
+These agents work in conjunction with the Linear issues workflow (see `docs/LINEAR_ISSUES_MASTER_PLAN.md`):
+
+- AI integration issues (M1-1 through M1-4, M2-2 through M2-6, etc.) can leverage these agents
+- Agents help implement 40% AI content in each class
+- Use agents during code review before merging feature branches
+
+See `docs/reviews/AGENTS_RECOMMENDED.md` for detailed agent specifications and usage examples.
 
 ## Module Completion Status
 
 | Module | Status | Classes | Notes |
 |--------|--------|---------|-------|
-| Module 0 | 🔴 Needs Redesign | - | Has Git content, missing ALL AI teaching |
+| Module 0 | ✅ **COMPLETED** | 6/6 | AI Development Foundations (Classes 0-6) + Final Project |
 | Module 1 | ⚠️ Complete (no AI) | 4/4 | CLI, fundamentals, needs AI integration |
 | Module 2 | ⚠️ Mostly Complete (no AI) | 5/6 | Class 1 only has notes, needs AI agents |
 | Module 3 | ⚠️ Complete (no AI) | 7/7 | Security implemented, needs AI security review |
 | Module 4 | 🔴 25% Complete | 2/8 | Missing DB, cloud deployment, LangChain, AI DevOps |
 | Module 5 | ❌ Not Started | 0/6+ | Agent orchestration mastery completely absent |
 
-**Overall**: ~65% complete
+**Overall**: ~70% complete (was 65%, +5% with Module 0 completion and agent library)
 
 ## Development Priorities
 
 If you're continuing this project, prioritize:
 
 **Phase 1 - AI Integration (CRITICAL)**:
-1. **Redesign Module 0** (1-2 weeks): 6 classes on AI development foundations (see REVIEW_AI_INTEGRATION.md)
-2. **Create Agent Library** (3-5 days): Educational agents (test-coverage-strategist, clean-architecture-enforcer, etc.)
+1. ~~**Redesign Module 0**~~ - ✅ **COMPLETED**: 6 classes on AI development foundations created
+2. ~~**Create Agent Library**~~ - ✅ **COMPLETED**: 7 educational agents created in `.claude/agents/educational/`
 3. **Add AI sections to Modules 1-3** (1-2 weeks): 40% AI integration in each class
-4. **Prompt Library** (2-3 days): 50+ effective prompts for common tasks
+4. **Prompt Library** (2-3 days): 50+ effective prompts for common tasks (partially addressed in Module 0 Clase 5)
 
 **Phase 2 - Implementation Gaps**:
 5. **Fix critical inconsistencies** (1-2 days): Rename tests, update CI matrix, add `.md` extensions
