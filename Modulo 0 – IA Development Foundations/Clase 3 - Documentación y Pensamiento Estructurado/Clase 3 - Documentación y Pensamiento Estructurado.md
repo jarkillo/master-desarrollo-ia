@@ -139,7 +139,6 @@ Si ya sabes Markdown básico, salta esto. Si no:
 def saludar():
     print("Hola")
 ```
-```
 
 ---
 
@@ -194,7 +193,6 @@ function factorial(n) {
 ```bash
 git commit -m "feat: add fibonacci function"
 ```
-```
 
 **Tip**: Especifica siempre el lenguaje después de ``` para syntax highlighting.
 
@@ -221,7 +219,7 @@ git commit -m "feat: add fibonacci function"
 
 #### Detalles Colapsables (HTML en Markdown)
 
-```markdown
+````markdown
 <details>
 <summary>Click para expandir</summary>
 
@@ -231,9 +229,8 @@ Este contenido está oculto hasta que el usuario haga click.
 def ejemplo():
     print("Código oculto")
 ```
-
 </details>
-```
+````
 
 **Uso real**: En READMEs largos, ocultar secciones avanzadas o logs de error.
 
@@ -263,7 +260,7 @@ Contenido...
 
 **Estructura mínima**:
 
-```markdown
+````markdown
 # API de Tareas
 
 Breve descripción (1-2 líneas).
@@ -299,7 +296,7 @@ Instrucciones...
 ## Licencia
 
 MIT
-```
+````
 
 **Tiempo**: 15 min
 
@@ -335,7 +332,7 @@ Ya instalaste la extensión "Markdown Preview Mermaid" en la sección 2.1.
 
 Crea `diagrama-test.md`:
 
-```markdown
+````markdown
 # Test Mermaid
 
 ```mermaid
@@ -343,7 +340,7 @@ graph TD
     A[Inicio] --> B[Proceso]
     B --> C[Fin]
 ```
-```
+````
 
 Abre con preview (Ctrl+K V) y deberías ver el diagrama renderizado.
 
