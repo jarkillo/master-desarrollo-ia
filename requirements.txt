@@ -24,3 +24,5 @@ python-jose[cryptography]==3.5.0
 safety
 bandit
 sentry-sdk[fastapi]
+sqlalchemy==2.0.43
+alembic==1.17.0
