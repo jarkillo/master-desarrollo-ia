@@ -1,0 +1,102 @@
+#!/bin/bash
+# Pre-commit hook para validar mensajes de commit
+# Bloquea commits que contengan autoría de Claude
+# Para saltar este hook: git commit --no-verify (NO RECOMENDADO)
+
+set -e  # Exit on first error
+
+# Colores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Función para imprimir errores
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+# Función para imprimir éxito
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+# Función para imprimir warnings
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+echo "🔍 Pre-commit hook: Validando mensaje de commit..."
+echo ""
+
+# 1. Verificar que estamos en el directorio raíz del repo
+if [ ! -d ".git" ]; then
+    print_error "No estás en el directorio raíz del repositorio"
+    exit 1
+fi
+
+# 2. Obtener el mensaje de commit (si existe archivo COMMIT_EDITMSG)
+COMMIT_MSG_FILE=".git/COMMIT_EDITMSG"
+
+if [ -f "$COMMIT_MSG_FILE" ]; then
+    COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+    # 3. Validar que NO contenga autoría de Claude
+    if echo "$COMMIT_MSG" | grep -qi "Co-Authored-By: Claude"; then
+        echo ""
+        print_error "AUTORÍA DE CLAUDE DETECTADA EN EL COMMIT"
+        echo ""
+        echo "📋 Contenido del commit que viola la política:"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "$COMMIT_MSG" | grep -i "Co-Authored-By: Claude"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        print_error "Los commits NO deben incluir la línea de co-autoría de Claude"
+        echo ""
+        echo "💡 Razón: Este es un repositorio educativo profesional."
+        echo "   Los commits deben reflejar únicamente el contenido del cambio,"
+        echo "   no la herramienta utilizada para crearlo."
+        echo ""
+        echo "🔧 Para corregir:"
+        echo "   1. Edita el mensaje de commit y ELIMINA la línea 'Co-Authored-By: Claude'"
+        echo "   2. Guarda y vuelve a hacer commit"
+        echo ""
+        echo "❌ Líneas a ELIMINAR:"
+        echo "   - Generated with Claude Code"
+        echo "   - Co-Authored-By: Claude <noreply@anthropic.com>"
+        echo ""
+        echo "Para saltar este hook (NO RECOMENDADO): git commit --no-verify"
+        echo ""
+        exit 1
+    fi
+
+    # 4. Validar que NO contenga "Generated with Claude Code"
+    if echo "$COMMIT_MSG" | grep -qi "Generated with.*Claude Code"; then
+        echo ""
+        print_error "REFERENCIA A CLAUDE CODE DETECTADA EN EL COMMIT"
+        echo ""
+        echo "📋 Contenido del commit que viola la política:"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "$COMMIT_MSG" | grep -i "Generated with.*Claude Code"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        print_error "Los commits NO deben incluir referencias a Claude Code"
+        echo ""
+        echo "🔧 Para corregir:"
+        echo "   Elimina la línea 'Generated with Claude Code' del mensaje"
+        echo ""
+        exit 1
+    fi
+
+    print_success "Mensaje de commit validado: sin autoría de Claude"
+else
+    # Si no existe COMMIT_EDITMSG, es porque el mensaje se pasa con -m
+    # En ese caso, no podemos validar antes (se valida en commit-msg hook)
+    print_warning "No se pudo validar mensaje (se validará en commit-msg hook)"
+fi
+
+echo ""
+print_success "Pre-commit hook completado exitosamente"
+echo ""
+
+exit 0
