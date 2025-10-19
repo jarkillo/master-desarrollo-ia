@@ -96,8 +96,11 @@ jobs:
           # flake8 api/
 
   # Job separado para Safety (escanea todo el repo, no por clase)
+  # NOTA: Safety tiene problemas intermitentes del servicio y usa comando deprecated
+  # Se mantiene como no-bloqueante hasta que se migre a safety scan
   safety:
     runs-on: ubuntu-latest
+    continue-on-error: true  # No bloquear el PR por problemas del servicio Safety
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,6 +109,7 @@ jobs:
         uses: pyupio/safety-action@v1
         with:
           api-key: ${{ secrets.SAFETY_API_KEY }}
+        continue-on-error: true  # Safety tiene problemas intermitentes del servicio
 
   # Job separado para Gitleaks (escanea todo el repo, no por clase)
   gitleaks:
