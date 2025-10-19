@@ -25,7 +25,6 @@
 ❌ **No es magia** - No escribe código perfecto automáticamente
 ❌ **No reemplaza pensar** - Necesitas saber qué quieres construir
 ❌ **No es infalible** - Comete errores, genera código incorrecto
-❌ **No ejecuta código** - Solo genera texto (código)
 
 #### ¿Qué SÍ es IA en desarrollo?
 
@@ -42,7 +41,7 @@ Imagina que aprendes a cocinar:
 - **Sin IA**: Buscas recetas en Google, lees libros, pruebas y error
 - **Con IA**: Tienes un chef experto al lado que:
   - Te explica técnicas
-  - Te sugiere ingredientes
+  - Te ayuda a elegir ingredientes
   - Te corrige si vas a quemar algo
   - **Pero TÚ sigues cocinando**
 
@@ -98,7 +97,7 @@ def factorial(n):
 
 **Limitaciones**:
 - ⚠️ No ejecuta código
-- ⚠️ Puede "alucinar" (inventar cosas que no existen)
+- ⚠️ Puede "alucinar" (inventar cosas que no existen, esto todas)
 
 ---
 
@@ -118,6 +117,8 @@ def factorial(n):
 
 **Limitaciones**:
 - ⚠️ Requiere aprender nuevo editor
+- Genera dependencia
+- Tan automatico que es fácil que dejes de leer
 
 ---
 
@@ -143,14 +144,14 @@ Un modelo entrenado con millones de líneas de código y texto para:
 
 **Modelos principales**:
 
-- **GPT-4** (OpenAI): Usado por GitHub Copilot, ChatGPT
+- **GPT-5** (OpenAI): Usado por GitHub Copilot, ChatGPT, Cursor
 - **Claude** (Anthropic): Usado por Claude Code, Cursor
-- **Codex**: Versión especializada de GPT para código
+- **Codex**: Versión especializada de GPT para código (parecido a claude code
 
 #### Limitaciones Críticas
 
 ⚠️ **Conocimiento hasta fecha de corte**:
-- Claude: Enero 2025
+- Claude por ejemplo: Enero 2025
 - Puede no conocer librerías muy nuevas
 - APIs pueden haber cambiado
 
