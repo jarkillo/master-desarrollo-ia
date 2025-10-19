@@ -955,7 +955,7 @@ def calcular_total(items):
 
 **Ejercicio**: Identifica en tu código una función larga y extrae 2-3 métodos.
 ¿Qué funciones extraerías? Explícamelo.
-```
+
 
 ---
 
