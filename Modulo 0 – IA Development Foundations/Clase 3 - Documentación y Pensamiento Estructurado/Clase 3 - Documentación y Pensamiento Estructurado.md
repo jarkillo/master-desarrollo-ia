@@ -907,7 +907,7 @@ Incluye:
 
 **IA genera**:
 
-```markdown
+````markdown
 # Gestor de Tareas CLI
 
 Aplicación de línea de comandos simple para gestionar una lista de tareas.
@@ -970,7 +970,7 @@ Tu Nombre - [@tu-usuario](https://github.com/tu-usuario)
 ## Licencia
 
 MIT - Ver LICENSE para más detalles
-```
+````
 
 **Tu trabajo**:
 1. Revisar que la descripción es correcta
@@ -1327,12 +1327,12 @@ claude "Genera tests para esta función: [código]"
 ```
 
 **Mermaid**:
-```markdown
+````markdown
 ```mermaid
 graph TD
     A --> B
 ```
-```
+````
 
 ---
 
