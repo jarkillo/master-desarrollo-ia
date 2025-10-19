@@ -324,6 +324,337 @@ Pero esta vez tú sabrás **qué hace cada pieza** y por qué existe.
 
 ---
 
+## 🤖 Escena 12 – Workflow TDD + IA: el círculo virtuoso
+
+### El ciclo completo: RED → GREEN → REFACTOR con IA
+
+Hasta ahora usaste IA para generar código aislado. Ahora aprenderás el **workflow profesional** que combina TDD con IA de forma disciplinada.
+
+Este es el proceso que usarás en cada funcionalidad nueva:
+
+---
+
+### 📍 Paso 1: RED – Escribir el test primero (TÚ defines el contrato)
+
+**Quién lo hace**: Tú (o IA bajo tu supervisión)
+**Por qué importa**: El test **es la especificación**. Define qué debe hacer el código.
+
+**Prompt para IA** (si necesitas ayuda):
+```
+Rol: QA Engineer Python
+Contexto: API FastAPI con endpoint POST /tareas ya funcionando
+Objetivo: Genera test pytest para endpoint GET /tareas que devuelva lista vacía inicialmente
+Restricciones:
+- Usar TestClient de FastAPI
+- Assert status_code 200
+- Assert response JSON es lista vacía []
+```
+
+**IA genera**:
+```python
+def test_listar_tareas_vacia_devuelve_lista_vacia():
+    cliente = TestClient(app)
+    respuesta = cliente.get("/tareas")
+    assert respuesta.status_code == 200
+    assert respuesta.json() == []
+```
+
+**TÚ validas**:
+- ✅ ¿El test cumple la historia de usuario?
+- ✅ ¿Los asserts son claros y completos?
+- ✅ ¿El test falla por la razón correcta? (endpoint no existe aún)
+
+**Ejecuta**: `pytest -v`
+**Resultado esperado**: ❌ ROJO (test falla, endpoint no existe)
+
+---
+
+### 📍 Paso 2: GREEN – Implementación mínima (IA genera, TÚ validas)
+
+**Prompt para IA**:
+```
+Rol: Backend Developer Python
+Contexto: Tengo este test que falla: [pegar test completo]
+Objetivo: Implementa el código MÍNIMO para hacer pasar este test
+Restricciones:
+- Solo agregar endpoint GET /tareas
+- Devolver lista vacía hardcodeada (por ahora)
+- No romper código existente
+```
+
+**IA genera**:
+```python
+@app.get("/tareas")
+def listar_tareas():
+    return []
+```
+
+**TÚ validas**:
+1. Ejecutar `pytest -v`
+2. ✅ ¿El test pasó a VERDE?
+3. ✅ ¿No rompió otros tests?
+4. ✅ ¿El código es el MÍNIMO necesario?
+
+---
+
+### 📍 Paso 3: REFACTOR – Mejora con agentes educacionales
+
+Aquí es donde separas código que "funciona" de código **profesional**.
+
+#### 3A. Python Best Practices Coach
+
+**Qué detecta**:
+- Type hints faltantes
+- Oportunidades para comprehensions
+- Anti-patterns (concatenación, loops innecesarios)
+
+**Cómo usar**:
+1. Lee tu código implementado
+2. Busca patterns del agente (`.claude/agents/educational/python-best-practices-coach.md`)
+3. Aplica feedback
+
+**Ejemplo de mejora**:
+```python
+# ❌ Antes (sin type hints)
+@app.get("/tareas")
+def listar_tareas():
+    return []
+
+# ✅ Después (con type hints)
+from typing import List
+from pydantic import BaseModel
+
+class TareaResponse(BaseModel):
+    id: int
+    nombre: str
+    completada: bool
+
+@app.get("/tareas", response_model=List[TareaResponse])
+def listar_tareas() -> List[TareaResponse]:
+    return []
+```
+
+#### 3B. FastAPI Design Coach
+
+**Qué valida**:
+- RESTful design correcto
+- Status codes apropiados
+- Response models con Pydantic
+- Async/await cuando aplica
+
+**Red flags típicas que detecta**:
+```python
+# ❌ Anti-pattern: Retornar dict en vez de modelo
+@app.get("/tareas")
+def listar_tareas():
+    return [{"id": 1, "nombre": "Tarea"}]  # ❌ No tipado
+
+# ✅ Correcto: Response model explícito
+@app.get("/tareas", response_model=List[TareaResponse])
+def listar_tareas() -> List[TareaResponse]:
+    # FastAPI serializa automáticamente
+    return [TareaResponse(id=1, nombre="Tarea", completada=False)]
+```
+
+#### 3C. API Design Reviewer
+
+**Qué revisa**:
+- Convenciones REST (GET, POST, PUT, DELETE)
+- Nombres de endpoints (`/tareas` vs `/get-tareas`)
+- Estructura de respuestas consistente
+- Error handling apropiado
+
+**Después del refactor**: Re-ejecuta tests
+```bash
+pytest -v
+```
+**Resultado**: ✅ VERDE (mismo comportamiento, mejor código)
+
+---
+
+### 🎯 Prompts efectivos para endpoints CRUD
+
+#### Prompt template para GET (listar)
+```
+Rol: Backend Developer FastAPI
+Contexto: API de tareas con modelo Tarea(id, nombre, completada)
+Objetivo: Implementa GET /tareas que devuelva todas las tareas
+Requisitos:
+- Response model: List[TareaResponse]
+- Status code: 200
+- Inicialmente devolver lista vacía (memoria)
+Restricciones: Solo código necesario, sin BD aún
+```
+
+#### Prompt template para GET (obtener uno)
+```
+Rol: Backend Developer FastAPI
+Contexto: API de tareas ya tiene POST /tareas y GET /tareas
+Objetivo: Implementa GET /tareas/{id} que devuelva una tarea específica
+Requisitos:
+- Path parameter: id (int)
+- Response: 200 si existe, 404 si no existe
+- Usar HTTPException para 404
+```
+
+#### Prompt template para PUT (actualizar)
+```
+Rol: Backend Developer FastAPI
+Objetivo: Implementa PUT /tareas/{id}/completar que marque tarea como completada
+Requisitos:
+- Solo cambiar campo 'completada' a True
+- Response: 200 con tarea actualizada, 404 si no existe
+- Validar que id existe antes de actualizar
+```
+
+#### Prompt template para DELETE
+```
+Rol: Backend Developer FastAPI
+Objetivo: Implementa DELETE /tareas/{id} que elimine una tarea
+Requisitos:
+- Response: 204 (No Content) si se eliminó
+- Response: 404 si no existe
+- No devolver body en 204
+```
+
+---
+
+### 🔍 Validación del código generado por IA
+
+**Checklist antes de aceptar código IA**:
+
+#### Tests
+- [ ] ¿Los tests pasan en verde?
+- [ ] ¿Los tests validan el comportamiento correcto?
+- [ ] ¿No hay tests comentados o skip?
+
+#### Type hints
+- [ ] ¿Funciones tienen type annotations?
+- [ ] ¿Request/Response models están definidos con Pydantic?
+- [ ] ¿mypy pasa sin errores? (`mypy api/api.py`)
+
+#### REST compliance
+- [ ] ¿Status codes son correctos? (200, 201, 204, 404, 422)
+- [ ] ¿Nombres de endpoints siguen convención? (`/tareas` no `/getTareas`)
+- [ ] ¿Response models son consistentes?
+
+#### Clean Code
+- [ ] ¿Código es legible? (nombres claros, no magia)
+- [ ] ¿No hay duplicación innecesaria?
+- [ ] ¿Sigue Single Responsibility?
+
+---
+
+### 🚨 Red flags típicas del código IA
+
+**Red flag #1**: Código "mágico" sin explicación
+```python
+# ❌ IA a veces genera esto
+@app.get("/tareas")
+def get_tasks():  # ❌ Nombre inconsistente
+    return db.query(Task).all()  # ❌ ¿De dónde sale db?
+```
+
+**Solución**: Pide a la IA que explique de dónde vienen las dependencias.
+
+**Red flag #2**: Tests que no fallan
+```python
+# ❌ Test que siempre pasa (inútil)
+def test_crear_tarea():
+    assert True  # ❌ No valida nada real
+```
+
+**Solución**: Valida que el test falle cuando DEBE fallar.
+
+**Red flag #3**: Código que "funciona" pero no es mantenible
+```python
+# ❌ Hardcoded values
+@app.get("/tareas/{id}")
+def get_task(id: int):
+    if id == 1:
+        return {"id": 1, "nombre": "Tarea 1"}
+    elif id == 2:
+        return {"id": 2, "nombre": "Tarea 2"}
+    # ...
+```
+
+**Solución**: Usa repositorio, no hardcodes.
+
+---
+
+### 🎓 Cómo usar agentes educacionales (paso a paso)
+
+**Escenario**: Acabas de implementar GET /tareas con IA
+
+**Paso 1**: Lee el código generado línea por línea
+**Paso 2**: Abre `.claude/agents/educational/python-best-practices-coach.md`
+**Paso 3**: Compara tu código con los patterns del agente:
+- ¿Falta type hints? → Agrega
+- ¿Usa loops manuales? → Refactoriza a comprehension
+- ¿Concatena strings? → Cambia a f-strings
+
+**Paso 4**: Abre `.claude/agents/educational/fastapi-design-coach.md`
+**Paso 5**: Valida diseño API:
+- ¿Response model explícito?
+- ¿Status codes correctos?
+- ¿Async donde aplica?
+
+**Paso 6**: Ejecuta tests nuevamente
+**Paso 7**: Commit solo si TODO pasa
+
+---
+
+### 📊 Workflow visual resumido
+
+```
+┌─────────────────────────────────────────────┐
+│  FASE RED (Test primero)                    │
+│  ┌─────────────────────────────────────┐    │
+│  │ 1. Escribe test (tú o IA)           │    │
+│  │ 2. Valida que test es correcto      │    │
+│  │ 3. pytest → ❌ ROJO (esperado)      │    │
+│  └─────────────────────────────────────┘    │
+└─────────────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────────┐
+│  FASE GREEN (Implementación mínima)         │
+│  ┌─────────────────────────────────────┐    │
+│  │ 1. IA genera código mínimo          │    │
+│  │ 2. TÚ validas código                │    │
+│  │ 3. pytest → ✅ VERDE               │    │
+│  └─────────────────────────────────────┘    │
+└─────────────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────────┐
+│  FASE REFACTOR (Mejora con agentes)         │
+│  ┌─────────────────────────────────────┐    │
+│  │ 1. Python Best Practices Coach      │    │
+│  │ 2. FastAPI Design Coach             │    │
+│  │ 3. API Design Reviewer              │    │
+│  │ 4. pytest → ✅ VERDE (refactored)  │    │
+│  └─────────────────────────────────────┘    │
+└─────────────────────────────────────────────┘
+           │
+           ▼
+        COMMIT
+```
+
+---
+
+### 💡 Lección clave
+
+**La IA es tu junior developer**, no tu arquitecto.
+
+- ✅ **IA genera código** → TÚ validas diseño
+- ✅ **IA propone tests** → TÚ validas cobertura
+- ✅ **IA sugiere refactors** → TÚ decides si aplicar
+
+**No inviertas la relación**. Tú eres el arquitecto, la IA es la herramienta.
+
+---
+
 ## ✅ Escena final – Checklist
 
 - [x]  Entiendes qué es SOLID (y aplicaste SRP).
