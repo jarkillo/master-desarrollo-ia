@@ -66,7 +66,7 @@ Output: "❌ Error: Variable 'x' no definida. Arréglalo."
 ```
 
 **Agente Educational** (este curso):
-```
+````
 Input: Código con bug
 Output:
 "❌ Error: Variable 'x' no definida en línea 10.
@@ -89,7 +89,7 @@ En Python, debes DEFINIR variables antes de USARLAS.
 El intérprete lee de arriba hacia abajo.
 
 ❓ ¿Entiendes por qué pasó esto? Explícamelo con tus palabras."
-```
+````
 
 **Diferencia clave**:
 - **Validator**: Solo señala el error
