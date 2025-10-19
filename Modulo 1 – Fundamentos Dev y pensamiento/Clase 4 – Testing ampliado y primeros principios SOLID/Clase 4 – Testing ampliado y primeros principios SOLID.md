@@ -385,6 +385,407 @@ Fíjate qué hemos hecho aquí:
 
 Esto es SRP en miniatura: una función que tiene **un único motivo para cambiar** → si mañana cambia cómo se guardan las prioridades, tocarías aquí; pero si cambia cómo se imprimen en el CLI, eso va en otro lado.
 
+---
+
+## 🤖 Workflow TDD con IA: RED → GREEN → REFACTOR
+
+Hasta ahora has visto el ciclo TDD básico. Ahora vamos a potenciarlo con **Test Coverage Strategist** y **Python Best Practices Coach** para hacer TDD profesional.
+
+### RED: Escribir tests que fallen (Con ayuda de IA)
+
+**Problema**: Cuando añades una feature nueva (ej. prioridades), ¿qué casos debes testear?
+
+**Solución**: Pedir al Test Coverage Strategist una lista COMPLETA de casos.
+
+#### Paso RED.1: Define la feature (Manual)
+
+```markdown
+Feature: Sistema de prioridades (alta/media/baja)
+- agregar_tarea debe aceptar parámetro prioridad
+- listar_tareas debe filtrar por prioridad
+```
+
+#### Paso RED.2: Pide casos de prueba a IA
+
+**Prompt al Test Coverage Strategist**:
+
+```
+Rol: Test Coverage Strategist
+Feature nueva: Sistema de prioridades en tareas (alta/media/baja)
+
+Funcionalidad:
+- agregar_tarea(ruta, nombre, prioridad="media")
+- listar_tareas(ruta, prioridad=None)
+
+Objetivo: Lista de casos de prueba para TDD.
+Categoriza por criticidad (Alta/Media/Baja).
+```
+
+**IA responde**:
+
+```markdown
+### Criticidad ALTA:
+1. Agregar con prioridad explícita "alta"
+2. Agregar sin prioridad (default "media")
+3. Prioridad inválida usa "media"
+4. Filtrar por prioridad "alta"
+5. Listar sin filtro devuelve todas
+6. Backward compatibility: tareas antiguas sin prioridad
+
+### Criticidad MEDIA:
+7. Filtrar prioridad sin resultados → []
+8. Case-insensitive ("ALTA" → "alta")
+
+### Criticidad BAJA:
+9. Todas las prioridades (parametrización)
+```
+
+#### Paso RED.3: Escribir tests que FALLEN (Manual)
+
+**⚠️ IMPORTANTE**: TÚ escribes los tests, la IA solo sugirió QUÉ testear.
+
+```python
+# test_tareas_pytest_prioridades.py
+
+def test_agregar_tarea_prioridad_alta(archivo_temporal):
+    """Test RED: Este fallará porque feature no existe."""
+    tarea = agregar_tarea(archivo_temporal, "Urgente", prioridad="alta")
+    assert tarea["prioridad"] == "alta"
+    # ❌ TypeError: agregar_tarea() got unexpected keyword 'prioridad'
+
+
+def test_listar_solo_prioridad_alta(archivo_temporal):
+    """Test RED: Filtrado no implementado aún."""
+    agregar_tarea(archivo_temporal, "Urgente", prioridad="alta")
+    agregar_tarea(archivo_temporal, "Normal", prioridad="media")
+
+    altas = listar_tareas(archivo_temporal, prioridad="alta")
+
+    assert len(altas) == 1
+    assert altas[0]["nombre"] == "Urgente"
+    # ❌ TypeError: listar_tareas() got unexpected keyword 'prioridad'
+```
+
+**Ejecuta tests** (deben fallar ❌):
+```bash
+pytest test_tareas_pytest_prioridades.py -v
+```
+
+**✅ Fase RED completa**: Tienes tests que describen la feature pero fallan.
+
+---
+
+### GREEN: Implementación mínima (Con ayuda de IA)
+
+**Objetivo**: Hacer que los tests pasen con el código MÍN IMO necesario.
+
+#### Paso GREEN.1: Pedir implementación a IA
+
+**Prompt**:
+
+```
+Rol: Python developer
+Contexto: Tengo tests RED que fallan (feature prioridades no existe).
+
+Tests que deben pasar:
+[pega los tests de arriba]
+
+Código actual:
+[pega agregar_tarea y listar_tareas]
+
+Objetivo: Modifica funciones para que pasen tests.
+Requisitos:
+- Parámetro opcional prioridad="media"
+- Validar prioridades válidas (alta/media/baja)
+- Filtrado opcional en listar_tareas
+- Type hints
+```
+
+**IA genera**:
+
+```python
+PRIORIDADES_VALIDAS = ("alta", "media", "baja")
+
+def agregar_tarea(ruta: str, nombre: str, prioridad: str = "media") -> dict:
+    if prioridad not in PRIORIDADES_VALIDAS:
+        prioridad = "media"
+
+    tareas = cargar_tareas(ruta)
+    nueva = {
+        "id": nuevo_id(tareas),
+        "nombre": nombre,
+        "completada": False,
+        "prioridad": prioridad
+    }
+    tareas.append(nueva)
+    guardar_tareas(ruta, tareas)
+    return nueva
+
+
+def listar_tareas(ruta: str, prioridad: str | None = None) -> list[dict]:
+    todas = cargar_tareas(ruta)
+    if prioridad is None:
+        return todas
+    return [t for t in todas if t.get("prioridad") == prioridad]
+```
+
+#### Paso GREEN.2: Revisar código (Manual)
+
+**TÚ decides**:
+- ¿Entiendes cada línea?
+- ¿Sigue SRP?
+- ¿Es el mínimo o añade complejidad innecesaria?
+
+**Si no entiendes algo**, pregunta a la IA:
+```
+Explica esta línea: return [t for t in todas if t.get("prioridad") == prioridad]
+```
+
+#### Paso GREEN.3: Ejecutar tests (deben pasar ✅)
+
+```bash
+pytest test_tareas_pytest_prioridades.py -v
+```
+
+**Resultado esperado**:
+```
+test_agregar_tarea_prioridad_alta PASSED
+test_listar_solo_prioridad_alta PASSED
+```
+
+**✅ Fase GREEN completa**: Feature implementada, tests pasan.
+
+---
+
+### REFACTOR: Limpieza con IA (Python Best Practices Coach)
+
+**Objetivo**: Código funciona, ahora lo hacemos PYTHONIC.
+
+#### Paso REFACTOR.1: Pedir revisión al Coach
+
+**Prompt al Python Best Practices Coach**:
+
+```
+Rol: Python Best Practices Coach
+Contexto: Implementé prioridades. Tests pasan ✅.
+
+Código:
+[pega agregar_tarea y listar_tareas]
+
+Objetivo: Sugiere mejoras Pythonic (NO cambies funcionalidad).
+- Anti-patterns detectados
+- Type hints más específicos
+- Código más idiomático
+```
+
+**Coach sugiere**:
+
+```markdown
+## Mejoras Pythonic
+
+### 1. Type hints específicos con Literal
+❌ Antes: `prioridad: str = "media"`
+✅ Después: `prioridad: Literal["alta", "media", "baja"] = "media"`
+
+**Ventaja**: IDE detecta typos ("medio" daría error)
+
+### 2. Extraer validación a función helper
+❌ Antes: `if prioridad not in PRIORIDADES_VALIDAS:`
+✅ Después: `_normalizar_prioridad(prioridad: str) -> Literal[...]`
+
+**Ventaja**: Código más limpio, función tiene un solo propósito
+
+### 3. List comprehension está OK ✅
+Tu código `[t for t in todas if t.get("prioridad") == prioridad]` es Pythonic.
+```
+
+#### Paso REFACTOR.2: Aplicar mejoras (Manual)
+
+```python
+from typing import Literal
+
+Prioridad = Literal["alta", "media", "baja"]
+
+def _normalizar_prioridad(prioridad: str) -> Prioridad:
+    """Normaliza prioridad o usa 'media' si inválida."""
+    prioridad_lower = prioridad.lower()
+    return prioridad_lower if prioridad_lower in ("alta", "media", "baja") else "media"
+
+
+def agregar_tarea(ruta: str, nombre: str, prioridad: Prioridad = "media") -> dict:
+    prioridad = _normalizar_prioridad(prioridad)
+    # ... resto del código
+```
+
+#### Paso REFACTOR.3: Tests deben seguir pasando
+
+```bash
+pytest test_tareas_pytest_prioridades.py -v
+```
+
+**Si fallan**, revertir cambio. **Si pasan** ✅, refactor exitoso.
+
+**✅ Fase REFACTOR completa**: Código limpio, tests pasan, SRP mantenido.
+
+---
+
+## 🎯 Proyecto: Alcanzar 90%+ Coverage con Test Coverage Strategist
+
+**Objetivo**: Superar el mínimo (80%) y llegar a cobertura de excelencia (90%+).
+
+### Paso 1: Coverage actual
+
+```bash
+pytest --cov=. --cov-report=term-missing
+```
+
+**Ejemplo de output**:
+```
+Name          Stmts   Miss  Cover   Missing
+-------------------------------------------
+tareas.py        45      5    89%   23-25, 67, 89
+test_...py       32      0   100%
+-------------------------------------------
+TOTAL            77      5    93%
+```
+
+Estás en **89%**. Necesitas **90%+**.
+
+### Paso 2: Invocar Test Coverage Strategist
+
+**Prompt**:
+
+```
+Rol: Test Coverage Strategist
+Contexto: Estoy en 89% coverage, quiero 90%+.
+
+Coverage report:
+[pega output pytest --cov]
+
+Código: tareas.py completo
+
+Objetivo: Plan priorizado de tests para alcanzar 90%+.
+Identifica gaps y qué tests necesito.
+```
+
+**IA responde**:
+
+```markdown
+## Gaps de Coverage Detectados
+
+### Líneas sin cubrir:
+
+**Línea 23-25** (tareas.py):
+```python
+if "prioridad" not in tarea or tarea["prioridad"] not in PRIORIDADES_VALIDAS:
+    tarea["prioridad"] = "media"
+```
+**Criticidad**: ALTA (backward compatibility)
+**Test necesario**: Cargar tarea legacy sin prioridad
+
+**Línea 67** (tareas.py):
+```python
+return False  # Tarea no encontrada
+```
+**Criticidad**: ALTA (error handling)
+**Test necesario**: Completar ID inexistente
+
+**Línea 89** (tareas.py):
+```python
+return []  # JSON corrupto
+```
+**Criticidad**: MEDIA
+**Test necesario**: Archivo JSON inválido
+
+### Plan para 90%+:
+
+**Test 1** (cubre líneas 23-25):
+```python
+def test_backfill_prioridad_tareas_legacy(archivo_temporal):
+    # Simular tarea sin prioridad
+    legacy = [{"id": 1, "nombre": "Antigua", "completada": False}]
+    guardar_tareas(archivo_temporal, legacy)
+
+    tareas = cargar_tareas(archivo_temporal)
+    assert tareas[0]["prioridad"] == "media"
+```
+
+**Test 2** (cubre línea 67):
+```python
+def test_completar_tarea_id_inexistente(archivo_temporal):
+    ok = completar_tarea(archivo_temporal, 999)
+    assert ok == False
+```
+
+**Impacto**: +3 líneas cubiertas → **92% coverage** ✅
+```
+
+### Paso 3: Implementar tests del plan (Manual)
+
+Escribe TÚ los tests. Verifica que cubren las líneas indicadas.
+
+### Paso 4: Parametrización para reducir duplicación
+
+**Detecta duplicación**:
+
+```python
+def test_prioridad_alta(...): ...
+def test_prioridad_media(...): ...
+def test_prioridad_baja(...): ...
+```
+
+**Refactoriza con pytest.mark.parametrize**:
+
+```python
+@pytest.mark.parametrize("prioridad", ["alta", "media", "baja"])
+def test_prioridades_validas(archivo_temporal, prioridad):
+    tarea = agregar_tarea(archivo_temporal, f"Tarea {prioridad}", prioridad=prioridad)
+    assert tarea["prioridad"] == prioridad
+```
+
+**Beneficio**: 1 test en vez de 3, más mantenible.
+
+### Paso 5: Validación final (90%+ alcanzado)
+
+```bash
+pytest --cov=. --cov-report=html --cov-fail-under=90 -v
+```
+
+**Resultado esperado**:
+```
+======================== 12 passed in 0.52s ========================
+Coverage: 92%
+```
+
+Abre `htmlcov/index.html` para visualizar cobertura línea por línea.
+
+**✅ ÉXITO**: 90%+ coverage con tests significativos (no tests inútiles).
+
+---
+
+## 📚 Ejercicio Completo: TDD con IA (90%+ Coverage)
+
+**Consulta**: `ejercicio_clase4_ai_avanzado.md` en esta carpeta.
+
+**Fases del ejercicio**:
+1. **RED** (20 min): Tests que fallan con lista de IA
+2. **GREEN** (20 min): Implementación mínima con ayuda IA
+3. **REFACTOR** (15 min): Limpieza con Python Best Practices Coach
+4. **COVERAGE** (30 min): Plan con Test Coverage Strategist → 90%+
+
+**Entregables**:
+- `test_tareas_pytest_prioridades.py` con 10+ tests
+- `tareas.py` refactorizado y Pythonic
+- `notes.md` documentando workflow RED-GREEN-REFACTOR
+- Coverage 90%+ ✅
+
+**Regla de oro**:
+- IA sugiere QUÉ testear → TÚ escribes el código
+- IA genera plantilla → TÚ entiendes cada línea
+- IA refactoriza → TÚ validas con tests
+
+---
+
 ### Pausa de respiración
 
 ¿Te das cuenta del patrón?
