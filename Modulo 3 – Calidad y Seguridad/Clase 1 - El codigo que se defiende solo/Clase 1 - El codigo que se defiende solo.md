@@ -137,25 +137,341 @@ Y verás cómo te suelta cosas que puedes convertir en issues o tareas para mejo
 
 ---
 
+## 🔒 IA genera código inseguro - aprende a detectarlo
+
+Hasta ahora hablamos de calidad: cobertura, linters, tests. Pero hay algo más crítico: **seguridad**.
+
+La IA es rápida, eficiente y muy buena generando código funcional. **Pero no siempre genera código seguro.**
+
+### El problema real
+
+La IA te puede generar:
+- **SQL injection**: Concatenando strings en queries
+- **Secretos hardcoded**: API keys directamente en el código
+- **Validación insuficiente**: Aceptando cualquier input sin filtros
+- **Dependencias vulnerables**: Usando versiones antiguas con CVEs conocidos
+- **Logging de datos sensibles**: Imprimiendo passwords en logs
+
+**¿Por qué?** Porque la IA aprende de código público (que no siempre es seguro) y prioriza "que funcione" sobre "que sea seguro".
+
+### Ejemplo 1: SQL Injection
+
+**❌ Código inseguro que la IA puede generar:**
+
+```python
+# NUNCA hagas esto
+def buscar_usuario(nombre: str):
+    query = f"SELECT * FROM usuarios WHERE nombre = '{nombre}'"
+    cursor.execute(query)
+    return cursor.fetchall()
+```
+
+**Problema**: Si `nombre = "'; DROP TABLE usuarios; --"`, tu base de datos desaparece.
+
+**✅ Código seguro:**
+
+```python
+def buscar_usuario(nombre: str):
+    query = "SELECT * FROM usuarios WHERE nombre = ?"
+    cursor.execute(query, (nombre,))
+    return cursor.fetchall()
+```
+
+**Cómo detectarlo**:
+- ❌ F-strings o concatenación en queries SQL
+- ✅ Parámetros preparados o ORMs (SQLAlchemy)
+
+### Ejemplo 2: Secretos hardcoded
+
+**❌ Código inseguro:**
+
+```python
+# api/api.py
+JWT_SECRET = "mi-secreto-super-seguro-123"
+DATABASE_URL = "postgresql://admin:password123@localhost/prod"
+```
+
+**Problema**: Esto queda en git, visible para todos. Un atacante lo lee y compromete tu sistema.
+
+**✅ Código seguro:**
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+JWT_SECRET = os.getenv("JWT_SECRET")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not JWT_SECRET:
+    raise ValueError("JWT_SECRET no está configurado")
+```
+
+**Cómo detectarlo**:
+- ❌ Strings con `secret`, `password`, `key`, `token` asignados directamente
+- ✅ Variables de entorno con `.env` (nunca en git)
+- ✅ Validación que falla si no están configuradas
+
+### Ejemplo 3: Validación insuficiente
+
+**❌ Código inseguro:**
+
+```python
+@app.post("/tareas")
+def crear_tarea(nombre: str):
+    # Acepta cualquier cosa, incluso strings vacíos o HTML malicioso
+    tarea = servicio.crear(nombre)
+    return tarea
+```
+
+**Problema**: Acepta `nombre = ""`, `nombre = "<script>alert('XSS')</script>"`, etc.
+
+**✅ Código seguro:**
+
+```python
+from pydantic import BaseModel, Field, validator
+
+class CrearTareaRequest(BaseModel):
+    nombre: str = Field(..., min_length=1, max_length=200)
+
+    @validator('nombre')
+    def validar_nombre(cls, v):
+        if not v.strip():
+            raise ValueError("El nombre no puede estar vacío")
+        # Opcional: sanitizar HTML
+        return v.strip()
+
+@app.post("/tareas")
+def crear_tarea(cuerpo: CrearTareaRequest):
+    tarea = servicio.crear(cuerpo.nombre)
+    return tarea
+```
+
+**Cómo detectarlo**:
+- ❌ Endpoints que aceptan `str`, `int`, etc. directamente sin validación
+- ✅ Pydantic con `Field(..., min_length=1)` y validadores personalizados
+
+### Ejemplo 4: Dependencias vulnerables
+
+**❌ Dependencias sin actualizar:**
+
+```txt
+# requirements.txt
+fastapi==0.68.0  # Tiene CVE-2021-32677
+pydantic==1.8.0  # Versión antigua con bugs de validación
+```
+
+**Cómo detectarlo**:
+- Ejecuta `pip list --outdated`
+- Usa `safety check` (escanea CVEs conocidos)
+- Configura Dependabot en GitHub
+
+**✅ Mantén dependencias actualizadas:**
+
+```bash
+pip install --upgrade fastapi pydantic
+pip freeze > requirements.txt
+```
+
+---
+
+## 🛡️ Security Hardening Mentor - Tu auditor de seguridad IA
+
+Ahora que conoces los problemas, necesitas herramientas para detectarlos **antes** de que lleguen a producción.
+
+### ¿Qué es el Security Hardening Mentor?
+
+Es un agente especializado (disponible en `.claude/agents/educational/`) que:
+
+1. **Revisa tu código buscando anti-patrones de seguridad**
+2. **Explica por qué son peligrosos** (no solo dice "esto está mal")
+3. **Te muestra el código correcto** (con ejemplos before/after)
+4. **Te enseña a pensar en seguridad** desde el diseño
+
+### ¿Cuándo usarlo?
+
+- **Antes de hacer commit**: Revisa tus cambios
+- **Después de que la IA genere código**: Audítalo antes de usarlo
+- **Antes de un PR**: Valida que no introduces vulnerabilidades
+- **Cuando aprendes algo nuevo**: Pídele que revise tu implementación
+
+### Ejemplo de uso
+
+**Prompt para el Security Hardening Mentor:**
+
+```
+Revisa este código de autenticación JWT que generé con IA.
+Busca: secretos hardcoded, validación insuficiente, manejo inseguro de tokens.
+
+[código aquí]
+
+Entrega:
+- Anti-patrones detectados (con línea específica)
+- Por qué es peligroso cada uno
+- Código corregido con explicación
+```
+
+**Respuesta esperada:**
+
+```
+🔴 CRÍTICO - Secreto hardcoded (línea 5):
+   JWT_SECRET = "abc123"
+
+   Por qué es peligroso:
+   - Queda visible en git (historial completo)
+   - Cualquiera con acceso al repo puede falsificar tokens
+   - Imposible rotar sin cambiar código
+
+   Código corregido:
+   import os
+   JWT_SECRET = os.getenv("JWT_SECRET")
+   if not JWT_SECRET:
+       raise ValueError("JWT_SECRET requerido en .env")
+
+⚠️ ALTO - Validación insuficiente de token (línea 12):
+   [...]
+```
+
+### Flujo de trabajo recomendado
+
+1. **IA genera código** → `git add .`
+2. **Security Hardening Mentor revisa** → Detecta problemas
+3. **Corriges vulnerabilidades** → Aprendes en el proceso
+4. **Commit seguro** → `git commit -m "feat: ..."`
+
+**No uses la IA a ciegas. Audita siempre.**
+
+---
+
+## 🎯 Ejercicios de detección de vulnerabilidades
+
+### Ejercicio 1: Encuentra el problema
+
+```python
+# api/auth.py
+@app.post("/login")
+def login(username: str, password: str):
+    user = db.query(f"SELECT * FROM users WHERE username='{username}'")
+    if user and user.password == password:
+        return {"token": "abc123"}
+    return {"error": "Invalid credentials"}
+```
+
+**Pregunta**: ¿Qué 3 vulnerabilidades encuentras aquí?
+
+<details>
+<summary>Respuesta</summary>
+
+1. **SQL Injection** - Concatenación de strings en query
+2. **Password en texto plano** - Debería estar hasheado (bcrypt)
+3. **Token estático** - `"abc123"` siempre igual, no es JWT
+
+</details>
+
+### Ejercicio 2: Validación insuficiente
+
+```python
+@app.post("/tareas")
+def crear_tarea(nombre: str, prioridad: int):
+    tarea = servicio.crear(nombre, prioridad)
+    return tarea
+```
+
+**Pregunta**: ¿Qué puede salir mal?
+
+<details>
+<summary>Respuesta</summary>
+
+- `nombre = ""` - String vacío
+- `nombre = "A" * 10000` - DoS con strings gigantes
+- `prioridad = -999` o `999999` - Valores fuera de rango esperado
+- Sin Pydantic, FastAPI acepta cualquier cosa
+
+**Solución**: Usar `CrearTareaRequest(BaseModel)` con validación.
+
+</details>
+
+### Ejercicio 3: Busca el secreto
+
+```python
+# api/config.py
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+API_KEY = "sk-1234567890abcdef"
+JWT_SECRET = os.getenv("JWT_SECRET")
+```
+
+**Pregunta**: ¿Qué línea es insegura?
+
+<details>
+<summary>Respuesta</summary>
+
+**Línea 5**: `API_KEY = "sk-1234567890abcdef"`
+
+Debería ser:
+```python
+API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    raise ValueError("API_KEY requerida en .env")
+```
+
+</details>
+
+### Ejercicio 4: Audita con herramientas
+
+Ejecuta esto en tu proyecto:
+
+```bash
+# Busca secretos hardcoded
+pip install detect-secrets
+detect-secrets scan api/ > secrets.json
+
+# Busca vulnerabilidades de seguridad
+pip install bandit
+bandit -r api/ -ll
+
+# Busca dependencias vulnerables
+pip install safety
+safety check
+```
+
+**Tarea**: Documenta en `notes.md` qué encontraste y cómo lo corregiste.
+
+---
+
 ## 🧪 Mini-proyecto (entregable de esta clase)
 
 Haz lo siguiente:
 
-1. Crea rama `feature/quality-coverage`.
+1. Crea rama `feature/quality-coverage-security`.
 2. Añade el nuevo workflow `ci_quality.yml` con cobertura y linter.
 3. Mejora tus tests para cubrir mínimo un 80% del código.
-4. Haz push y abre un PR.
-5. En `notes.md`, apunta:
-    - Qué partes no estaban cubiertas.
-    - Qué aprendiste de la auditoría IA.
+4. **NUEVO**: Ejecuta herramientas de seguridad:
+   - `bandit -r api/ -ll` (busca vulnerabilidades)
+   - `safety check` (escanea dependencias)
+   - `detect-secrets scan api/` (busca secretos hardcoded)
+5. **NUEVO**: Audita el código con Security Hardening Mentor:
+   - Revisa código de autenticación (si existe)
+   - Valida que no hay secretos hardcoded
+   - Comprueba validación de inputs con Pydantic
+6. Haz push y abre un PR.
+7. En `notes.md`, apunta:
+    - Qué partes no estaban cubiertas (cobertura).
+    - **Qué vulnerabilidades encontraste** (bandit, safety, detect-secrets).
+    - Qué aprendiste de la auditoría IA con Security Hardening Mentor.
     - Qué tareas dejarías abiertas para reforzar la seguridad.
+    - **Cómo corregiste las vulnerabilidades** (código before/after).
 
 ---
 
 ## ✅ Qué debe quedarte claro
 
 - Tu código ahora tiene una red que **grita si algo se rompe**.
-- La cobertura no es “nota”, es una **alarma de seguridad**.
+- La cobertura no es "nota", es una **alarma de seguridad**.
+- **NUEVO**: La IA genera código funcional, pero **no siempre seguro** - audita siempre.
+- **NUEVO**: Conoces los **anti-patrones de seguridad comunes** (SQL injection, secretos hardcoded, validación insuficiente).
+- **NUEVO**: Sabes usar el **Security Hardening Mentor** para auditar código antes de hacer commit.
 - No todo lo debe escribir la IA, pero sí puede **auditarte** como un mini revisor.
 - Tu CI ya no solo lanza tests, **te protege de ti mismo**.
 
