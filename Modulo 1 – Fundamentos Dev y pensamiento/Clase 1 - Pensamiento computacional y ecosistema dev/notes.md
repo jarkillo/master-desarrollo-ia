@@ -1,3 +1,16 @@
+# Notes - Clase 1: Prompts y Resultados
+
+## 🎯 Objetivo de este documento
+
+Este archivo registra la evolución del trabajo con IA durante la Clase 1, documentando:
+- Prompts utilizados (buenos y malos)
+- Resultados obtenidos
+- Lecciones aprendidas sobre prompt engineering
+
+---
+
+## 📝 Prompt Initial (Genérico) - ANTES de aprender
+
 Ejercicio
 
 Tras darle a la IA el codigo explicado y pasarle el prompt correcto pero generico:
@@ -273,4 +286,172 @@ if __name__ == "__main__":
     sys.exit(main())
 
 ```
+
+---
+
+## 🔄 Evolución de Prompts - DESPUÉS de aprender
+
+### Comparación: Prompt Genérico vs Prompt Específico
+
+#### ❌ Prompt Genérico (el que usamos al inicio)
+
+```
+Rol: Dev Python senior.
+Tarea: Tengo un script CLI que recibe comandos agregar, listar y completar. Quiero que las tareas se guarden en un archivo JSON.
+Formato: Dame el código base limpio y con comentarios.
+```
+
+**Problemas identificados**:
+- ✅ Tiene rol (bueno)
+- ⚠️ Tarea demasiado vaga ("que las tareas se guarden" no especifica estructura)
+- ❌ No especifica versión de Python
+- ❌ No indica si usar stdlib o permitir dependencias
+- ❌ "Código base" es ambiguo (¿refactorizar el existente? ¿crear nuevo?)
+- ❌ No especifica manejo de errores
+- ✅ Pide comentarios (bueno)
+
+**Resultado obtenido**: Código funcional pero con features que no pedimos (timestamps, argparse, validaciones extra)
+
+---
+
+#### ✅ Prompt Mejorado (aplicando lecciones de Clase 1)
+
+```
+Rol: Dev Python senior especializado en CLIs.
+
+Tarea: Refactoriza este script CLI básico para añadir persistencia en JSON.
+
+Requisitos funcionales:
+- Mantener comandos actuales: listar, agregar, completar
+- Persistir tareas en archivo tareas.json
+- Cada tarea debe tener: id (autoincremental), texto, estado (completada: true/false)
+- Al listar, mostrar formato: [x] 1. Texto tarea (si completada) o [ ] 1. Texto tarea (si pendiente)
+
+Requisitos técnicos:
+- Python 3.12
+- Solo usar biblioteca estándar (stdlib, no dependencias externas)
+- Mantener sys.argv para parsing (NO usar argparse todavía)
+- Funciones separadas: cargar_tareas(), guardar_tareas(), agregar_tarea(), etc.
+- Manejo de errores básico: si JSON corrupto, crear nuevo archivo
+
+Output esperado:
+- Un archivo tareas_json.py
+- Máximo 150 líneas
+- Docstrings en funciones principales
+- Comentarios solo donde sea necesario
+
+Código base actual:
+[pegar el código de tareas.py]
+```
+
+**Mejoras aplicadas**:
+- ✅ Especifica versión Python
+- ✅ Constraint: solo stdlib (evita dependencias complejas)
+- ✅ Indica estructura de datos exacta (id, texto, estado)
+- ✅ Especifica formato de salida
+- ✅ Mantiene simplicidad (sys.argv, no argparse)
+- ✅ Límite de líneas (evita over-engineering)
+- ✅ Incluye código base
+
+**Resultado esperado**: Código más alineado con nuestras necesidades y nivel actual
+
+---
+
+## 📊 Lecciones Aprendidas
+
+### 1. Especificidad reduce iteraciones
+
+**Antes**: Prompt genérico → IA genera código → revisamos → 3-4 rondas de ajustes
+
+**Después**: Prompt específico → IA genera código cercano al objetivo → 1 ronda de ajustes
+
+**Tiempo ahorrado**: ~50%
+
+---
+
+### 2. Constraints claros evitan over-engineering
+
+Sin constraint de "solo stdlib":
+- IA usa `argparse`, `dataclasses`, `typing`, `pathlib`
+- Código más complejo del necesario para este nivel
+
+Con constraint "solo stdlib, sys.argv":
+- IA mantiene simplicidad
+- Código más acorde al nivel del estudiante
+
+---
+
+### 3. Formato de output importa
+
+Sin especificar:
+- IA decide estructura arbitraria
+- Puede generar múltiples archivos
+- Puede usar nombres de variables/funciones inconsistentes
+
+Especificando "un archivo, máximo 150 líneas, docstrings en funciones":
+- Código más compacto y mantenible
+- Estilo consistente
+
+---
+
+### 4. El código base como contexto
+
+**Sin código base**: IA genera desde cero, puede divergir completamente
+
+**Con código base**: IA respeta estructura existente, solo añade lo necesario
+
+---
+
+## 🎯 Template de Prompt Mejorado (para futuros proyectos)
+
+```
+Rol: [Dev Python senior / Especialista en X]
+
+Tarea: [Acción específica: refactorizar/crear/extender/corregir]
+
+Requisitos funcionales:
+- [Feature 1 con detalles]
+- [Feature 2 con detalles]
+- [Feature 3 con detalles]
+
+Requisitos técnicos:
+- Python [versión específica]
+- [Solo stdlib / Permitir dependencias X, Y]
+- [Framework/patrón específico]
+- [Estructura: funciones/clases/módulos]
+- [Manejo de errores: básico/completo]
+
+Output esperado:
+- [Número de archivos y nombres]
+- [Máximo X líneas por archivo]
+- [Estilo: docstrings/type hints/tests]
+
+Constraints:
+- [No usar X]
+- [Mantener Y]
+- [Evitar Z]
+
+Código base (si aplica):
+[pegar código]
+```
+
+---
+
+## 📚 Recursos Adicionales
+
+Para profundizar en prompt engineering:
+- Módulo 0, Clase 5: Prompt Engineering Avanzado
+- `cli-tareas/prompts_usados.md`: Más ejemplos de prompts buenos/malos
+
+---
+
+## 🧪 Experimento: Mismo Problema, Diferentes Prompts
+
+**Prueba tú mismo** (ejercicio opcional):
+
+1. **Prompt Vago**: "Crea una CLI de tareas"
+2. **Prompt Mejorado**: "Crea una CLI en Python 3.12 con comandos listar/agregar, persistencia JSON, solo stdlib"
+3. **Prompt Específico**: [Usa el template de arriba con todos los detalles]
+
+Documenta las diferencias en los resultados y guárdalas aquí.
 
