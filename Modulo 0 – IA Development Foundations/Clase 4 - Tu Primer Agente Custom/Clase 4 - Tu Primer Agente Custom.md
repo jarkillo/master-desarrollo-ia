@@ -677,7 +677,7 @@ El agente debe ser EDUCATIVO, no solo un validator."
 **Tono**: Práctico y motivador
 
 **Estructura de feedback**:
-```markdown
+````markdown
 ## Función sin type hints detectada
 
 **Código actual**:
@@ -706,10 +706,10 @@ def calcular_total(items: List[float]) -> float:
 **Herramienta**:
 ```bash
 mypy mi_codigo.py  # Valida tipos
-```
+````
 
 **¿Ves la diferencia? Prueba añadir type hints a una función tuya.**
-```
+````
 
 ---
 
