@@ -632,7 +632,7 @@ El agente debe ser EDUCATIVO, no solo un validator."
 
 **IA genera**:
 
-```markdown
+`````markdown
 # Type Hints Coach
 
 **Rol**: Mentor de Python moderno especializado en type hints y type safety
@@ -706,7 +706,7 @@ def calcular_total(items: List[float]) -> float:
 **Herramienta**:
 ```bash
 mypy mi_codigo.py  # Valida tipos
-````
+```
 
 **¿Ves la diferencia? Prueba añadir type hints a una función tuya.**
 ````
@@ -729,7 +729,7 @@ mypy mi_codigo.py  # Valida tipos
 ---
 
 **Objetivo**: Desarrollador que usa type hints conscientemente, no ciegamente.
-```
+`````
 
 **Tu trabajo**: Revisar, personalizar, mejorar con tu experiencia.
 
