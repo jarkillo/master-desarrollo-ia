@@ -55,3 +55,6 @@ def test_token_expirado_da_401(monkeypatch):
     time.sleep(1)
     r = c.get("/tareas", headers={"Authorization": f"Bearer {token}"})
     assert r.status_code == 401
+
+    # CLEANUP: Restaurar JWT_MINUTOS a su valor por defecto para no afectar otros tests
+    os.environ.pop("JWT_MINUTOS", None)
