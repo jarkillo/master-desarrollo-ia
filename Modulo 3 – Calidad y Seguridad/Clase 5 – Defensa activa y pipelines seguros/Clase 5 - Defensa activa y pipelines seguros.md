@@ -290,3 +290,293 @@ env:
 | --- | --- |
 | Workflow del propio repo | Solo pon `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` |
 | Workflow que necesita más permisos o accede a otro repo | Crea un token manual y guárdalo en `Settings → Secrets` |
+
+---
+
+## 🤖 Security Hardening Mentor: IA como Auditor de Seguridad
+
+En esta sección aprenderás a usar IA como un **auditor de seguridad proactivo**, no solo para generar código sino para **detectar vulnerabilidades** antes de que lleguen a producción.
+
+### La filosofía: "Trust but Verify" (Confía pero Verifica)
+
+La IA puede generar código rápido y funcional, pero **no siempre seguro**. Tu rol es:
+
+1. **Usar IA para acelerar desarrollo** → Genera pipelines, validaciones, configuraciones
+2. **Auditar el código generado** → Buscar anti-patterns de seguridad
+3. **Iterar con IA** → Pedirle que corrija vulnerabilidades específicas
+4. **Documentar lecciones aprendidas** → Construir tu propio checklist
+
+> **Regla de oro**: Nunca mergees código generado por IA sin auditarlo manualmente.
+
+---
+
+### 🛡️ Ejercicio Práctico: "IA Genera, Tú Auditas"
+
+#### Paso 1: Genera un Pipeline de Seguridad con IA
+
+Usa este prompt en Claude Code u otro asistente IA:
+
+```
+Rol: Ingeniero DevSecOps
+Contexto: API FastAPI con autenticación JWT (api/seguridad_jwt.py)
+Objetivo: Crear workflow de GitHub Actions (.github/workflows/security-audit.yml) que incluya:
+1. Safety scan (escaneo de dependencias)
+2. Gitleaks (detección de secretos)
+3. Bandit (análisis estático de código Python)
+4. Validación de variables de entorno
+5. Falla el pipeline si hay vulnerabilidades críticas
+
+Entrega:
+- YAML completo con comentarios explicativos
+- Configuración de permisos mínimos necesarios
+- Uso correcto de GITHUB_TOKEN
+```
+
+**Lo que recibirás**: Un workflow YAML completo generado por IA.
+
+#### Paso 2: Audita el Código Generado
+
+Revisa el YAML línea por línea usando este **Checklist de Auditoría de Seguridad**:
+
+#### 🔍 Checklist de Auditoría de Seguridad (DevSecOps)
+
+**Permisos y Tokens:**
+- [ ] ¿Usa `GITHUB_TOKEN` correctamente?
+- [ ] ¿Los permisos del token son mínimos necesarios (`permissions: read-only` por defecto)?
+- [ ] ¿Los secretos están en `${{ secrets.X }}` y no hardcodeados?
+
+**Escaneo de Dependencias (Safety):**
+- [ ] ¿Instala `safety` o usa la action oficial (`pyupio/safety-action`)?
+- [ ] ¿Valida con `--full-report` o configuración de política?
+- [ ] ¿Falla el pipeline en vulnerabilidades críticas?
+
+**Detección de Secretos (Gitleaks):**
+- [ ] ¿Usa `gitleaks/gitleaks-action@v2` (no la versión antigua)?
+- [ ] ¿Incluye `fetch-depth: 0` en el checkout para ver historial?
+- [ ] ¿Pasa `GITHUB_TOKEN` como variable de entorno?
+- [ ] ¿Tiene `.gitleaksignore` para falsos positivos?
+
+**Análisis Estático (Bandit):**
+- [ ] ¿Ejecuta `bandit -r api/ -ll` (nivel de severidad low/low mínimo)?
+- [ ] ¿Excluye directorios de tests con `-x`?
+- [ ] ¿Genera un reporte legible?
+
+**Variables de Entorno:**
+- [ ] ¿Valida que existan las variables críticas (`JWT_SECRET`, etc.)?
+- [ ] ¿Los secrets vienen de GitHub Secrets, no del código?
+
+**Protección de Ramas:**
+- [ ] ¿El workflow se ejecuta en PRs (`on: pull_request`)?
+- [ ] ¿Bloquea el merge si falla (`required: true` en branch protection)?
+
+**Dockerfile (si aplica):**
+- [ ] ¿Usa usuario no-root (`USER nonroot`)?
+- [ ] ¿No expone secretos en layers (`ARG` vs `ENV`)?
+- [ ] ¿Multi-stage build para reducir superficie de ataque?
+
+#### Paso 3: Encuentra al Menos 3 Problemas
+
+**Ejercicio**: La IA probablemente cometió al menos 3 errores. Los más comunes:
+
+1. **Olvidar `fetch-depth: 0`** → Gitleaks no puede escanear historial
+2. **Usar `args:` en gitleaks-action@v2** → Versión nueva no los acepta
+3. **No validar variables de entorno antes de deployar** → Falla en runtime
+4. **Permisos excesivos en GITHUB_TOKEN** → Violar principio de mínimo privilegio
+5. **No excluir tests de Bandit** → Falsos positivos por código de prueba
+
+**Tu trabajo**: Identifica qué problemas tiene el código generado y corrígelos manualmente.
+
+#### Paso 4: Itera con la IA
+
+Una vez identificados los problemas, pídele a la IA que los corrija:
+
+```
+El workflow que generaste tiene estos problemas:
+1. Falta fetch-depth: 0 en el checkout para Gitleaks
+2. Usa 'args:' en gitleaks-action@v2 (ya no se acepta)
+3. No valida que JWT_SECRET exista antes de ejecutar
+
+Corrígelo siguiendo las mejores prácticas de DevSecOps.
+```
+
+**Resultado esperado**: Un workflow corregido y más robusto.
+
+---
+
+### 🎯 Mini-Proyecto: Security Audit Completo
+
+**Objetivo**: Implementar un pipeline de seguridad auditado por ti, generado por IA.
+
+**Pasos**:
+
+1. **Genera el workflow con IA** usando el prompt de arriba
+2. **Crea una rama**: `feature/security-audit-ai`
+3. **Audita el código** usando el checklist
+4. **Corrige errores** (manualmente o iterando con IA)
+5. **Ejecuta el pipeline** y verifica que pasa (o falla correctamente)
+6. **Documenta en `SECURITY_AUDIT.md`**:
+   ```markdown
+   # Security Audit Report - Clase 5
+
+   ## Código Generado por IA
+   - Prompt usado: [tu prompt]
+   - Asistente: [Claude Code / ChatGPT / etc]
+
+   ## Vulnerabilidades Detectadas
+   1. **[Problema 1]**: [Descripción]
+      - Severidad: [Alta/Media/Baja]
+      - Fix: [Cómo lo corregiste]
+
+   2. **[Problema 2]**: [...]
+
+   ## Lecciones Aprendidas
+   - La IA no validó [X] porque [razón]
+   - Siempre revisar [aspecto específico]
+   - Prompt mejorado: [versión corregida del prompt]
+
+   ## Checklist Final
+   - [x] Pipeline pasa sin errores
+   - [x] Gitleaks detecta secretos de prueba
+   - [x] Safety identifica vulnerabilidades
+   - [x] Bandit no genera falsos positivos
+   ```
+
+7. **Haz un PR** y verifica que el CI pase
+8. **Refleja**: ¿Qué aprendiste de auditar código de IA?
+
+---
+
+### 🧠 Prompts Educativos para Seguridad
+
+Usa estos prompts para profundizar tu aprendizaje:
+
+#### Prompt 1: Análisis de Vulnerabilidades
+```
+Rol: Security Auditor
+Contexto: Este archivo [api/seguridad_jwt.py] maneja autenticación JWT
+Tarea: Analiza el código línea por línea y lista:
+1. Vulnerabilidades potenciales
+2. Anti-patterns de seguridad
+3. Mejoras siguiendo OWASP Top 10
+
+Formato: Tabla con [Línea | Problema | Severidad | Fix recomendado]
+```
+
+#### Prompt 2: Hardening de Dockerfile
+```
+Rol: Docker Security Expert
+Contexto: Dockerfile en [ruta]
+Tarea: Auditalo para:
+1. Usuario root (debe ser no-root)
+2. Secretos expuestos en layers
+3. Imagen base vulnerable (recomendar alpine/distroless)
+4. Multi-stage build para reducir tamaño
+
+Entrega: Dockerfile corregido + explicación de cada cambio
+```
+
+#### Prompt 3: Configuración de GitHub Branch Protection
+```
+Rol: DevOps Engineer
+Tarea: Dame las reglas exactas de branch protection para main/dev que incluyan:
+1. Require PR reviews (¿cuántas?)
+2. Require status checks (¿cuáles?)
+3. Restrict who can push (¿quién?)
+4. Require signed commits (¿sí/no?)
+
+Justifica cada decisión para un proyecto educativo en producción.
+```
+
+---
+
+### 🤝 Workflow: IA + Humano en Security Review
+
+```
+┌─────────────────────┐
+│  IA genera código   │  → Rápido, cubre casos comunes
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│  Humano audita      │  → Busca edge cases, vulnerabilidades
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│  IA corrige issues  │  → Itera basado en feedback humano
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│  Humano valida fix  │  → Asegura que la corrección es correcta
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│  Merge + Deploy     │  → Solo si pasa auditoría humana
+└─────────────────────┘
+```
+
+**Regla crítica**: El humano tiene veto final. Si algo no te convence, no lo merges.
+
+---
+
+### 📚 Recursos para Profundizar
+
+**OWASP (Open Web Application Security Project):**
+- [OWASP Top 10 2021](https://owasp.org/Top10/)
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
+
+**DevSecOps:**
+- [DevSecOps Manifesto](https://www.devsecops.org/)
+- [GitHub Security Best Practices](https://docs.github.com/en/actions/security-guides)
+
+**Herramientas:**
+- [Gitleaks Documentation](https://github.com/gitleaks/gitleaks)
+- [Safety CLI](https://docs.safetycli.com/)
+- [Bandit](https://bandit.readthedocs.io/)
+
+---
+
+### ✅ Checklist Final (40% IA integrada)
+
+- [ ] Has generado un pipeline de seguridad con IA
+- [ ] Has auditado el código generado usando el checklist
+- [ ] Has encontrado y corregido al menos 3 vulnerabilidades
+- [ ] Has iterado con IA para mejorar el código
+- [ ] Has documentado el proceso en `SECURITY_AUDIT.md`
+- [ ] Entiendes que **nunca debes confiar ciegamente en código generado por IA**
+- [ ] Has probado el pipeline en un PR real
+- [ ] Has configurado branch protection basado en estos checks
+
+---
+
+### 🔥 Reto Avanzado: Red Team vs Blue Team con IA
+
+**Escenario**: Simula un ataque a tu API usando dos roles de IA.
+
+**Red Team (Atacante - IA 1)**:
+```
+Rol: Penetration Tester
+Objetivo: Encuentra vulnerabilidades en esta API FastAPI [api/api.py]
+Técnicas: SQL Injection, JWT manipulation, rate limiting bypass, secret exposure
+Entrega: Lista de 5 vulnerabilidades explotables con PoC (Proof of Concept)
+```
+
+**Blue Team (Defensor - IA 2 o tú)**:
+```
+Rol: Security Engineer
+Objetivo: Corrige cada vulnerabilidad reportada por Red Team
+Entrega: Código hardened + tests que demuestran que el ataque ya no funciona
+```
+
+**Resultado**: Un ciclo completo de security review con IA jugando ambos roles.
+
+---
+
+## 🎓 Reflexión Final
+
+Al terminar esta clase, deberías ser capaz de:
+
+1. **Generar código de seguridad con IA** (pipelines, validaciones, configs)
+2. **Auditar críticamente ese código** (no confiar a ciegas)
+3. **Iterar con IA para corregir** (prompts específicos y directos)
+4. **Documentar lecciones aprendidas** (construir tu biblioteca de anti-patterns)
+
+> **La IA es un copiloto experto, pero tú eres el capitán. Nunca sueltes los controles en temas de seguridad.**
