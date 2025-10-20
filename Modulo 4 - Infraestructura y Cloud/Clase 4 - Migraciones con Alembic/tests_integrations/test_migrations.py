@@ -78,7 +78,8 @@ class TestMigrationsWorkflow:
             ["alembic", "upgrade", "head"],
             cwd=str(PROJECT_DIR),
             capture_output=True,
-            text=True
+            text=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         assert result.returncode == 0, f"alembic upgrade head falló: {result.stderr}"
@@ -101,7 +102,8 @@ class TestMigrationsWorkflow:
         subprocess.run(
             ["alembic", "upgrade", "head"],
             cwd=str(PROJECT_DIR),
-            capture_output=True
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         # Hacer downgrade de la última migration
@@ -109,7 +111,8 @@ class TestMigrationsWorkflow:
             ["alembic", "downgrade", "-1"],
             cwd=str(PROJECT_DIR),
             capture_output=True,
-            text=True
+            text=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         assert result.returncode == 0, f"alembic downgrade falló: {result.stderr}"
@@ -132,7 +135,8 @@ class TestMigrationsWorkflow:
         subprocess.run(
             ["alembic", "upgrade", "head"],
             cwd=str(PROJECT_DIR),
-            capture_output=True
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         # Hacer downgrade completo
@@ -140,7 +144,8 @@ class TestMigrationsWorkflow:
             ["alembic", "downgrade", "base"],
             cwd=str(PROJECT_DIR),
             capture_output=True,
-            text=True
+            text=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         assert result.returncode == 0, f"alembic downgrade base falló: {result.stderr}"
@@ -159,7 +164,12 @@ class TestMigrationsWorkflow:
         test_db_url = "sqlite:///./test_migrations.db"
 
         # Primera aplicación
-        subprocess.run(["alembic", "upgrade", "head"], cwd=str(PROJECT_DIR), capture_output=True)
+        subprocess.run(
+            ["alembic", "upgrade", "head"],
+            cwd=str(PROJECT_DIR),
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
+        )
 
         engine = create_engine(test_db_url)
         inspector = inspect(engine)
@@ -167,8 +177,18 @@ class TestMigrationsWorkflow:
         engine.dispose()
 
         # Downgrade y upgrade de nuevo
-        subprocess.run(["alembic", "downgrade", "-1"], cwd=str(PROJECT_DIR), capture_output=True)
-        subprocess.run(["alembic", "upgrade", "head"], cwd=str(PROJECT_DIR), capture_output=True)
+        subprocess.run(
+            ["alembic", "downgrade", "-1"],
+            cwd=str(PROJECT_DIR),
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
+        )
+        subprocess.run(
+            ["alembic", "upgrade", "head"],
+            cwd=str(PROJECT_DIR),
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
+        )
 
         # Verificar que el schema es el mismo
         engine = create_engine(test_db_url)
@@ -202,7 +222,8 @@ class TestMigrationsPreservanDatos:
         subprocess.run(
             ["alembic", "upgrade", "58cbce442bf6"],
             cwd=str(PROJECT_DIR),
-            capture_output=True
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         # Insertar datos de prueba
@@ -219,7 +240,8 @@ class TestMigrationsPreservanDatos:
             ["alembic", "upgrade", "head"],
             cwd=str(PROJECT_DIR),
             capture_output=True,
-            text=True
+            text=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         assert result.returncode == 0, f"Migration falló: {result.stderr}"
@@ -243,13 +265,15 @@ class TestMigrationsSchema:
     def setup_teardown(self):
         """Setup y teardown para cada test"""
         test_db = PROJECT_DIR / "test_migrations_schema.db"
+        test_db_url = "sqlite:///./test_migrations_schema.db"
         if test_db.exists():
             test_db.unlink()
 
         subprocess.run(
             ["alembic", "upgrade", "head"],
             cwd=str(PROJECT_DIR),
-            capture_output=True
+            capture_output=True,
+            env={**os.environ, "DATABASE_URL": test_db_url}
         )
 
         yield

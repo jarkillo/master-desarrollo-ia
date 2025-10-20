@@ -101,6 +101,8 @@ jobs:
   safety:
     runs-on: ubuntu-latest
     continue-on-error: true  # No bloquear el PR por problemas del servicio Safety
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,6 +116,8 @@ jobs:
   # Job separado para Gitleaks (escanea todo el repo, no por clase)
   gitleaks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
