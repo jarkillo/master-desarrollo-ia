@@ -893,6 +893,138 @@ op.create_index(
 ¿Cuáles son los riesgos de un rollback?
 ```
 
+### Ejercicio 6: Migración Peligrosa (Avanzado)
+
+**Objetivo**: Aprender a migrar datos existentes de forma segura en producción.
+
+**Escenario**:
+Tienes 1000 tareas en producción. Necesitas añadir un campo `categoria` (NOT NULL, no puede ser vacío).
+
+**Pasos**:
+
+**Parte 1: Reproducir el problema**
+
+1. Crear 100 tareas usando la API o directamente en la BD:
+   ```python
+   # Script para generar datos de prueba
+   from api.models import TareaModel
+   from api.database import SessionLocal
+
+   db = SessionLocal()
+   for i in range(100):
+       tarea = TareaModel(nombre=f"Tarea {i}", completada=False, prioridad=2)
+       db.add(tarea)
+   db.commit()
+   ```
+
+2. Genera una migración INCORRECTA (automática):
+   ```bash
+   # Modificar models.py primero
+   categoria: Mapped[str] = mapped_column(String(50), nullable=False)
+
+   # Generar migration
+   alembic revision --autogenerate -m "agregar categoria NOT NULL"
+   ```
+
+3. Intenta aplicarla:
+   ```bash
+   alembic upgrade head
+   ```
+
+4. **Observa el error**:
+   ```
+   sqlalchemy.exc.IntegrityError: NOT NULL constraint failed: tareas.categoria
+   ```
+
+**Parte 2: Solución correcta (2 migrations)**
+
+**Migration 1**: Agregar columna NULLABLE con default
+
+```python
+# alembic/versions/xxx_agregar_categoria_step1.py
+def upgrade() -> None:
+    """Paso 1: Agregar columna nullable con default."""
+    op.add_column(
+        'tareas',
+        sa.Column('categoria', sa.String(50), nullable=True, server_default='General')
+    )
+
+    # Poblar datos existentes (redundante con server_default, pero educativo)
+    op.execute("UPDATE tareas SET categoria = 'General' WHERE categoria IS NULL")
+
+
+def downgrade() -> None:
+    """Paso 1 rollback: Eliminar columna."""
+    op.drop_column('tareas', 'categoria')
+```
+
+**Migration 2**: Hacer NOT NULL (ahora es seguro)
+
+```python
+# alembic/versions/yyy_agregar_categoria_step2.py
+def upgrade() -> None:
+    """Paso 2: Hacer columna NOT NULL (datos ya poblados)."""
+    # Quitar default server-side (opcional)
+    op.alter_column('tareas', 'categoria', server_default=None)
+
+    # Hacer NOT NULL (seguro porque todos los rows tienen valor)
+    op.alter_column('tareas', 'categoria', nullable=False)
+
+
+def downgrade() -> None:
+    """Paso 2 rollback: Volver a nullable."""
+    op.alter_column('tareas', 'categoria', nullable=True)
+    op.alter_column('tareas', 'categoria', server_default='General')
+```
+
+5. Aplicar ambas migrations:
+   ```bash
+   alembic upgrade head
+   ```
+
+6. Verificar que las tareas existentes tienen `categoria = 'General'`:
+   ```python
+   from api.database import SessionLocal
+   from api.models import TareaModel
+
+   db = SessionLocal()
+   tareas = db.query(TareaModel).limit(10).all()
+   for t in tareas:
+       print(f"{t.id}: {t.nombre} - {t.categoria}")
+   ```
+
+**Parte 3: Validación**
+
+7. Crear una tarea nueva (debe tener categoria por defecto en el modelo):
+   ```python
+   nueva = TareaModel(nombre="Tarea nueva", completada=False, prioridad=1)
+   db.add(nueva)
+   db.commit()
+   # Verificar que categoria NO es NULL
+   ```
+
+8. Hacer rollback de ambas migrations y verificar que los datos no se perdieron:
+   ```bash
+   alembic downgrade -2
+   alembic upgrade head
+   ```
+
+**Prompt IA para ayuda**:
+```
+Tengo una tabla 'tareas' con 10,000 rows en producción.
+Necesito agregar un campo 'categoria' (NOT NULL, string).
+
+¿Cuál es la estrategia más segura?
+¿Debería hacerlo en 1, 2 o 3 migrations?
+¿Qué pasa si la aplicación está corriendo mientras hago la migration?
+```
+
+**Aprendizajes clave**:
+- ✅ Nunca añadas columnas NOT NULL directamente en tablas con datos
+- ✅ Usa estrategia de 2 pasos: nullable → poblar → not null
+- ✅ `server_default` asegura que rows nuevos tengan valor
+- ✅ Siempre prueba la migration con datos de prueba primero
+
 ---
 
 ## 📦 Proyecto final: Migrar de Clase 3 a Clase 4
@@ -1018,6 +1150,258 @@ Mi situación:
 ¿Cómo genero la migration inicial sin que intente crear la tabla de nuevo?
 ¿Qué hago con `create_all()` en el código existente?
 ```
+
+---
+
+## 🔧 Troubleshooting: Errores Comunes
+
+### Error 1: "Target database is not up to date"
+
+**Mensaje completo**:
+```
+alembic.util.exc.CommandError: Target database is not up to date.
+```
+
+**Causa**: Hay migrations pendientes de aplicar.
+
+**Solución**:
+```bash
+# Ver migration actual
+alembic current
+
+# Ver migrations pendientes
+alembic history
+
+# Aplicar todas las migrations
+alembic upgrade head
+```
+
+---
+
+### Error 2: "Can't locate revision identified by 'xxxxx'"
+
+**Mensaje completo**:
+```
+alembic.util.exc.CommandError: Can't locate revision identified by '58cbce442bf6'
+```
+
+**Causa**:
+- La BD tiene una versión que no existe en tus archivos de migration
+- Alguien más creó migrations que no has descargado
+
+**Solución 1** (trabajando en equipo):
+```bash
+# Descargar migrations nuevas
+git pull origin dev
+
+# Aplicar
+alembic upgrade head
+```
+
+**Solución 2** (BD corrupta o migration eliminada):
+```bash
+# Ver versión actual en la BD
+alembic current
+
+# Si la migration no existe, hacer stamp manual (¡CUIDADO!)
+alembic stamp head
+
+# O stamp a una versión específica que SÍ exista
+alembic stamp 58cbce442bf6
+```
+
+⚠️ **Advertencia**: `alembic stamp` no aplica ni revierte migrations, solo actualiza el registro. Úsalo con cuidado.
+
+---
+
+### Error 3: "FAILED: Multiple head revisions are present"
+
+**Mensaje completo**:
+```
+alembic.util.exc.CommandError: Multiple head revisions are present for given argument 'head'; please specify a specific target revision, <branchname>@head, or pass --resolve-dependencies
+```
+
+**Causa**: Dos migrations apuntan al mismo `down_revision` (branches en el historial).
+
+**Ejemplo**:
+```
+main: ... → migration_A
+              ↓
+           migration_B (dev1)
+              ↓
+           migration_C (dev2)  ← Ambas apuntan a migration_A
+```
+
+**Solución**: Merge de branches con `alembic merge`
+
+```bash
+# Ver branches
+alembic branches
+
+# Output:
+# 05702ef4b618 (dev1) -> migration_B
+# 1234567890ab (dev2) -> migration_C
+
+# Crear migration de merge
+alembic merge -m "merge branches" 05702ef4b618 1234567890ab
+
+# Aplicar
+alembic upgrade head
+```
+
+La migration de merge generada:
+```python
+revision = 'abc123'
+down_revision = ('05702ef4b618', '1234567890ab')  # ← Tuple de múltiples padres
+```
+
+---
+
+### Error 4: "Column 'x' cannot be null" (IntegrityError)
+
+**Mensaje completo**:
+```
+sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tareas.prioridad
+```
+
+**Causa**: Migration añade columna NOT NULL en una tabla con datos existentes.
+
+**Solución**: Ver **Ejercicio 6: Migración Peligrosa** (arriba).
+
+Estrategia correcta:
+1. Migration 1: ADD COLUMN nullable con default
+2. Migration 2: Poblar datos existentes
+3. Migration 3: ALTER COLUMN a NOT NULL
+
+---
+
+### Error 5: "Table 'tareas' already exists"
+
+**Mensaje completo**:
+```
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table tareas already exists
+```
+
+**Causa**:
+- Ejecutaste `alembic upgrade head` pero la tabla ya existía (creada con `create_all()`)
+- La BD está out-of-sync con Alembic
+
+**Solución 1** (BD creada con create_all, quieres usar Alembic):
+```bash
+# Marcar la BD como si estuviera en la última migration (sin ejecutarla)
+alembic stamp head
+
+# Ahora Alembic sabe que la BD está actualizada
+```
+
+**Solución 2** (empezar desde cero):
+```bash
+# Eliminar BD
+rm tareas.db
+
+# Aplicar migrations desde cero
+alembic upgrade head
+```
+
+---
+
+### Error 6: "No module named 'api.models'"
+
+**Mensaje completo**:
+```
+ModuleNotFoundError: No module named 'api.models'
+```
+
+**Causa**: Alembic no puede importar tus modelos porque el `PYTHONPATH` no está configurado.
+
+**Solución**: En `alembic.ini`, asegúrate de tener:
+```ini
+prepend_sys_path = .
+```
+
+Y en `alembic/env.py`:
+```python
+# Al inicio del archivo
+import sys
+from pathlib import Path
+
+# Agregar directorio raíz al path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+# Ahora sí importar
+from api.models import Base
+```
+
+---
+
+### Error 7: "Downgrade doesn't work" (rollback falla)
+
+**Causa**: La función `downgrade()` no revierte correctamente el `upgrade()`.
+
+**Ejemplo de migration incorrecta**:
+```python
+def upgrade():
+    op.add_column('tareas', sa.Column('nueva', sa.String(50)))
+    op.execute("UPDATE tareas SET nueva = 'valor'")
+
+def downgrade():
+    op.drop_column('tareas', 'nueva')
+    # ⚠️ FALTA: No revierte el UPDATE
+```
+
+**Solución**: Asegúrate de que `downgrade()` deshace **TODO** lo que hace `upgrade()`:
+```python
+def upgrade():
+    op.add_column('tareas', sa.Column('nueva', sa.String(50)))
+    op.execute("UPDATE tareas SET nueva = nombre")  # Copiar desde otro campo
+
+def downgrade():
+    # Revertir el UPDATE copiando de vuelta (si es posible)
+    op.execute("UPDATE tareas SET nombre = nueva WHERE nueva IS NOT NULL")
+    # Eliminar columna
+    op.drop_column('tareas', 'nueva')
+```
+
+---
+
+### Tips Generales de Troubleshooting
+
+1. **Ver estado actual**:
+   ```bash
+   alembic current          # Versión actual
+   alembic history          # Historial completo
+   alembic show head        # Última migration disponible
+   ```
+
+2. **Generar SQL sin ejecutar** (modo offline):
+   ```bash
+   alembic upgrade head --sql > migration.sql
+   # Revisar SQL antes de aplicar
+   ```
+
+3. **Logs detallados**:
+   ```bash
+   # En alembic.ini, cambiar log level
+   [logger_alembic]
+   level = DEBUG  # En lugar de INFO
+   ```
+
+4. **Validar migration antes de aplicar**:
+   ```bash
+   # Hacer upgrade y downgrade en BD de prueba
+   alembic upgrade +1
+   alembic downgrade -1
+   alembic upgrade head
+   ```
+
+5. **Backup SIEMPRE antes de migrations en producción**:
+   ```bash
+   # SQLite
+   cp tareas.db tareas.db.backup
+
+   # PostgreSQL
+   pg_dump -Fc mi_bd > backup_$(date +%Y%m%d_%H%M%S).dump
+   ```
 
 ---
 
