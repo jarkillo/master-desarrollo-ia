@@ -44,10 +44,10 @@ graph TD
     B --> B2[Services]
     B --> B3[Models]
 
-    B1 --> B1a[/player]
-    B1 --> B1b[/progress]
-    B1 --> B1c[/achievements]
-    B1 --> B1d[/minigames]
+    B1 --> B1a[player]
+    B1 --> B1b[progress]
+    B1 --> B1c[achievements]
+    B1 --> B1d[minigames]
 
     C --> C1[Tables]
     C1 --> C1a[players]
