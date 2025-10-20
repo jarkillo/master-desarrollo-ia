@@ -98,7 +98,365 @@ Ves si tu función hace lo correcto.
 
 ---
 
-### 3. El ciclo “Refactor con seguridad”
+### 2.1. ¿Por qué pytest en vez de unittest?
+
+El ejemplo anterior usa `unittest`, que es la librería estándar de Python. Funciona, pero tiene algunas limitaciones:
+
+- **Verboso**: Requiere clases, `self.`, y métodos con nombres largos (`assertEqual`, `assertTrue`)
+- **Setup pesado**: `setUp` y `tearDown` son menos flexibles que fixtures
+- **Sin parametrización**: Tests similares requieren copiar-pegar código
+
+**pytest** es la alternativa moderna que la industria prefiere:
+
+```python
+# unittest (viejo)
+class TestTareas(unittest.TestCase):
+    def setUp(self):
+        self.archivo = "test_tareas.json"
+
+    def test_agregar(self):
+        self.assertEqual(resultado, esperado)
+
+# pytest (moderno)
+@pytest.fixture
+def archivo():
+    return "test_tareas.json"
+
+def test_agregar(archivo):
+    assert resultado == esperado  # Más simple!
+```
+
+**Ventajas de pytest**:
+
+✅ **Asserts simples**: `assert x == y` en vez de `self.assertEqual(x, y)`
+✅ **Fixtures reutilizables**: Setup compartido entre tests
+✅ **Parametrización**: Un test para múltiples casos
+✅ **Mejor output**: Muestra diferencias claras cuando falla
+✅ **Plugins**: pytest-cov, pytest-asyncio, pytest-mock
+✅ **Menos boilerplate**: No necesitas clases ni heredar de TestCase
+
+**Instalación**:
+```bash
+pip install pytest pytest-cov
+```
+
+**Ejecución**:
+```bash
+# Ejecutar todos los tests
+pytest
+
+# Ejecutar con verbose
+pytest -v
+
+# Con coverage
+pytest --cov=. --cov-report=term-missing
+```
+
+**Decisión pedagógica**: A partir de ahora usaremos **pytest** porque es:
+1. Lo que usan equipos profesionales (Google, Spotify, Netflix)
+2. Más simple de leer y escribir
+3. Mejor integración con herramientas de IA (Claude genera código pytest más limpio)
+
+---
+
+### 2.2. Ejemplo con pytest (migrando desde unittest)
+
+Vamos a reescribir el test anterior usando pytest:
+
+```python
+# test_tareas_pytest.py
+import os
+import tempfile
+import pytest
+from tareas import agregar_tarea, cargar_tareas, guardar_tareas
+
+
+@pytest.fixture
+def archivo_temporal():
+    """
+    Fixture que crea un archivo temporal para tests.
+    Se ejecuta antes de cada test y limpia después.
+    """
+    fd, tmp = tempfile.mkstemp(prefix="tareas_", suffix=".json")
+    os.close(fd)
+    guardar_tareas(tmp, [])  # Empezamos con archivo vacío
+    yield tmp  # El test usa este archivo
+    os.remove(tmp)  # Limpieza automática
+
+
+def test_agregar_tarea(archivo_temporal):
+    """Test: Agregar una tarea con nombre válido."""
+    agregar_tarea(archivo_temporal, "Estudiar IA")
+    tareas = cargar_tareas(archivo_temporal)
+
+    # Asserts simples (no self.assertEqual)
+    assert len(tareas) == 1
+    assert tareas[0]["nombre"] == "Estudiar IA"
+    assert tareas[0]["completada"] == False
+
+
+def test_completar_tarea(archivo_temporal):
+    """Test: Completar una tarea existente."""
+    tarea = agregar_tarea(archivo_temporal, "Repasar Git")
+    ok = completar_tarea(archivo_temporal, tarea["id"])
+
+    assert ok == True
+
+    tareas = cargar_tareas(archivo_temporal)
+    assert tareas[0]["completada"] == True
+```
+
+**Diferencias clave**:
+
+| unittest | pytest |
+|----------|--------|
+| `class TestTareas(unittest.TestCase):` | Funciones sueltas (no clase) |
+| `def setUp(self):` | `@pytest.fixture` reutilizable |
+| `self.assertEqual(a, b)` | `assert a == b` |
+| `self.archivo` (estado en clase) | Fixtures como parámetros |
+| `python -m unittest` | `pytest` |
+
+**Conclusión**: pytest es más Pythonic y más fácil de usar con IA.
+
+---
+
+### 3. Generar tests con IA (Workflow Manual → IA → Validación)
+
+**Problema**: Escribir tests desde cero es lento y es fácil olvidar casos importantes (edge cases, error handling).
+
+**Solución**: Usar el **Test Coverage Strategist agent** para descubrir qué testear, luego TÚ escribes los tests.
+
+#### Paso 1: Definir qué testear (Manual)
+
+Antes de pedirle nada a la IA, necesitas claridad:
+
+**Pregúntate**:
+- ¿Qué función voy a testear? (ej. `agregar_tarea`)
+- ¿Qué debe hacer en el caso feliz? (agregar tarea correctamente)
+- ¿Qué puede salir mal? (nombre vacío, archivo no existe, JSON corrupto)
+
+**Anota tu lista inicial** (la que se te ocurra):
+```
+- Agregar tarea con nombre válido
+- Agregar tarea cuando archivo no existe
+- ¿Qué más...?
+```
+
+#### Paso 2: Prompt estructurado a la IA
+
+**NO hagas esto** ❌:
+```
+Dame tests para agregar_tarea
+```
+
+**Haz esto** ✅:
+```
+Rol: Test Coverage Strategist
+Contexto: Tengo una función agregar_tarea(ruta, nombre) que guarda tareas en JSON.
+
+Código actual:
+[pega la función agregar_tarea de tareas.py]
+
+Objetivo: Lista de casos de prueba que debería testear (NO el código de tests aún).
+Incluye: happy path, edge cases, error handling.
+Categoriza por criticidad (Alta/Media/Baja).
+```
+
+**La IA responderá** con una LISTA de casos (no código):
+
+```markdown
+## Edge Cases para agregar_tarea
+
+### Criticidad ALTA:
+1. Happy path: Agregar tarea con nombre válido
+2. Nombre vacío ("") - debe rechazar o usar default
+3. Archivo JSON corrupto - debe manejar error sin crashear
+
+### Criticidad MEDIA:
+4. Nombre con solo espacios ("   ")
+5. Persistencia: Agregar, cerrar, reabrir archivo
+6. Múltiples tareas consecutivas (IDs correctos)
+
+### Criticidad BAJA:
+7. Nombre muy largo (1000+ caracteres)
+8. Caracteres especiales en nombre (\n, \t, emojis)
+```
+
+#### Paso 3: Revisar y validar (Manual)
+
+**TÚ decides**:
+- ✅ ¿Tiene sentido cada caso?
+- ✅ ¿Falta alguno crítico que la IA no mencionó?
+- ✅ ¿Alguno es redundante o innecesario?
+
+**Anota en notes.md**:
+```markdown
+## Edge cases descubiertos con IA (Clase 3)
+
+Casos que YO había pensado:
+- Agregar tarea válida
+- Archivo no existe
+
+Casos que la IA sugirió (NO se me habían ocurrido):
+- JSON corrupto ← CRÍTICO
+- Nombre con solo espacios ← Importante
+- Caracteres especiales ← Interesante pero baja prioridad
+```
+
+#### Paso 4: Pedir código de UN test como plantilla (IA)
+
+Ahora sí, pide el código de **un solo test** como ejemplo:
+
+```
+Genera el código pytest para el caso 1: agregar tarea con nombre válido.
+Usa fixture temporal para archivo JSON.
+Incluye comentarios explicativos.
+```
+
+**La IA generará**:
+```python
+def test_agregar_tarea_nombre_valido(archivo_temporal):
+    """
+    Test happy path: Agregar tarea con nombre válido.
+    Verifica que se crea con ID, nombre y estado inicial correcto.
+    """
+    # Act: Agregar tarea
+    tarea = agregar_tarea(archivo_temporal, "Estudiar IA")
+
+    # Assert: Verificar estructura y valores
+    assert tarea["id"] == 1
+    assert tarea["nombre"] == "Estudiar IA"
+    assert tarea["completada"] == False
+
+    # Assert: Verificar persistencia
+    tareas = cargar_tareas(archivo_temporal)
+    assert len(tareas) == 1
+    assert tareas[0] == tarea
+```
+
+#### Paso 5: Entender y adaptar (Manual)
+
+**⚠️ IMPORTANTE**: NO copies y pegues todo.
+
+**Haz esto**:
+1. Lee el código generado **línea por línea**
+2. Entiende qué hace cada assert
+3. Modifícalo si es necesario para tu implementación
+4. Ejecuta el test: `pytest test_tareas_pytest.py::test_agregar_tarea_nombre_valido -v`
+
+#### Paso 6: Escribir los demás tests TÚ MISMO
+
+**Usando la plantilla anterior**, escribe los tests de criticidad Alta:
+
+```python
+def test_agregar_tarea_nombre_vacio(archivo_temporal):
+    """
+    Edge case: Nombre vacío debe ser rechazado.
+    """
+    # ¿Qué debería pasar?
+    # Opción A: Lanzar ValueError
+    # Opción B: Usar nombre default "Sin título"
+
+    # TÚ decides el comportamiento esperado
+    with pytest.raises(ValueError, match="Nombre no puede estar vacío"):
+        agregar_tarea(archivo_temporal, "")
+
+
+def test_agregar_tarea_json_corrupto(archivo_temporal):
+    """
+    Edge case: Si JSON corrupto, no debe crashear.
+    cargar_tareas debería devolver lista vacía.
+    """
+    # Arrange: Escribir JSON inválido
+    with open(archivo_temporal, 'w') as f:
+        f.write("{esto no es json válido")
+
+    # Act: Intentar agregar (internamente llama cargar_tareas)
+    tarea = agregar_tarea(archivo_temporal, "Nueva tarea")
+
+    # Assert: Debería funcionar (lista empieza desde vacío)
+    assert tarea["id"] == 1
+    tareas = cargar_tareas(archivo_temporal)
+    assert len(tareas) == 1
+```
+
+**Regla de oro**: Escribe al menos **2-3 tests manualmente** para interiorizar el patrón. Usa IA solo para casos muy complejos o para validar tu código.
+
+---
+
+### 4. Edge cases con IA (20 min)
+
+**Concepto**: Los edge cases (casos extremos) son situaciones raras pero reales que rompen tu código si no las previenes.
+
+**Ejemplos**:
+- Nombre vacío
+- Archivo JSON corrupto
+- ID negativo o inexistente
+- Concurrencia (dos procesos escriben al mismo tiempo)
+
+**Problema**: Es difícil pensar en TODOS los edge cases sin experiencia.
+
+**Solución**: El Test Coverage Strategist agent está entrenado para identificarlos.
+
+#### Ejercicio práctico: Edge cases de `completar_tarea`
+
+**Tu tarea**: Pide a la IA edge cases para `completar_tarea(ruta, id)`.
+
+**Prompt**:
+```
+Rol: Test Coverage Strategist
+Función: completar_tarea(ruta_archivo, id_tarea)
+
+Código:
+[pega la función]
+
+Objetivo: Lista de edge cases que debería testear.
+Categoriza por criticidad (Alta/Media/Baja).
+```
+
+**Resultado esperado**:
+```markdown
+### Criticidad ALTA:
+1. ID inexistente (devuelve False, no crashea)
+2. ID negativo (validación de input)
+3. Archivo JSON corrupto al leer
+
+### Criticidad MEDIA:
+4. ID como string "1" en vez de int 1
+5. Completar tarea ya completada (idempotencia)
+
+### Criticidad BAJA:
+6. ID = 0 (edge numérico)
+7. ID muy grande (999999)
+```
+
+**TU tarea**:
+1. ✅ Implementa tests para criticidad ALTA (TÚ MISMO)
+2. ✅ Usa IA solo si te atascas en cómo escribir el assert
+3. ✅ Documenta en notes.md cuáles implementaste y por qué
+
+**Ejemplo de test de criticidad Alta**:
+```python
+def test_completar_tarea_id_inexistente(archivo_temporal):
+    """
+    Edge case crítico: Completar tarea que no existe.
+    Debe devolver False sin crashear.
+    """
+    agregar_tarea(archivo_temporal, "Tarea 1")  # ID = 1
+
+    # Intentar completar ID que no existe
+    resultado = completar_tarea(archivo_temporal, 999)
+
+    assert resultado == False
+
+    # Verificar que la tarea 1 no se modificó
+    tareas = cargar_tareas(archivo_temporal)
+    assert tareas[0]["completada"] == False
+```
+
+---
+
+### 3. El ciclo "Refactor con seguridad"
 
 - **Primero** escribes o ajustas un test.
 - **Luego** haces un cambio en el código para limpiarlo.
@@ -109,17 +467,70 @@ Esto es la semilla de **TDD (Test Driven Development)**, pero de momento con que
 
 ---
 
-### 4. Ejercicio de esta clase
+### 5. Ejercicio práctico: Testing con IA (80%+ coverage)
 
-1. Crea una rama `feature/cli-clean-tests`.
-2. Refactoriza tu código aplicando: nombres claros, menos comentarios obvios, funciones cortas y capas separadas.
-3. Escribe un `test_tareas.py` con al menos 2 tests unitarios: uno para `agregar_tarea`, otro para `completar_tarea`.
-4. Ejecuta los tests. Comprueba que todo sigue funcionando.
-5. Documenta en tu `notes.md` qué cambios hiciste y cómo los tests te dieron confianza para limpiar código sin miedo.
+**📋 Consulta el ejercicio completo**: Ver `ejercicio_clase3_ai.md` en esta carpeta.
+
+**Resumen del flujo**:
+
+1. **Manual** (15 min): Escribe `test_agregar_tarea` (happy path) sin copiar
+2. **Con IA** (10 min): Pide al Test Coverage Strategist lista de edge cases
+3. **Manual** (20 min): Implementa 2-3 edge cases de criticidad ALTA tú mismo
+4. **Con IA** (10 min): Pide ayuda para UN edge case complejo (ej. JSON corrupto)
+5. **Validación** (10 min): Ejecuta `pytest --cov=. --cov-report=term-missing`
+
+**🎯 Objetivo**: Alcanzar 80%+ coverage usando pytest y Test Coverage Strategist.
+
+**📝 Entregables**:
+- `test_tareas_pytest.py` con 5+ tests
+- `notes.md` documentando: edge cases descubiertos con IA, tests escritos manual vs con ayuda
+- Coverage 80%+
+
+**⚠️ Regla de oro**:
+- Escribe al menos 2-3 tests 100% manual (interiorizar patrón)
+- Usa IA para DESCUBRIR casos, no para copiar código sin entender
+- Documenta qué aprendiste en `notes.md`
 
 ---
 
-Lo que buscamos aquí no es que seas un fanático de “Clean Code”, sino que empieces a **oler cuándo tu código puede mejorar** y uses los tests como tu red de seguridad.
+### 6. Aplicación con IA (Refactoring con Python Best Practices Coach)
+
+Además del Test Coverage Strategist para tests, puedes usar el **Python Best Practices Coach** para limpiar tu código.
+
+**Prompt ejemplo**:
+```
+Rol: Python Best Practices Coach
+Contexto: Tengo el código de tareas.py funcionando pero quiero hacerlo más Pythonic.
+
+Código:
+[pega tareas.py]
+
+Objetivo: Identifica anti-patterns y sugiere mejoras (f-strings, type hints, pathlib, etc.).
+No cambies funcionalidad, solo limpia el código.
+```
+
+**El agente te dirá**:
+- Usa f-strings en vez de concatenación
+- Añade type hints a funciones
+- Usa Pathlib en vez de os.path
+- Reemplaza loops manuales por list comprehensions
+
+**Tu tarea**:
+1. Lee las sugerencias del coach
+2. Aplica las que entiendas
+3. Ejecuta tests después de cada cambio (seguridad con tests!)
+4. Si alguna sugerencia no la entiendes, pide explicación
+
+**Beneficio del workflow**:
+```
+Tests escritos ✅ → Refactor código con IA ✅ → Tests siguen pasando ✅
+```
+
+Sin tests, refactorizar da miedo (¿rompí algo?). Con tests, refactorizas confiado.
+
+---
+
+Lo que buscamos aquí no es que seas un fanático de "Clean Code", sino que empieces a **oler cuándo tu código puede mejorar** y uses los tests como tu red de seguridad, con la IA como asistente educativo (no como copiador automático).
 
 ---
 

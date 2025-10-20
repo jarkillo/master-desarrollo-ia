@@ -1,6 +1,5 @@
 # Máster de Desarrollo con IA
 
-# Máster en Desarrollo con IA aplicada
 
 Este repositorio recoge el programa, apuntes y proyectos prácticos del máster.  
 Cada módulo termina con un mini-proyecto entregable que se reutiliza y evoluciona en el siguiente.  
@@ -131,4 +130,113 @@ Un repositorio completo que demuestra:
 - Seguridad y calidad integradas en el ciclo.
 - CI/CD real con despliegue en cloud.
 - IA usada en cada fase como copiloto, revisor y documentador.
+
+---
+
+## 🛠️ Setup y Desarrollo
+
+### Configuración inicial (una vez)
+
+**1. Clonar el repositorio:**
+```bash
+git clone <repository-url>
+cd master-ia-manu
+```
+
+**2. Configurar entorno virtual:**
+```bash
+# Crear entorno virtual
+python -m venv .venv
+
+# Activar entorno virtual
+# Windows:
+.venv\Scripts\activate
+# Linux/Mac:
+source .venv/bin/activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+```
+
+**3. Configurar Git hooks:**
+```bash
+# Instalar hooks de validación automática
+bash scripts/setup-hooks.sh
+```
+
+Esto configura el pre-push hook que automáticamente valida:
+- ✅ Ruff linting (code style)
+- ✅ Tests con coverage >= 80%
+- ✅ Gitleaks (detección de secretos)
+
+### Workflow de desarrollo
+
+**1. Crear nueva funcionalidad:**
+```bash
+# Crear rama desde dev
+git checkout dev
+git pull origin dev
+git checkout -b feature/mi-funcionalidad
+
+# Realizar cambios...
+```
+
+**2. Validar código antes de push:**
+```bash
+# Validación manual completa (recomendado antes de PR)
+bash scripts/pre-pr-check.sh
+
+# Commit y push (el pre-push hook valida automáticamente)
+git add .
+git commit -m "feat: descripción del cambio"
+git push origin feature/mi-funcionalidad
+```
+
+**3. Crear Pull Request:**
+```bash
+# Crear PR a dev
+gh pr create --base dev --title "feat: Título" --body "Descripción"
+
+# O de forma interactiva
+gh pr create
+```
+
+### Comandos útiles
+
+**Testing:**
+```bash
+# Ejecutar tests de una clase específica
+cd "Modulo X/Clase Y - Topic"
+pytest
+
+# Tests con coverage
+pytest --cov=api --cov-report=term-missing --cov-fail-under=80
+
+# Tests de integración
+pytest tests_integrations/ -v
+```
+
+**Linting y calidad:**
+```bash
+# Ejecutar linting
+ruff check .
+
+# Auto-corregir errores de linting
+ruff check . --fix
+
+# Auditoría de seguridad
+bandit -r api/ -ll
+```
+
+**Saltar validaciones (NO RECOMENDADO):**
+```bash
+# Saltar pre-push hook
+git push --no-verify
+```
+
+### Documentación adicional
+
+Para información más detallada sobre arquitectura, patrones y guías de desarrollo, consulta:
+- **[CLAUDE.md](./CLAUDE.md)**: Guía completa de arquitectura y patrones
+- **[scripts/README.md](./scripts/README.md)**: Documentación de scripts de automatización
 

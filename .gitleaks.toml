@@ -1,0 +1,21 @@
+# Gitleaks configuration for educational repository
+# This config allows educational examples while catching real secrets
+
+title = "Gitleaks config for Master IA - Desarrollo con IA"
+
+# Global allowlist for educational content
+[allowlist]
+description = "Global allowlist for educational examples"
+
+# Ignore all files in Module 3 (Security module with intentional examples)
+paths = [
+  '''Modulo 3''',
+]
+
+# Ignore obvious placeholders across all files
+regexes = [
+  '''tu_api_key_aqui''',
+  '''your_api_key_here''',
+  '''api_key_123''',
+  '''miclave123''',
+]

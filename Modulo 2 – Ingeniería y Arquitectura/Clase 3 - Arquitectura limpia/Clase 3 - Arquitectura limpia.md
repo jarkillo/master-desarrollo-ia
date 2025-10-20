@@ -250,6 +250,357 @@ Ahí empieza la verdadera ingeniería.
 
 ---
 
+## 6.1 🤖 Validaciones con Pydantic y IA: la frontera de defensa
+
+### El problema de los datos sucios
+
+Tu API ya funciona. Pero... ¿qué pasa si alguien envía esto?
+
+```json
+{
+  "nombre": "",
+  "prioridad": 999,
+  "fecha_limite": "ayer",
+  "etiquetas": null
+}
+```
+
+Tu código explota. O peor: **acepta datos basura** que romperán la lógica de negocio más adelante.
+
+Aquí es donde Pydantic se convierte en tu **guardián de la frontera**.
+
+---
+
+### Pydantic: más que validación, es diseño de contratos
+
+Hasta ahora usaste `Field(..., min_length=1)` para validar que el nombre no esté vacío.
+
+Eso es **validación básica**. Ahora subirás de nivel.
+
+---
+
+### Validaciones avanzadas con IA como asistente
+
+#### Paso 1: Identificar qué validar
+
+**Pregunta clave**: ¿Qué datos inválidos pueden romper mi sistema?
+
+**Prompt para IA**:
+```
+Rol: Data Validation Expert
+Contexto: API de tareas con modelo Tarea(nombre, prioridad, fecha_limite, etiquetas)
+Objetivo: Lista edge cases y datos inválidos que debo prevenir
+Formato: Tabla con:
+- Campo
+- Dato inválido
+- Por qué es peligroso
+- Regla de validación sugerida
+```
+
+**IA te devolverá algo como**:
+
+| Campo | Dato Inválido | Peligro | Validación |
+|-------|---------------|---------|------------|
+| nombre | `""` (vacío) | Tareas sin identificador | `min_length=1, max_length=100` |
+| prioridad | `-1` o `999` | Lógica de ordenamiento rota | `ge=1, le=5` (rango 1-5) |
+| fecha_limite | `"2020-01-01"` | Fecha en el pasado | `@field_validator`: fecha >= hoy |
+| etiquetas | `null` en vez de `[]` | TypeError al iterar | `default_factory=list` |
+
+---
+
+#### Paso 2: Implementar validaciones con Pydantic v2
+
+**Modelo básico (sin validaciones)**:
+```python
+class Tarea(BaseModel):
+    nombre: str
+    prioridad: int
+    fecha_limite: str
+    etiquetas: List[str]
+```
+
+**Modelo robusto (con validaciones)**:
+```python
+from pydantic import BaseModel, Field, field_validator
+from typing import List
+from datetime import date, datetime
+
+class TareaRequest(BaseModel):
+    """Request para crear/actualizar tarea con validaciones robustas."""
+
+    nombre: str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Nombre de la tarea (1-100 caracteres)",
+        examples=["Estudiar Pydantic"]
+    )
+
+    prioridad: int = Field(
+        default=3,
+        ge=1,
+        le=5,
+        description="Prioridad de 1 (urgente) a 5 (baja)"
+    )
+
+    fecha_limite: date | None = Field(
+        default=None,
+        description="Fecha límite opcional (formato YYYY-MM-DD)"
+    )
+
+    etiquetas: List[str] = Field(
+        default_factory=list,
+        max_length=10,
+        description="Máximo 10 etiquetas"
+    )
+
+    # Validador custom: fecha no puede ser pasada
+    @field_validator('fecha_limite')
+    @classmethod
+    def fecha_no_pasada(cls, v: date | None) -> date | None:
+        if v is not None and v < date.today():
+            raise ValueError('La fecha límite no puede estar en el pasado')
+        return v
+
+    # Validador custom: etiquetas en minúsculas
+    @field_validator('etiquetas')
+    @classmethod
+    def etiquetas_lowercase(cls, v: List[str]) -> List[str]:
+        return [etiqueta.lower().strip() for etiqueta in v]
+```
+
+---
+
+### ¿Cómo usar IA para generar validadores?
+
+**Prompt template efectivo**:
+```
+Rol: Pydantic Expert Python
+Contexto: Modelo TareaRequest con campo {nombre_campo}: {tipo}
+Objetivo: Genera validador Pydantic v2 con @field_validator que:
+- {regla_1}
+- {regla_2}
+- Mensaje de error claro en español
+Restricciones: Usar Pydantic v2 syntax (@field_validator, no @validator)
+Formato: Código Python con docstring explicativo
+```
+
+**Ejemplo concreto**:
+```
+Rol: Pydantic Expert Python
+Contexto: Modelo TareaRequest con campo 'nombre': str
+Objetivo: Genera validador que:
+- No permita solo espacios en blanco
+- No permita caracteres especiales peligrosos (<, >, &)
+- Capitalice primera letra
+Restricciones: Pydantic v2, mensaje error español
+Formato: Código con docstring
+```
+
+**IA generará**:
+```python
+@field_validator('nombre')
+@classmethod
+def nombre_seguro(cls, v: str) -> str:
+    """Valida y sanitiza el nombre de la tarea.
+
+    Reglas:
+    - No permite solo espacios en blanco
+    - Elimina caracteres peligrosos (<, >, &)
+    - Capitaliza primera letra
+
+    Args:
+        v: Nombre a validar
+
+    Returns:
+        Nombre validado y sanitizado
+
+    Raises:
+        ValueError: Si el nombre es solo espacios o vacío
+    """
+    # Eliminar espacios extras
+    v = v.strip()
+
+    # Validar no vacío
+    if not v:
+        raise ValueError('El nombre no puede estar vacío o ser solo espacios')
+
+    # Sanitizar caracteres peligrosos
+    caracteres_peligrosos = ['<', '>', '&']
+    for char in caracteres_peligrosos:
+        v = v.replace(char, '')
+
+    # Capitalizar primera letra
+    return v.capitalize()
+```
+
+**TÚ validas**:
+1. ¿El código es Pydantic v2? (`@field_validator` no `@validator`) ✅
+2. ¿Mensaje de error es claro? ✅
+3. ¿Cubre todos los edge cases? (test con varios inputs)
+4. ¿Performance aceptable? (validar 1000 tareas < 1 segundo)
+
+---
+
+### Validación de relaciones entre campos (model_validator)
+
+A veces necesitas validar **múltiples campos juntos**.
+
+**Caso real**: Si `prioridad=1` (urgente), `fecha_limite` debe ser obligatoria.
+
+**Prompt para IA**:
+```
+Rol: Pydantic Expert
+Contexto: TareaRequest con prioridad (1-5) y fecha_limite (opcional)
+Objetivo: Genera model_validator que:
+- Si prioridad <= 2, fecha_limite es obligatoria
+- Mensaje error claro
+Restricciones: Pydantic v2 (@model_validator)
+```
+
+**IA genera**:
+```python
+from pydantic import model_validator
+
+class TareaRequest(BaseModel):
+    # ... campos anteriores ...
+
+    @model_validator(mode='after')
+    def validar_urgencia_con_fecha(self):
+        """Tareas urgentes (prioridad 1-2) requieren fecha límite."""
+        if self.prioridad <= 2 and self.fecha_limite is None:
+            raise ValueError(
+                f'Las tareas urgentes (prioridad {self.prioridad}) '
+                'requieren una fecha límite'
+            )
+        return self
+```
+
+---
+
+### Edge cases típicos y cómo detectarlos con IA
+
+**Prompt para IA** (modo testing):
+```
+Rol: QA Tester especializado en edge cases
+Contexto: Modelo Pydantic TareaRequest con validaciones
+Objetivo: Genera 10 casos de prueba edge case que DEBEN fallar
+Formato: Lista JSON con:
+- input (datos inválidos)
+- expected_error (tipo de error esperado)
+- razón (por qué debe fallar)
+```
+
+**IA generará**:
+```json
+[
+  {
+    "input": {"nombre": "   ", "prioridad": 3},
+    "expected_error": "ValueError",
+    "razón": "Nombre solo espacios"
+  },
+  {
+    "input": {"nombre": "A"*101, "prioridad": 3},
+    "expected_error": "ValidationError",
+    "razón": "Nombre excede max_length=100"
+  },
+  {
+    "input": {"nombre": "Tarea", "prioridad": 0},
+    "expected_error": "ValidationError",
+    "razón": "Prioridad < 1 (mínimo es 1)"
+  },
+  {
+    "input": {"nombre": "Tarea", "prioridad": 1, "fecha_limite": null},
+    "expected_error": "ValueError",
+    "razón": "Prioridad urgente sin fecha límite"
+  }
+]
+```
+
+**Tú conviertes esos casos en tests pytest**:
+```python
+import pytest
+from pydantic import ValidationError
+
+def test_nombre_solo_espacios_falla():
+    with pytest.raises(ValueError, match="no puede estar vacío"):
+        TareaRequest(nombre="   ", prioridad=3)
+
+def test_nombre_excede_max_length_falla():
+    with pytest.raises(ValidationError):
+        TareaRequest(nombre="A"*101, prioridad=3)
+```
+
+---
+
+### Workflow completo: IA + Validaciones Pydantic
+
+```
+1. IDENTIFICAR edge cases → IA lista casos peligrosos
+2. DISEÑAR validaciones → IA genera Field() y validators
+3. REVISAR con Python Best Practices Coach → Type hints, docstrings
+4. TESTEAR edge cases → pytest con todos los casos
+5. ITERAR → Si falla un test, ajustar validator
+```
+
+---
+
+### Red flags en validaciones generadas por IA
+
+❌ **Validadores que modifican tipos**:
+```python
+@field_validator('prioridad')
+def validar_prioridad(cls, v):
+    return str(v)  # ❌ Cambia int a str
+```
+
+❌ **Validaciones que permiten None cuando no deberían**:
+```python
+nombre: str | None = Field(...)  # ❌ Contradictorio
+```
+
+❌ **Regex complejos sin explicación**:
+```python
+@field_validator('email')
+def validar_email(cls, v):
+    if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', v):
+        ...  # ❌ Sin explicar qué valida
+```
+
+✅ **Mejor**: Usa `EmailStr` de Pydantic en vez de regex manual.
+
+---
+
+### Pydantic + IA = Contratos auto-documentados
+
+**Beneficio oculto**: Las validaciones Pydantic generan **documentación OpenAPI automática**.
+
+```python
+class TareaRequest(BaseModel):
+    nombre: str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Nombre descriptivo de la tarea",
+        examples=["Estudiar Pydantic", "Refactorizar API"]
+    )
+```
+
+**En Swagger UI** (`/docs`):
+- Muestra límites de longitud
+- Muestra ejemplos
+- Valida en tiempo real antes de enviar
+
+**Prompt para mejorar docs**:
+```
+Rol: Technical Writer
+Contexto: Modelo Pydantic TareaRequest
+Objetivo: Genera descripciones claras para cada Field() en español
+Requisitos: Mencionar límites, formato esperado, ejemplos
+```
+
+---
+
 ## 7. El aprendizaje emocional
 
 Hasta ahora programabas “para que funcione”.

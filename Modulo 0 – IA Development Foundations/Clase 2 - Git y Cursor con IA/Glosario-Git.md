@@ -10,7 +10,7 @@
 
 **`main`**: Rama principal estable del repo.
 
-**HEAD**: Puntero a tu commit/rama actual (en qué “foto” estás).
+**HEAD**: Puntero a tu commit/rama actual (en qué "foto" estás).
 
 **Área de staging (index)**: Zona intermedia para preparar cambios antes del commit. `git add` mueve archivos aquí.
 
@@ -36,7 +36,7 @@
 
 **Merge**: Une historias creando (a veces) un commit de merge. Seguro y común en equipo. `git merge feature/x`
 
-**Fast-forward**: Tipo de merge donde `main` solo “avanza el puntero” sin crear commit de merge (línea recta).
+**Fast-forward**: Tipo de merge donde `main` solo "avanza el puntero" sin crear commit de merge (línea recta).
 
 **Rebase**: Reaplica tus commits como si hubieran nacido sobre otra base (historia lineal). `git rebase origin/main`
 
@@ -65,9 +65,9 @@
 - Seguro: `git branch -d rama` (solo si está fully merged).
 - Forzado: `git branch -D rama` (útil tras Squash).
 - Remoto: `git push origin --delete rama`
-    
+
     **FETCH_HEAD**: Referencia temporal creada por `git fetch/pull` apuntando a lo último traído del remoto.
-    
+
 
 **`git fetch --prune`**: Limpia referencias remotas obsoletas (ramas borradas en el servidor).
 
@@ -150,24 +150,24 @@ git push -u origin feature/docs-mod0-ajustes
 ## 🛠️ Flujo diario de trabajo
 
 - [ ]  Crear rama corta: `git switch -c <prefix>/<nombre-corto>`
-    
+
     *prefix sugerido: `feature/`, `fix/`, `docs/`*
-    
+
 - [ ]  Hacer cambios pequeños y atómicos
 - [ ]  Añadir al staging: `git add -p` *(o `git add .` si procede)*
 - [ ]  Commit claro (Conventional Commits):
-    
+
     `docs(mod0): añade glosario de Git`
-    
+
 - [ ]  Push inicial de la rama: `git push -u origin <rama>`
 
 ## 🔀 Mantener la rama al día (si `main` avanzó)
 
 - [ ]  `git fetch origin`
 - [ ]  `git rebase origin/main` en tu rama
-    
+
     *resolver conflictos → `git add <arch>` → `git rebase --continue`*
-    
+
 - [ ]  Subir rebase: `git push --force-with-lease`
 
 ## 🔎 Abrir y revisar PR
@@ -206,10 +206,10 @@ git push -u origin feature/docs-mod0-ajustes
 - [ ]  Nombres de rama: `feature/mod0-git-flujos`, `docs/mod0-glosario`
 - [ ]  Tipos de commit: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 - [ ]  Regla simple:
-    
+
     *Si el cambio necesita 2+ frases para explicarse → **rama + PR**.
     Si es typo/enlace roto → puede ir directo a `main`.*
-    
+
 
 ---
 
