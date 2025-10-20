@@ -1,0 +1,24 @@
+# Módulo 4 - Clase 2: Tu API en un contenedor
+# Dependencies para FastAPI + JWT + Sentry
+
+# Web framework
+fastapi==0.118.0
+uvicorn[standard]==0.37.0
+
+# Data validation
+pydantic==2.11.10
+
+# JWT authentication
+python-jose[cryptography]
+
+# Observability
+sentry-sdk[fastapi]
+
+# Testing (development)
+pytest==8.4.2
+pytest-cov
+httpx==0.27.2
+
+# Linting & Security (development)
+ruff
+bandit
