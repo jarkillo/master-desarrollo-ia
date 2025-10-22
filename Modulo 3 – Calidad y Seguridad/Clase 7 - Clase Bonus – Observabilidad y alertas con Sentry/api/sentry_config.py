@@ -157,7 +157,7 @@ def configurar_sentry() -> None:
     dsn = os.getenv("SENTRY_DSN")
 
     if not dsn:
-        print("⚠️  SENTRY_DSN no configurado, observabilidad deshabilitada")
+        print("[WARNING] SENTRY_DSN no configurado, observabilidad deshabilitada")
         return
 
     # Sampling adaptativo por ambiente
@@ -197,4 +197,4 @@ def configurar_sentry() -> None:
         server_name=os.getenv("HOSTNAME", "unknown"),
     )
 
-    print(f"✅ Sentry inicializado (environment={environment}, sampling={traces_sample_rate})")
+    print(f"[OK] Sentry inicializado (environment={environment}, sampling={traces_sample_rate})")
