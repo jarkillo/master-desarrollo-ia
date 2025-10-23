@@ -26,7 +26,7 @@ class CrearTareaRequest(BaseModel):
     """Request para crear tarea con validaciones robustas.
 
     Valida y sanitiza todos los campos de entrada para crear una tarea.
-    Incluye validadores personalizados para reglas de negocio complejas.
+    Los validadores personalizados garantizan integridad de datos.
 
     Attributes:
         nombre: Nombre de la tarea (1-100 caracteres, se capitaliza automáticamente)
@@ -34,11 +34,13 @@ class CrearTareaRequest(BaseModel):
         fecha_limite: Fecha límite opcional, debe ser futura
         etiquetas: Lista de hasta 10 etiquetas (se normalizan automáticamente)
 
-    Validators:
-        - nombre_no_solo_espacios: Sanitiza y valida el nombre
-        - fecha_no_pasada: Valida que la fecha límite sea futura
-        - normalizar_etiquetas: Normaliza a lowercase, elimina duplicados
-        - validar_tareas_urgentes: Requiere fecha límite para prioridad 1-2
+    Note:
+        Validadores automáticos aplicados:
+
+        - **nombre**: Sanitizado (capitalizado, sin espacios extra)
+        - **fecha_limite**: Debe ser futura (no pasada)
+        - **etiquetas**: Normalizadas (lowercase, sin duplicados)
+        - **prioridad 1-2**: Requieren fecha límite obligatoria
 
     Example:
         >>> request = CrearTareaRequest(
