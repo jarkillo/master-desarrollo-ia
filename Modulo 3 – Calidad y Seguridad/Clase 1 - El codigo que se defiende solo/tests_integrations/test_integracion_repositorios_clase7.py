@@ -1,6 +1,10 @@
 # tests/test_crear_tarea_json.py
 import tempfile
 import os
+
+# IMPORTANTE: Configurar JWT_SECRET ANTES de importar módulos que lo usen
+os.environ["JWT_SECRET"] = "secret-test"
+
 from fastapi.testclient import TestClient
 from api import api as api_mod
 from api.servicio_tareas import ServicioTareas
