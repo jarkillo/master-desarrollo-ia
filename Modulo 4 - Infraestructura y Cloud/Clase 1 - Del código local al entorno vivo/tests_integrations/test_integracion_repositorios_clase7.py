@@ -1,5 +1,9 @@
 import os
 import tempfile
+
+# IMPORTANTE: Configurar JWT_SECRET ANTES de importar módulos que lo usen
+os.environ["JWT_SECRET"] = "secret-test"
+
 from fastapi.testclient import TestClient
 from api import api as api_mod
 from api.servicio_tareas import ServicioTareas
@@ -7,7 +11,6 @@ from api.repositorio_json import RepositorioJSON
 
 
 def test_crear_tarea_con_repositorio_json_temporal():
-    os.environ["JWT_SECRET"] = "secret-test"
     tmp = tempfile.NamedTemporaryFile(delete=False)
     tmp.close()
     try:
