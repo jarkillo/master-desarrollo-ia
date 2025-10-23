@@ -1,7 +1,18 @@
+"""API REST de tareas con FastAPI y validaciones avanzadas.
+
+Este módulo implementa los endpoints REST para la gestión de tareas,
+usando Pydantic para validaciones robustas y FastAPI para la API.
+"""
+
 from fastapi import FastAPI
 from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import date
+from typing import Any
 from api.servicio_tareas import ServicioTareas
+
+
+__all__ = ['app', 'CrearTareaRequest', 'crear_tarea', 'listar_tareas']
+
 
 app = FastAPI(
     title="API de Tareas",
@@ -14,13 +25,32 @@ servicio = ServicioTareas()
 class CrearTareaRequest(BaseModel):
     """Request para crear tarea con validaciones robustas.
 
+    Valida y sanitiza todos los campos de entrada para crear una tarea.
+    Incluye validadores personalizados para reglas de negocio complejas.
+
+    Attributes:
+        nombre: Nombre de la tarea (1-100 caracteres, se capitaliza automáticamente)
+        prioridad: Nivel de prioridad 1 (urgente) a 5 (baja), default 3
+        fecha_limite: Fecha límite opcional, debe ser futura
+        etiquetas: Lista de hasta 10 etiquetas (se normalizan automáticamente)
+
+    Validators:
+        - nombre_no_solo_espacios: Sanitiza y valida el nombre
+        - fecha_no_pasada: Valida que la fecha límite sea futura
+        - normalizar_etiquetas: Normaliza a lowercase, elimina duplicados
+        - validar_tareas_urgentes: Requiere fecha límite para prioridad 1-2
+
     Example:
-        {
-            "nombre": "Estudiar Pydantic",
-            "prioridad": 1,
-            "fecha_limite": "2025-12-31",
-            "etiquetas": ["python", "educación"]
-        }
+        >>> request = CrearTareaRequest(
+        ...     nombre="estudiar pydantic",
+        ...     prioridad=1,
+        ...     fecha_limite=date(2025, 12, 31),
+        ...     etiquetas=["Python", "EDUCACIÓN"]
+        ... )
+        >>> request.nombre
+        'Estudiar pydantic'
+        >>> request.etiquetas
+        ['python', 'educación']
     """
 
     nombre: str = Field(
@@ -55,7 +85,17 @@ class CrearTareaRequest(BaseModel):
     @field_validator('nombre')
     @classmethod
     def nombre_no_solo_espacios(cls, v: str) -> str:
-        """Valida y sanitiza el nombre de la tarea."""
+        """Valida y sanitiza el nombre de la tarea.
+
+        Args:
+            v: Nombre a validar
+
+        Returns:
+            Nombre sanitizado (capitalizado, sin espacios extra)
+
+        Raises:
+            ValueError: Si el nombre está vacío o es solo espacios
+        """
         v = v.strip()
         if not v:
             raise ValueError('El nombre no puede estar vacío o ser solo espacios')
@@ -64,7 +104,17 @@ class CrearTareaRequest(BaseModel):
     @field_validator('fecha_limite')
     @classmethod
     def fecha_no_pasada(cls, v: date | None) -> date | None:
-        """Valida que la fecha límite no sea pasada."""
+        """Valida que la fecha límite no sea pasada.
+
+        Args:
+            v: Fecha límite a validar
+
+        Returns:
+            Fecha validada o None
+
+        Raises:
+            ValueError: Si la fecha está en el pasado
+        """
         if v is not None and v < date.today():
             raise ValueError(
                 f'La fecha límite no puede estar en el pasado '
@@ -75,14 +125,28 @@ class CrearTareaRequest(BaseModel):
     @field_validator('etiquetas')
     @classmethod
     def normalizar_etiquetas(cls, v: list[str]) -> list[str]:
-        """Normaliza etiquetas: lowercase, strip, unique."""
+        """Normaliza etiquetas: lowercase, strip, unique.
+
+        Args:
+            v: Lista de etiquetas a normalizar
+
+        Returns:
+            Lista de etiquetas normalizadas (lowercase, sin duplicados)
+        """
         etiquetas_normalizadas = [tag.lower().strip() for tag in v]
         # Eliminar duplicados manteniendo orden
         return list(dict.fromkeys(etiquetas_normalizadas))
 
     @model_validator(mode='after')
-    def validar_tareas_urgentes(self):
-        """Tareas urgentes (prioridad 1-2) requieren fecha límite."""
+    def validar_tareas_urgentes(self) -> 'CrearTareaRequest':
+        """Tareas urgentes (prioridad 1-2) requieren fecha límite.
+
+        Returns:
+            Self para encadenamiento
+
+        Raises:
+            ValueError: Si tarea urgente no tiene fecha límite
+        """
         if self.prioridad <= 2 and self.fecha_limite is None:
             raise ValueError(
                 f'Las tareas urgentes (prioridad {self.prioridad}) '
@@ -92,7 +156,34 @@ class CrearTareaRequest(BaseModel):
 
 
 @app.post("/tareas", status_code=201)
-def crear_tarea(cuerpo: CrearTareaRequest):
+def crear_tarea(cuerpo: CrearTareaRequest) -> dict[str, Any]:
+    """Crea una nueva tarea en el sistema.
+
+    Args:
+        cuerpo: Datos de la tarea a crear (validados por Pydantic)
+
+    Returns:
+        Diccionario con los datos de la tarea creada incluyendo ID
+
+    Example:
+        POST /tareas
+        {
+            "nombre": "Estudiar Python",
+            "prioridad": 1,
+            "fecha_limite": "2025-12-31",
+            "etiquetas": ["python", "educación"]
+        }
+
+        Response 201:
+        {
+            "id": 1,
+            "nombre": "Estudiar python",
+            "completada": false,
+            "prioridad": 1,
+            "fecha_limite": "2025-12-31",
+            "etiquetas": ["python", "educación"]
+        }
+    """
     tarea = servicio.crear(
         nombre=cuerpo.nombre,
         prioridad=cuerpo.prioridad,
@@ -103,5 +194,36 @@ def crear_tarea(cuerpo: CrearTareaRequest):
 
 
 @app.get("/tareas")
-def listar_tareas():
+def listar_tareas() -> list[dict[str, Any]]:
+    """Lista todas las tareas almacenadas.
+
+    Returns:
+        Lista de diccionarios con los datos de cada tarea
+
+    Example:
+        GET /tareas
+
+        Response 200:
+        [
+            {
+                "id": 1,
+                "nombre": "Estudiar python",
+                "completada": false,
+                "prioridad": 1,
+                "fecha_limite": "2025-12-31",
+                "etiquetas": ["python", "educación"]
+            },
+            {
+                "id": 2,
+                "nombre": "Revisar código",
+                "completada": true,
+                "prioridad": 3,
+                "fecha_limite": null,
+                "etiquetas": []
+            }
+        ]
+
+    Note:
+        Retorna una lista vacía si no hay tareas.
+    """
     return [tarea.model_dump() for tarea in servicio.listar()]
