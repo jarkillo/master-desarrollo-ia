@@ -125,7 +125,7 @@ class ServicioTareas:
         """Retorna todas las tareas almacenadas.
 
         Returns:
-            Lista de todas las tareas en el sistema (puede estar vacía)
+            Copia de la lista de tareas en el sistema (puede estar vacía)
 
         Example:
             >>> servicio = ServicioTareas()
@@ -135,7 +135,7 @@ class ServicioTareas:
             2
 
         Note:
-            La lista retornada es la lista interna. Para prevenir
-            mutaciones, considera retornar una copia en producción.
+            Retorna una copia para prevenir mutaciones accidentales
+            del estado interno del servicio (defensive copy pattern).
         """
-        return self._tareas
+        return self._tareas.copy()
