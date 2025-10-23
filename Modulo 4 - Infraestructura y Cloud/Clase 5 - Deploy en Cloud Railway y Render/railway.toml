@@ -1,0 +1,19 @@
+# railway.toml
+# Configuración para deploy en Railway
+#
+# Documentación: https://docs.railway.app/reference/config-as-code
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "uvicorn api.api:app --host 0.0.0.0 --port $PORT --workers 2"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+# Variables de entorno
+# Estas se configuran en el dashboard de Railway, NO en el código
+# Railway proporciona DATABASE_URL automáticamente si agregas PostgreSQL
