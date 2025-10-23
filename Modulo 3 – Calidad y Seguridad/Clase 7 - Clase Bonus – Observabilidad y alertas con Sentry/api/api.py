@@ -170,7 +170,6 @@ def login(cuerpo: LoginRequest) -> LoginResponse:
     "/tareas",
     status_code=status.HTTP_201_CREATED,
     response_model=TareaResponse,
-    dependencies=[Depends(verificar_jwt)],
     summary="Crear una nueva tarea",
     description="Crea una tarea con el nombre proporcionado. Requiere autenticación JWT.",
     responses={
@@ -222,7 +221,6 @@ def crear_tarea(
 @app.get(
     "/tareas",
     response_model=list[TareaResponse],
-    dependencies=[Depends(verificar_jwt)],
     summary="Listar todas las tareas",
     description="Retorna todas las tareas del usuario autenticado",
     responses={
