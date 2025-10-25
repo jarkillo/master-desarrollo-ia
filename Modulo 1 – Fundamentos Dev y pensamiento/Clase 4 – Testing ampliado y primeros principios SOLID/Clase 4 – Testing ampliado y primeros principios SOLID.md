@@ -840,3 +840,628 @@ No necesitas ser experto en Python o unittest. Lo importante es que interiorices
 ---
 
 👉 Con esto, tu CLI ya empieza a parecerse a un mini-proyecto real: tiene nuevas features, tests que lo protegen y una base de diseño que evita que se convierta en spaghetti.
+
+---
+
+# 🎯 Proyecto Final del Módulo 1
+
+Esta Clase 4 ES tu **proyecto final del Módulo 1**. No es solo un ejercicio más: es donde demuestras que dominas los fundamentos de desarrollo + asistencia de IA.
+
+## Objetivos del Proyecto Final
+
+Al completar este proyecto, habrás demostrado:
+
+1. ✅ **Git workflow profesional**: Branches, commits, Pull Requests
+2. ✅ **TDD con IA**: RED → GREEN → REFACTOR usando agentes
+3. ✅ **SOLID básico**: Single Responsibility Principle aplicado
+4. ✅ **Coverage de excelencia**: 90%+ con tests significativos
+5. ✅ **Validación de código IA**: Verificar que el código generado es correcto
+
+---
+
+## 🤖 Workflow Multi-Agente del Proyecto
+
+Este proyecto debes completarlo usando un **workflow estructurado de agentes**. No se trata de "pedirle todo a la IA", sino de usar **el agente correcto en cada fase**.
+
+### Fase 1: RED (Diseño de Tests) → Test Coverage Strategist
+
+**Cuándo usarlo**: Cuando necesites identificar QUÉ casos de prueba escribir.
+
+**Cómo usarlo**:
+
+```markdown
+Prompt al Test Coverage Strategist:
+
+Rol: Test Coverage Strategist
+Feature nueva: Sistema de prioridades en tareas (alta/media/baja)
+
+Funcionalidad:
+- agregar_tarea(ruta, nombre, prioridad="media")
+- listar_tareas(ruta, prioridad=None)
+
+Objetivo: Lista completa de casos de prueba para TDD.
+Categoriza por criticidad (Alta/Media/Baja).
+```
+
+**Qué hace el agente**:
+- ✅ Sugiere casos de prueba (happy path, edge cases, validación)
+- ✅ Prioriza por criticidad (qué testear primero)
+- ✅ Identifica casos que NO se te habían ocurrido
+
+**QUÉ HACES TÚ** (NO delegar al agente):
+- ❌ NO copies los tests automáticamente
+- ✅ ESCRIBE TÚ los tests basándote en las sugerencias
+- ✅ ENTIENDE por qué cada test es necesario
+
+---
+
+### Fase 2: GREEN (Implementación) → Python Best Practices Coach
+
+**Cuándo usarlo**: Después de implementar el código (cuando tests ya pasan).
+
+**Cómo usarlo**:
+
+```markdown
+Prompt al Python Best Practices Coach:
+
+Rol: Python Best Practices Coach
+Contexto: Implementé prioridades en tareas. Tests pasan ✅.
+
+Código:
+[pega tu código]
+
+Objetivo: Revisa y sugiere mejoras Pythonic.
+- ¿Hay anti-patterns?
+- ¿Están bien los type hints?
+- ¿Código legible y mantenible?
+```
+
+**Qué hace el agente**:
+- ✅ Detecta anti-patterns (variables `p`, `t`, código críptico)
+- ✅ Sugiere mejoras Pythonic (f-strings, comprehensions)
+- ✅ Valida type hints y documentación
+
+**QUÉ HACES TÚ**:
+- ✅ REVISA cada sugerencia críticamente
+- ✅ APLICA solo mejoras que entiendes
+- ✅ EJECUTA tests después de cada cambio
+
+---
+
+### Fase 3: REFACTOR (Arquitectura) → Clean Architecture Enforcer
+
+**Cuándo usarlo**: Cuando hayas completado la feature y quieras validar diseño.
+
+**Cómo usarlo**:
+
+```markdown
+Prompt al Clean Architecture Enforcer:
+
+Rol: Clean Architecture Enforcer
+Contexto: CLI de tareas con prioridades. ¿Sigue SRP?
+
+Código completo:
+[pega tareas.py]
+
+Objetivo: Valida si funciones tienen responsabilidad única.
+- ¿Alguna función hace demasiadas cosas?
+- ¿Mezclo concerns (IO + lógica de negocio)?
+```
+
+**Qué hace el agente**:
+- ✅ Valida Single Responsibility Principle
+- ✅ Detecta "god functions" (funciones que hacen demasiado)
+- ✅ Sugiere refactorings si es necesario
+
+**QUÉ HACES TÚ**:
+- ✅ EVALÚA si los refactorings son necesarios (no siempre lo son)
+- ✅ REFACTORIZA con tests pasando como red de seguridad
+- ✅ DOCUMENTA las decisiones arquitectónicas
+
+---
+
+### Fase 4: COVERAGE (Validación Final) → Test Coverage Strategist
+
+**Cuándo usarlo**: Antes del Pull Request, para validar coverage.
+
+**Cómo usarlo**:
+
+```bash
+# Ejecuta coverage
+pytest --cov=. --cov-report=term-missing
+```
+
+```markdown
+Prompt al Test Coverage Strategist:
+
+Rol: Test Coverage Strategist
+Contexto: Estoy en X% coverage, objetivo 90%+.
+
+Coverage report:
+[pega output de pytest --cov]
+
+Código: tareas.py
+
+Objetivo: Plan priorizado de tests para 90%+.
+```
+
+**Qué hace el agente**:
+- ✅ Identifica líneas sin cubrir
+- ✅ Explica POR QUÉ son importantes
+- ✅ Sugiere tests específicos
+
+**QUÉ HACES TÚ**:
+- ✅ ESCRIBES los tests sugeridos
+- ✅ VALIDAS que coverage sube
+- ✅ VERIFICAS que tests son significativos (no "test por test")
+
+---
+
+## 📝 Documentación del Uso de IA (OBLIGATORIO)
+
+Parte del proyecto es **documentar qué hiciste con IA y qué hiciste manualmente**. Esto es crítico para:
+
+1. **Transparencia**: Saber qué aprendiste vs qué delegaste
+2. **Auditoría**: Demostrar que entiendes el código
+3. **Aprendizaje**: Reflexionar sobre el proceso
+
+### Plantilla: `ai_workflow_log.md`
+
+Crea este archivo en tu proyecto y complétalo:
+
+```markdown
+# AI Workflow Log - Proyecto Final Módulo 1
+
+**Estudiante**: [Tu nombre]
+**Fecha**: [Fecha de inicio - Fecha fin]
+**Feature**: Sistema de prioridades en tareas
+
+---
+
+## 🤖 Uso de Agentes IA
+
+### Test Coverage Strategist
+
+**Cuándo usé**: Fase RED (diseño de tests)
+
+**Prompt usado**:
+\```
+Rol: Test Coverage Strategist
+Feature nueva: Sistema de prioridades...
+[pega prompt completo]
+\```
+
+**Qué sugirió el agente**:
+- Test 1: Agregar con prioridad explícita "alta"
+- Test 2: Agregar sin prioridad (default "media")
+- Test 3: Prioridad inválida usa "media"
+- Test 4: Filtrar por prioridad "alta"
+- Test 5: Backward compatibility
+
+**Qué casos NO se me habían ocurrido**:
+- ❌ Backward compatibility (tareas antiguas sin prioridad)
+- ❌ Case-insensitive ("ALTA" → "alta")
+
+**Qué hice yo manualmente**:
+- ✅ Escribí TODOS los tests yo mismo (no copié código del agente)
+- ✅ Entendí por qué cada test era necesario
+- ✅ Añadí un test extra que el agente no sugirió: [descripción]
+
+---
+
+### Python Best Practices Coach
+
+**Cuándo usé**: Fase GREEN (refactoring de implementación)
+
+**Qué sugirió**:
+- Usar `Literal["alta", "media", "baja"]` en vez de `str`
+- Extraer validación a función `_normalizar_prioridad()`
+- Usar f-strings en mensajes de error
+
+**Qué cambios apliqué**:
+- ✅ Type hints con Literal (entendí que mejora autocomplete)
+- ✅ Función helper `_normalizar_prioridad()` (separación de concerns)
+- ❌ NO usé f-strings porque [razón]
+
+**Tests después de refactor**: ✅ Todos pasando
+
+---
+
+### Clean Architecture Enforcer
+
+**Cuándo usé**: Fase REFACTOR (validación arquitectónica)
+
+**Violaciones detectadas**:
+- [Ninguna / Descripción de violación]
+
+**Refactorings aplicados**:
+- [Descripción de cambios]
+
+---
+
+## ✍️ Código Escrito Manualmente vs IA
+
+### Escritura Manual (sin asistencia IA)
+
+- ✅ **Todos los tests**: Escribí cada `assert`, cada caso
+- ✅ **Estructura del programa**: Decidí funciones, flujo
+- ✅ **Validaciones de negocio**: Reglas de prioridades
+
+### Con Asistencia IA (prompt → revisar → modificar)
+
+- 🤖 **Implementación inicial de `agregar_tarea`**: IA generó esqueleto, yo ajusté
+- 🤖 **List comprehension para filtrado**: IA sugirió, yo entendí y adapté
+- 🤖 **Type hints específicos**: IA sugirió `Literal`, yo investigué y apliqué
+
+### Código Copiado Directamente de IA (❌ EVITAR)
+
+- ❌ **Ninguno**: No copié código sin entender
+
+---
+
+## 🎓 Aprendizajes
+
+### Conceptos Nuevos Aprendidos
+
+1. **TDD con IA**: La IA sugiere QUÉ testear, yo escribo CÓMO
+2. **Type hints avanzados**: `Literal` para strings con valores específicos
+3. **Coverage estratégico**: No se trata del %, sino de tests significativos
+4. **SRP en práctica**: Funciones pequeñas, una responsabilidad
+
+### Errores Cometidos y Corregidos
+
+1. **Error**: Copié código de IA sin entender list comprehension
+   - **Corrección**: Pregunté a IA "explica esta línea", luego reescribí yo
+2. **Error**: Alcancé 90% con tests inútiles (test por test)
+   - **Corrección**: Eliminé tests duplicados, usé parametrización
+
+### Decisiones de Diseño (Justificadas)
+
+1. **Por qué `prioridad` tiene default "media"**:
+   - Backward compatibility con código existente
+   - No romper tests antiguos
+
+2. **Por qué extraje `_normalizar_prioridad()`**:
+   - Reutilizable en múltiples funciones
+   - Testeable independientemente
+   - Sigue SRP
+
+---
+
+## ✅ Coverage Final
+
+**Coverage alcanzado**: 92%
+
+**Líneas sin cubrir (y por qué)**:
+- Línea X: [Razón]
+
+**Tests escritos**: 12 tests
+- 8 tests críticos (alta prioridad)
+- 3 tests edge cases (media prioridad)
+- 1 test parametrizado (baja, media, alta)
+
+---
+
+## 🚀 Siguientes Pasos
+
+**Si tuviera más tiempo, mejoraría**:
+- [ ] Añadir validación de longitud de `nombre`
+- [ ] Implementar `eliminar_tarea()`
+- [ ] Persistencia en JSON (ahora solo memoria)
+
+**Lo que aplicaré en el próximo módulo**:
+- Workflow RED-GREEN-REFACTOR siempre
+- Validar con agentes DESPUÉS de escribir, no antes
+- Documentar uso de IA en cada fase
+```
+
+---
+
+## 🔍 Validación de Código Generado por IA
+
+**REGLA DE ORO**: NUNCA confíes ciegamente en código de IA. Siempre valida.
+
+### Checklist de Validación (ANTES de aceptar código de IA)
+
+#### 1. ¿Entiendes cada línea?
+
+```python
+# ❌ Código de IA que NO entiendes
+return [t for t in todas if t.get("prioridad") == prioridad]
+
+# ✅ ANTES de aceptar, pregunta:
+"Explica esta línea paso a paso. ¿Qué hace .get()? ¿Por qué no usar t['prioridad']?"
+```
+
+**Acción**: Si no entiendes algo, pregunta a la IA "Explica como si tuviera 10 años".
+
+---
+
+#### 2. ¿Los tests pasan?
+
+```bash
+# Ejecuta tests DESPUÉS de pegar código de IA
+pytest -v
+
+# ❌ Si fallan: NO aceptes el código, investiga por qué
+# ✅ Si pasan: Bien, pero NO es suficiente
+```
+
+**Acción**: Tests pasando es mínimo, no garantía de calidad.
+
+---
+
+#### 3. ¿Sigue las convenciones del proyecto?
+
+**Checklist**:
+- [ ] Type hints en todos los parámetros
+- [ ] Nombres largos y descriptivos (no `p`, `t`, `x`)
+- [ ] Docstrings en funciones públicas
+- [ ] Sin código "mágico" (números sin constantes, strings hardcodeados)
+
+```python
+# ❌ Código de IA que viola convenciones
+def a(p):
+    if p not in ["alta", "media", "baja"]:  # String hardcodeado
+        return "media"
+    return p
+
+# ✅ Tu versión corregida
+PRIORIDADES = ("alta", "media", "baja")
+
+def _normalizar_prioridad(prioridad: str) -> str:
+    """Normaliza prioridad o usa 'media' si inválida."""
+    return prioridad if prioridad in PRIORIDADES else "media"
+```
+
+---
+
+#### 4. ¿Es el código MÍNIMO necesario?
+
+La IA tiende a sobre-complicar. Valida:
+
+```python
+# ❌ IA añade complejidad innecesaria
+def agregar_tarea(ruta, nombre, prioridad="media"):
+    try:
+        with open(ruta, "r") as f:
+            tareas = json.load(f)
+    except FileNotFoundError:
+        tareas = []
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        tareas = []
+    # ... 20 líneas más
+
+# ✅ Versión más simple (si ya tienes cargar_tareas())
+def agregar_tarea(ruta, nombre, prioridad="media"):
+    tareas = cargar_tareas(ruta)  # Reutilizar función existente
+    nueva = {"id": nuevo_id(tareas), "nombre": nombre, "prioridad": prioridad}
+    tareas.append(nueva)
+    guardar_tareas(ruta, tareas)
+    return nueva
+```
+
+**Pregunta crítica**: ¿Hay funciones existentes que puedo reutilizar?
+
+---
+
+#### 5. ¿Funciona con edge cases?
+
+**Tests obligatorios DESPUÉS de código IA**:
+
+```python
+# Test edge case: Prioridad vacía
+def test_prioridad_vacia():
+    tarea = agregar_tarea(tmp, "Test", prioridad="")
+    assert tarea["prioridad"] == "media"  # ¿Pasa?
+
+# Test edge case: Prioridad con espacios
+def test_prioridad_con_espacios():
+    tarea = agregar_tarea(tmp, "Test", prioridad="  alta  ")
+    assert tarea["prioridad"] == "alta"  # ¿Pasa o falla?
+
+# Test edge case: Case-insensitive
+def test_prioridad_mayusculas():
+    tarea = agregar_tarea(tmp, "Test", prioridad="ALTA")
+    assert tarea["prioridad"] == "alta"
+```
+
+**Si algún test falla**: El código de IA tiene bugs. Arréglalo ANTES de continuar.
+
+---
+
+#### 6. ¿Introduce deuda técnica?
+
+**Red flags**:
+- ❌ TODO comments: `# TODO: fix this later`
+- ❌ Warnings de linter: `ruff check` reporta issues
+- ❌ Duplicación: Código copiado en múltiples lugares
+- ❌ Acoplamiento: Función depende de detalles de implementación
+
+**Acción**: Ejecuta linter y corrige ANTES de commit.
+
+```bash
+ruff check tareas.py
+# Si hay warnings, arregla o justifica por qué no
+```
+
+---
+
+### Workflow de Validación (Paso a Paso)
+
+Cuando la IA te genera código, sigue este proceso:
+
+```markdown
+1. [ ] Leo el código línea por línea
+   - Si no entiendo algo → Pregunto "Explica X"
+   - Si hay código "mágico" → Pido versión más simple
+
+2. [ ] Copio el código a mi archivo
+   - NO directamente, escribo yo tecleando (refuerza aprendizaje)
+
+3. [ ] Ejecuto tests
+   - pytest -v
+   - ¿Todos pasan? → Continúa
+   - ¿Alguno falla? → Investiga, NO copies más código
+
+4. [ ] Añado tests de edge cases
+   - Casos que IA no consideró
+   - Si fallan → Arreglo el código
+
+5. [ ] Reviso con linter
+   - ruff check
+   - Corrijo warnings
+
+6. [ ] Pregunto a Clean Architecture Enforcer
+   - ¿Sigue SRP?
+   - ¿Introduce acoplamiento?
+
+7. [ ] Documento en ai_workflow_log.md
+   - Qué generó IA
+   - Qué modifiqué yo
+   - Por qué
+
+8. [ ] Commit con mensaje descriptivo
+   - feat: añadir prioridades con validación
+   - (NO: "código de IA" o "cambios varios")
+```
+
+---
+
+## 🎯 Criterios de Éxito del Proyecto Final
+
+Has completado el Proyecto Final del Módulo 1 si:
+
+### Técnico
+- [ ] Coverage 90%+ con tests significativos
+- [ ] Todos los tests pasan (pytest -v)
+- [ ] Sin warnings de linter (ruff check)
+- [ ] Feature de prioridades implementada completa
+- [ ] Backward compatibility mantenida
+
+### Metodología
+- [ ] Usaste TDD: RED → GREEN → REFACTOR
+- [ ] Aplicaste SRP (validado por Clean Architecture Enforcer)
+- [ ] Git workflow: Branch → Commits → PR
+- [ ] Tests escritos ANTES de implementación
+
+### IA Workflow
+- [ ] Usaste Test Coverage Strategist (fase RED)
+- [ ] Usaste Python Best Practices Coach (fase REFACTOR)
+- [ ] Usaste Clean Architecture Enforcer (validación)
+- [ ] Documentaste en `ai_workflow_log.md` qué hizo IA y qué hiciste tú
+
+### Comprensión
+- [ ] Puedes explicar cada línea de código
+- [ ] Entiendes POR QUÉ cada test es necesario
+- [ ] Sabes cuándo es OK usar IA y cuándo no
+- [ ] Reflexionaste en el log sobre aprendizajes
+
+---
+
+## 🚫 Antipatrones a Evitar
+
+### ❌ Copiar código de IA sin entender
+
+**Señal de problema**:
+```python
+# Código que pegaste pero no entiendes
+return [t for t in todas if t.get("prioridad") == prioridad]
+```
+
+**Pregunta clave**: "Si tuviera que explicar esta línea a alguien, ¿podría hacerlo?"
+
+**Solución**: Pregunta "Explica X paso a paso" ANTES de aceptar el código.
+
+---
+
+### ❌ Alcanzar 90% con tests inútiles
+
+**Señal de problema**:
+```python
+def test_1():
+    assert True  # Test que siempre pasa
+
+def test_nombre_no_es_numero():
+    tarea = agregar_tarea(tmp, "Test")
+    assert isinstance(tarea["nombre"], str)  # Test trivial
+```
+
+**Solución**: Pregunta "¿Este test falla si hay un bug real?" Si no, bórralo.
+
+---
+
+### ❌ Usar IA para TODO
+
+**Señal de problema**: `ai_workflow_log.md` dice "IA generó todo, yo solo ejecuté".
+
+**Solución**:
+- TÚ escribes tests
+- TÚ diseñas arquitectura
+- IA solo sugiere mejoras
+
+---
+
+### ❌ No validar código de IA
+
+**Señal de problema**: Pegaste código, tests pasan, hiciste commit inmediato.
+
+**Solución**: Sigue el Workflow de Validación completo (checklist de 8 pasos).
+
+---
+
+## 📚 Recursos de Apoyo
+
+### Agentes Educativos
+
+- **Test Coverage Strategist**: `.claude/agents/educational/test-coverage-strategist.md`
+- **Python Best Practices Coach**: `.claude/agents/educational/python-best-practices-coach.md`
+- **Clean Architecture Enforcer**: `.claude/agents/educational/clean-architecture-enforcer.md`
+
+### Documentación
+
+- **Ejercicio completo**: `ejercicio_clase4_ai_avanzado.md` (en esta carpeta)
+- **Glosario**: `Glosario - Clase 4.md` (términos clave)
+
+### Comandos Útiles
+
+```bash
+# Tests
+pytest -v                                    # Ejecutar todos los tests
+pytest --cov=. --cov-report=term-missing    # Coverage detallado
+pytest -k "prioridad"                        # Solo tests de prioridad
+
+# Linting
+ruff check tareas.py                         # Verificar estilo
+ruff check --fix tareas.py                   # Auto-corregir
+
+# Git
+git status                                   # Ver cambios
+git diff                                     # Ver diferencias
+git add tareas.py test_*.py                 # Añadir archivos
+git commit -m "feat: añadir prioridades"    # Commit
+```
+
+---
+
+## 🎓 Reflexión Final
+
+Este proyecto final NO es sobre "hacer funcionar el código". Es sobre:
+
+1. **Metodología**: TDD, Git workflow, uso estratégico de IA
+2. **Criterio**: Saber CUÁNDO usar IA, CUÁNDO escribir tú
+3. **Comprensión**: Entender cada línea, no copiar ciegamente
+4. **Documentación**: Transparencia sobre qué aprendiste
+
+**Pregunta clave para tu reflexión**:
+
+> "Si tuviera que explicar este código a un compañero SIN mencionar que usé IA, ¿podría hacerlo con confianza?"
+
+Si la respuesta es SÍ → Has completado el proyecto exitosamente.
+
+Si la respuesta es NO → Revisa, pregunta, entiende. Repite hasta que SÍ.
+
+---
+
+**Próximo paso**: Módulo 2 - Arquitectura Limpia con FastAPI + Agentes Especializados 🚀
