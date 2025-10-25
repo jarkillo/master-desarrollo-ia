@@ -1,0 +1,248 @@
+.bug-hunt-leaderboard {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.leaderboard-container {
+  text-align: center;
+}
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background: rgba(100, 108, 255, 0.1);
+  border: 1px solid rgba(100, 108, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(100, 108, 255, 0.2);
+  transform: translateX(-4px);
+}
+
+.leaderboard-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  color: #646cff;
+}
+
+.difficulty-filter {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  padding: 0.75rem 1.5rem;
+  background: rgba(100, 108, 255, 0.1);
+  border: 2px solid rgba(100, 108, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.filter-button:hover {
+  background: rgba(100, 108, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.filter-button.active {
+  background: rgba(100, 108, 255, 0.3);
+  border-color: #646cff;
+  font-weight: bold;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+  padding: 3rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(100, 108, 255, 0.1);
+  border-top-color: #646cff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-state button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.leaderboard-table-container {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(100, 108, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leaderboard-table thead {
+  background: rgba(100, 108, 255, 0.2);
+}
+
+.leaderboard-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: bold;
+  color: #646cff;
+  border-bottom: 2px solid rgba(100, 108, 255, 0.3);
+}
+
+.leaderboard-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(100, 108, 255, 0.1);
+}
+
+.leaderboard-table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.leaderboard-table tbody tr:hover {
+  background: rgba(100, 108, 255, 0.1);
+}
+
+.leaderboard-table tbody tr.top-1 {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.leaderboard-table tbody tr.top-2 {
+  background: rgba(192, 192, 192, 0.1);
+}
+
+.leaderboard-table tbody tr.top-3 {
+  background: rgba(205, 127, 50, 0.1);
+}
+
+.rank-cell {
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center !important;
+}
+
+.player-cell {
+  font-weight: 600;
+}
+
+.score-cell {
+  font-weight: bold;
+  color: #646cff;
+  font-size: 1.1rem;
+}
+
+.bugs-cell {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.accuracy-cell {
+  font-weight: 500;
+}
+
+.time-cell {
+  font-family: 'Courier New', Courier, monospace;
+  color: #888;
+}
+
+.difficulty-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.date-cell {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.more-entries-hint {
+  margin-top: 1rem;
+  color: #888;
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: light) {
+  .leaderboard-table {
+    background: #f9f9f9;
+  }
+
+  .leaderboard-table thead {
+    background: rgba(100, 108, 255, 0.1);
+  }
+
+  .leaderboard-table tbody tr:hover {
+    background: rgba(100, 108, 255, 0.05);
+  }
+}
+
+@media (max-width: 768px) {
+  .leaderboard-header {
+    flex-direction: column;
+  }
+
+  .back-button {
+    position: static;
+  }
+
+  .leaderboard-table {
+    font-size: 0.85rem;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 0.5rem;
+  }
+
+  /* Hide less important columns on mobile */
+  .date-cell,
+  .time-cell {
+    display: none;
+  }
+
+  .leaderboard-table th:nth-child(6),
+  .leaderboard-table th:nth-child(8) {
+    display: none;
+  }
+}

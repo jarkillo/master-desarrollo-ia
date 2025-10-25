@@ -1,0 +1,151 @@
+.bug-hunt-start {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.start-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #646cff;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #888;
+  margin-bottom: 2rem;
+}
+
+.difficulty-section {
+  margin: 2rem 0;
+}
+
+.difficulty-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.difficulty-card {
+  padding: 1.5rem;
+  border: 2px solid #444;
+  border-radius: 12px;
+  background: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.difficulty-card:hover:not(:disabled) {
+  border-color: #646cff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.3);
+}
+
+.difficulty-card.selected {
+  border-color: #646cff;
+  background: rgba(100, 108, 255, 0.1);
+}
+
+.difficulty-card:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.difficulty-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.difficulty-desc {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.start-button {
+  font-size: 1.2rem;
+  padding: 1rem 3rem;
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.start-button:hover:not(:disabled) {
+  background: #535bf2;
+  transform: scale(1.05);
+}
+
+.start-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.instructions {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background: rgba(100, 108, 255, 0.05);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.instructions h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.instructions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.instructions li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.instructions li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #646cff;
+  font-weight: bold;
+}
+
+@media (prefers-color-scheme: light) {
+  .difficulty-card {
+    background: #f9f9f9;
+    border-color: #ddd;
+  }
+
+  .difficulty-card.selected {
+    background: rgba(100, 108, 255, 0.1);
+  }
+
+  .instructions {
+    background: rgba(100, 108, 255, 0.05);
+  }
+}
