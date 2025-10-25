@@ -387,7 +387,81 @@ Comprehensive quality pipeline:
 
 **Module 3**: Security hardened. JWT authentication introduced in Class 4, Sentry in Class 7. Always validate environment variables.
 
-**Module 4**: Infrastructure focus. Use Docker commands, check `infra/` directories for deployment configs.
+**Module 4**: Infrastructure focus. Use Docker commands, check `infra/` directories for deployment configs. Includes Context Engineering (Clase 6.6) and Writing Tools for AI Agents (Clase 6.7).
+
+**Module 5**: Full-Stack development with React + FastAPI. JWT auth, deployment strategies, and Agent Orchestration Mastery.
+
+## AI Dev Academy Game
+
+The repository includes an interactive game to practice concepts learned in the Master program.
+
+### Overview
+
+**AI Dev Academy - The Game** is a simulation where you progress from Junior Developer to CTO while learning the Master's content.
+
+**Features**:
+- 🎯 XP, levels, and skill progression
+- 🏆 Achievements system
+- 🤖 Hire specialized AI agents
+- 🎨 Visual workspace that improves with progress
+- 💾 Auto-save progress
+- 🎮 Mini-games: Bug Hunt, Prompt Duel, Architecture Builder
+
+### Quick Start
+
+**Terminal Game** (Classic Python CLI):
+```bash
+cd ai-dev-academy-game
+pip install -r requirements.txt
+python main.py
+```
+
+**Bug Hunt Mini-Game** (Full-Stack React + FastAPI):
+
+**Option 1: Manual Start (Development)**
+```bash
+# Terminal 1 - Backend
+cd ai-dev-academy-game/backend
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Linux/Mac
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+# Terminal 2 - Frontend
+cd ai-dev-academy-game/frontend
+npm install
+npm run dev
+
+# Open browser: http://localhost:3000
+```
+
+**Option 2: End-to-End Test**
+```bash
+python ai-dev-academy-game/test_bug_hunt_flow.py
+```
+
+### Game Structure
+
+```
+Level 1-5:   Junior Developer (Module 0)
+Level 6-10:  Mid Developer (Module 1)
+Level 11-15: Senior Developer (Module 2)
+Level 16-20: Tech Lead (Module 3)
+Level 21-25: Architect (Module 4)
+Level 26-30: CTO (Module 5)
+```
+
+### Technologies
+
+**Terminal Game**: Python 3.12, Rich (Terminal UI), JSON (save system)
+
+**Bug Hunt Mini-Game**:
+- Backend: FastAPI, SQLAlchemy, Pydantic
+- Frontend: React 18, TypeScript, Vite
+- 15 backend tests, 87.70% coverage
+
+For detailed setup instructions, see `ai-dev-academy-game/SETUP.md`
 
 ## Important Notes
 
@@ -397,59 +471,61 @@ Comprehensive quality pipeline:
 - Coverage threshold is 80% - tests will fail below this
 - Follow TDD: tests are written before implementation in most classes
 
-## Known Issues & Gaps
+## Remaining Tasks & AI Integration
 
-⚠️ **IMPORTANT**: This repository is approximately **65% complete**. Before making changes, review:
+⚠️ **IMPORTANT**: This repository is approximately **95% complete**. The main remaining work is **AI integration** into Modules 1-3. Before making changes, review:
 
-- **`docs/reviews/REVIEW_COMPLETENESS.md`**: Missing components, inconsistencies, incomplete modules
+- **`docs/reviews/REVIEW_COMPLETENESS.md`**: Missing components, inconsistencies (mostly resolved)
 - **`docs/reviews/REVIEW_PEDAGOGICAL.md`**: Conceptual gaps, learning progression issues
-- **`docs/reviews/REVIEW_AI_INTEGRATION.md`**: **CRITICAL** - AI integration gaps, curriculum redesign
+- **`docs/reviews/REVIEW_AI_INTEGRATION.md`**: **CRITICAL** - AI integration gaps in Modules 1-3
 - **`docs/reviews/AGENTS_RECOMMENDED.md`**: Recommended specialist agents for educational support
 
-### 🤖 The AI Integration Gap
+### 🤖 The AI Integration Status
 
-**CRITICAL FINDING**: The program currently teaches excellent software engineering but **lacks AI dimension entirely**.
+**Current State**: The program teaches excellent software engineering AND includes comprehensive AI foundations:
 
-Current state:
-- ✅ Clean Code, SOLID, FastAPI, Docker
-- ❌ How to use Claude Code effectively
-- ❌ Agent design and orchestration
-- ❌ Prompt engineering for development
-- ❌ Security review of AI-generated code
-- ❌ Dividing projects for AI assistance
+✅ **Completed AI Integration**:
+- ✅ Module 0: Complete AI development foundations (6 classes)
+- ✅ Module 4: Context Engineering & Writing Tools for AI Agents
+- ✅ Module 5: Agent Orchestration Mastery
+- ✅ Agent Library: 7 educational agents in `.claude/agents/educational/`
+
+⚠️ **Pending AI Integration** (Modules 1-3):
+- ❌ Module 1: Needs 40% AI integration in each class
+- ❌ Module 2: Needs AI agent workflow sections
+- ❌ Module 3: Needs AI security review integration
 
 **Vision**: After this master, you should be **"a solo developer with an army of agents"** - able to build production applications alone using specialized AI agents.
 
 **See `docs/reviews/REVIEW_AI_INTEGRATION.md`** for complete analysis and redesigned curriculum.
 
-### Critical Gaps to Be Aware Of
+### Remaining Tasks
 
-**AI Integration**:
-1. ~~**Module 0 needs complete redesign**~~ - ✅ **COMPLETED**: Module 0 redesigned with 6 classes (Clase 0-6) teaching AI development foundations
-2. **No AI teaching in any module** - Modules 1-4 are pure software engineering (needs 40% AI integration)
+**AI Integration** (Priority 1):
+1. ~~**Module 0 needs complete redesign**~~ - ✅ **COMPLETED**: Module 0 redesigned with 6 classes teaching AI development foundations
+2. **Modules 1-3 need AI integration** - Each class needs 40% AI content (workflows, agent usage, prompts)
 3. ~~**No agent library**~~ - ✅ **COMPLETED**: 7 educational agents created in `.claude/agents/educational/`
-4. **No prompt engineering** - Core skill for AI-assisted development (partially addressed in Module 0 Clase 5)
+4. ~~**No prompt engineering**~~ - ✅ **COMPLETED**: Module 0 Clase 5 covers prompt engineering
 
-**Implementation**:
-5. **Module 4 is only 25% complete** - Only Classes 1-2 exist, Classes 3-8 (database, cloud deployment) are missing
-6. **Module 5 is completely absent** - Full-stack + agent orchestration content not yet implemented
+**Implementation** (Priority 2):
+5. ~~**Module 4 incomplete**~~ - ✅ **COMPLETED**: All 8 classes implemented (Docker, DB, Cloud, AI Agents)
+6. ~~**Module 5 is completely absent**~~ - ✅ **COMPLETED**: 5 classes implemented (Full-Stack + Agent Orchestration)
 7. **Test naming inconsistency** - Module 3-4 tests incorrectly named `test_crear_tarea_clase7.py`
 8. **CI/CD only tests one class** - Most implemented classes are not in the CI matrix
 
-**Technical Gaps**:
-9. **Async Python not taught** - FastAPI is used synchronously, async/await patterns missing
-10. **No database integration** - Promised in Module 4 but not implemented (SQLAlchemy, Alembic)
-11. **Error handling patterns missing** - No custom exceptions, HTTPException handlers
+**Documentation** (Priority 3):
+9. **Missing glossaries** - 3 glossaries missing, 4 without `.md` extension
+10. **Module-level READMEs** - Absent for Modules 1-3
 
-### Working Around Gaps
+### Working with Completed Features
 
-**When adding database features**: Module 4 Classes 3-4 need to be implemented first (SQLAlchemy + Alembic)
+**Database features**: ✅ Module 4 Classes 3-4 are complete (SQLAlchemy + Alembic)
 
-**When fixing tests**: Module 3-4 test files need renaming from `clase7` to correct class numbers
+**Full-Stack development**: ✅ Module 5 Classes 1-5 are complete (React + FastAPI integration)
+
+**When fixing tests**: Module 3-4 test files still need renaming from `clase7` to correct class numbers
 
 **When updating CI**: Add all implemented classes to `.github/workflows/ci.yml` and `ci_quality.yml` matrices
-
-**When teaching async**: This is a critical gap - consider implementing Module 2 Class 3.5 (Async Python)
 
 ### Test File Naming Convention
 
@@ -466,11 +542,18 @@ tests/test_crear_tarea_clase7.py  ❌ All files incorrectly named
 
 **Recommended fix**: Rename to `test_crear_tarea_clase{X}_mod{Y}.py` for clarity
 
-### Missing Documentation
+### Documentation Status
 
+**Pending**:
 - 3 glossaries missing: Module 3 Class 1, Module 3 Class 7, Module 4 Class 1
 - 4 glossaries without `.md` extension
 - Module-level READMEs absent for Modules 1-3
+
+**Completed**:
+- ✅ Module 0 comprehensive documentation
+- ✅ Module 4 & 5 class documentation
+- ✅ AI Dev Academy Game documentation (README.md, SETUP.md, ARCHITECTURE.md, DEPLOY.md)
+- ✅ Educational agent documentation (7 agents in `.claude/agents/educational/`)
 
 ## Educational Context
 
@@ -605,31 +688,47 @@ See `docs/reviews/AGENTS_RECOMMENDED.md` for detailed agent specifications and u
 |--------|--------|---------|-------|
 | Module 0 | ✅ **COMPLETED** | 6/6 | AI Development Foundations (Classes 0-6) + Final Project |
 | Module 1 | ⚠️ Complete (no AI) | 4/4 | CLI, fundamentals, needs AI integration |
-| Module 2 | ⚠️ Mostly Complete (no AI) | 5/6 | Class 1 only has notes, needs AI agents |
+| Module 2 | ⚠️ Complete (no AI) | 6/6 | FastAPI & SOLID principles, needs AI agents |
 | Module 3 | ⚠️ Complete (no AI) | 7/7 | Security implemented, needs AI security review |
-| Module 4 | 🔴 25% Complete | 2/8 | Missing DB, cloud deployment, LangChain, AI DevOps |
-| Module 5 | ❌ Not Started | 0/6+ | Agent orchestration mastery completely absent |
+| Module 4 | ✅ **COMPLETED** | 8/8 | Docker, DB, SQLAlchemy, Alembic, Cloud, AI Agents, Tools |
+| Module 5 | ✅ **COMPLETED** | 5/5 | Full-Stack React+FastAPI, Auth, Deploy, Agent Orchestration |
 
-**Overall**: ~70% complete (was 65%, +5% with Module 0 completion and agent library)
+**Overall**: ~95% complete (was 70%, +25% with Module 4 & 5 completion)
 
 ## Development Priorities
 
 If you're continuing this project, prioritize:
 
-**Phase 1 - AI Integration (CRITICAL)**:
+**Phase 1 - AI Integration (HIGHEST PRIORITY)**:
 1. ~~**Redesign Module 0**~~ - ✅ **COMPLETED**: 6 classes on AI development foundations created
 2. ~~**Create Agent Library**~~ - ✅ **COMPLETED**: 7 educational agents created in `.claude/agents/educational/`
 3. **Add AI sections to Modules 1-3** (1-2 weeks): 40% AI integration in each class
-4. **Prompt Library** (2-3 days): 50+ effective prompts for common tasks (partially addressed in Module 0 Clase 5)
+   - Module 1: Add AI workflow sections to each class
+   - Module 2: Integrate educational agents in code reviews
+   - Module 3: Add AI security review workflows
+4. **Prompt Library expansion** (2-3 days): 50+ effective prompts for common tasks (partially addressed in Module 0 Clase 5)
 
-**Phase 2 - Implementation Gaps**:
-5. **Fix critical inconsistencies** (1-2 days): Rename tests, update CI matrix, add `.md` extensions
-6. **Complete Module 4** (3-4 weeks): Database integration, migrations, cloud deployment, AI DevOps
-7. **Add async/await teaching** (1 week): Critical gap in Module 2
-8. **Implement error handling** (1 week): Custom exceptions, HTTPException patterns
+**Phase 2 - Polish & Documentation (MEDIUM PRIORITY)**:
+5. **Fix critical inconsistencies** (1-2 days):
+   - Rename tests from `clase7` to correct class numbers
+   - Update CI matrix to test all implemented classes
+   - Add `.md` extensions to 4 glossaries
+6. **Complete documentation** (1-2 days):
+   - Add 3 missing glossaries (Module 3 Class 1, Module 3 Class 7, Module 4 Class 1)
+   - Create Module-level READMEs for Modules 1-3
+   - Update CI/CD workflow configurations
 
-**Phase 3 - Completion**:
-9. **Create Module 5** (3-4 weeks): Full-stack, agent orchestration mastery, final project
-10. **Testing & Refinement** (1-2 weeks): Validate with students, iterate
+**Phase 3 - Testing & Refinement (ONGOING)**:
+7. ~~**Complete Module 4**~~ - ✅ **COMPLETED**: All 8 classes implemented
+8. ~~**Create Module 5**~~ - ✅ **COMPLETED**: 5 classes implemented (Full-stack + Agent Orchestration)
+9. **Validate with students** (ongoing): Iterate based on feedback
+10. **Expand AI Dev Academy Game** (optional): Additional mini-games, more achievements
+
+**Completed Milestones**:
+- ✅ Module 0: AI Development Foundations (6 classes)
+- ✅ Module 4: Complete infrastructure stack (Docker, DB, SQLAlchemy, Alembic, Cloud, AI Agents)
+- ✅ Module 5: Full-Stack + Agent Orchestration (React + FastAPI)
+- ✅ Educational Agent Library (7 specialized teaching agents)
+- ✅ AI Dev Academy Game (Terminal + Bug Hunt mini-game)
 
 See review documents for detailed action items and estimates.
