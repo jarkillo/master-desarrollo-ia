@@ -122,6 +122,8 @@ Ahora tu API corre igual que en tu máquina, pero **aislada**.
 
 ## 🤖 Aplicación con IA
 
+### Workflow Básico: Generar Dockerfile
+
 Prompt reutilizable:
 
 ```
@@ -138,6 +140,39 @@ La IA puede:
 - optimizar capas del Dockerfile,
 - crear imágenes más ligeras con Alpine,
 - o añadir versiones separadas para desarrollo y producción.
+
+### Workflow Avanzado: Docker Compose y Multi-Stage Builds
+
+**En esta clase también aprenderás**:
+
+1. **Generar docker-compose.yml** con IA para orquestar múltiples servicios (API + DB + Redis)
+2. **Crear multi-stage builds** para reducir el tamaño de la imagen >50%
+3. **Troubleshooting de contenedores** con asistencia de IA
+4. **Validar configuraciones** usando agentes educativos especializados
+
+**Ver workflow completo**: `AI_WORKFLOW.md` en esta carpeta incluye:
+- Prompts específicos para docker-compose
+- Optimización de Dockerfile con multi-stage builds
+- Debugging de contenedores con IA
+- 3 ejercicios prácticos guiados
+- Validación con Docker Infrastructure Guide agent
+
+**Tiempo estimado con IA**: 40% menos que hacerlo manualmente (~2h vs ~3.5h)
+
+### Validación con Agentes Educativos
+
+Después de crear tu configuración Docker, usa estos agentes para validar:
+
+**Docker Infrastructure Guide** (`.claude/agents/educational/docker-infrastructure-guide.md`):
+- Valida docker-compose.yml best practices
+- Revisa health checks y restart policies
+- Asegura seguridad (usuario no-root, secrets)
+- Optimiza networking y volúmenes
+
+**FastAPI Design Coach** (`.claude/agents/educational/fastapi-design-coach.md`):
+- Valida que la API esté correctamente configurada para containers
+- Revisa manejo de variables de entorno
+- Asegura que health checks respondan correctamente
 
 ---
 
@@ -164,8 +199,16 @@ La IA puede:
 
 ## ✅ Checklist de la Clase 2
 
+### Básico
 - [ ]  Dockerfile funcional y probado.
 - [ ]  CI capaz de construir la imagen.
 - [ ]  .dockerignore configurado.
-- [ ]  Entiendes qué significa “entorno reproducible”.
+- [ ]  Entiendes qué significa "entorno reproducible".
 - [ ]  Tu API corre igual en local y en contenedor.
+
+### AI Integration (ver `AI_WORKFLOW.md` para detalles)
+- [ ]  docker-compose.yml generado con IA para API + DB + Redis
+- [ ]  Multi-stage build implementado (reducción >50% tamaño)
+- [ ]  Troubleshooting realizado con asistencia de IA
+- [ ]  Configuración validada con Docker Infrastructure Guide agent
+- [ ]  Al menos 2 ejercicios prácticos completados con IA
