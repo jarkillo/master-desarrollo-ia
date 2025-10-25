@@ -374,6 +374,28 @@ alembic show head
 
 ## 🤖 Aplicación con IA (40%)
 
+**Ver workflow completo**: `AI_WORKFLOW.md` incluye:
+- **Generación automática** de migrations con validación de seguridad
+- **Detección de migraciones peligrosas** (NOT NULL en tablas con datos)
+- **Estrategias multi-paso** para zero-downtime deployments
+- **Data migrations seguras** con validación inline
+- **Troubleshooting** de conflictos (multiple heads, branches)
+- **Production rollback strategies** con backups
+- **5 ejercicios prácticos** guiados con IA (120 min total)
+
+### Agentes Educativos Integrados
+
+**Database ORM Specialist** (`.claude/agents/educational/database-orm-specialist.md`):
+- Valida migraciones antes de aplicar en producción
+- Detecta pérdida potencial de datos
+- Verifica backward compatibility
+- Revisa que downgrade funciona correctamente
+
+**Python Best Practices Coach** (`.claude/agents/educational/python-best-practices-coach.md`):
+- Revisa código de migrations (type hints, docstrings)
+- Valida nombres descriptivos de columnas
+- Verifica manejo de errores en data migrations
+
 ### Prompt para generar migrations
 
 ```
@@ -1432,6 +1454,21 @@ def downgrade():
 - [ ] IA te ayudó con data migrations
 - [ ] Generaste rollback strategies con IA
 - [ ] Documentaste qué prompts funcionaron mejor
+
+### Validación con Agentes Educativos
+
+**Database ORM Specialist**:
+- [ ] Validaste migraciones antes de aplicar en producción
+- [ ] Agent detectó migraciones peligrosas (NOT NULL en tablas con datos)
+- [ ] Verificaste backward compatibility de migrations
+- [ ] Revisaste que downgrade funciona correctamente
+- [ ] Agent validó data migrations sin pérdida de datos
+
+**Python Best Practices Coach**:
+- [ ] Código de migrations tiene type hints completos
+- [ ] Migrations tienen docstrings descriptivos
+- [ ] Nombres de columnas son descriptivos y consistentes
+- [ ] Manejo de errores en data migrations con RuntimeError
 
 ---
 

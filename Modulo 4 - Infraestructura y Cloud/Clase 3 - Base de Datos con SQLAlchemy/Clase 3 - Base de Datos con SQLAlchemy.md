@@ -284,6 +284,17 @@ app = FastAPI(lifespan=lifespan)
 
 ## 🤖 Aplicación con IA (40%)
 
+**Ver workflow completo**: `AI_WORKFLOW.md` incluye:
+- Generación completa de modelos ORM con IA
+- Detección y solución de N+1 queries
+- Optimización de queries complejas
+- Validación de relaciones many-to-many
+- 4 ejercicios prácticos guiados con IA
+- Troubleshooting de DetachedInstanceError y PendingRollbackError
+- Validación con Database ORM Specialist agent
+
+**Tiempo estimado con IA**: 50-60% más eficiente que manual
+
 ### Prompt para generar modelos ORM
 
 ```
@@ -680,13 +691,27 @@ Quiero migrar a RepositorioDB (SQLAlchemy) sin romper nada.
 - [ ] Agregaste paginación
 - [ ] Usaste Alembic para migraciones
 
-### Integración con IA (40% del contenido)
+### Integración con IA (40% del contenido) - Ver `AI_WORKFLOW.md`
 
 - [ ] Usaste IA para generar el modelo inicial
-- [ ] Validaste el modelo con IA (revisión de anti-patterns)
-- [ ] IA te ayudó a optimizar queries
+- [ ] Validaste el modelo con Database ORM Specialist agent
+- [ ] IA te ayudó a detectar N+1 queries
+- [ ] Optimizaste queries con asistencia de IA
 - [ ] Generaste tests con IA y los entiendes
+- [ ] Troubleshooting de errores comunes con IA
+- [ ] Completaste al menos 2 ejercicios de `AI_WORKFLOW.md`
 - [ ] Documentaste qué prompts funcionaron mejor
+
+**Validación con agentes educativos**:
+- Database ORM Specialist (`.claude/agents/educational/database-orm-specialist.md`)
+  * Revisa modelos SQLAlchemy 2.0
+  * Detecta N+1 queries
+  * Valida relaciones y cascades
+  * Optimiza queries
+
+- Python Best Practices Coach (`.claude/agents/educational/python-best-practices-coach.md`)
+  * Valida type hints en modelos
+  * Revisa código Pythonic
 
 ---
 

@@ -125,25 +125,83 @@ Ahora ningún cambio pasa sin revisión y sin que el CI lo apruebe.
 
 ---
 
-## 🤖 Aplicación con IA
+## 🤖 Aplicación con IA (40%)
 
-Prompt práctico:
+**Ver workflow completo**: `AI_WORKFLOW.md` incluye:
+
+- **Fase 1**: Generación automática de GitHub Actions workflows con seguridad integrada
+- **Fase 2**: Configuración de Gitleaks con reglas personalizadas (.gitleaks.toml)
+- **Fase 3**: Setup de Dependabot para auto-updates de dependencias
+- **Fase 4**: Branch protection rules y deployment strategies
+- **5 ejercicios prácticos** guiados con IA (105 min total)
+- **Prompts reutilizables** para generación, troubleshooting y optimización
+- **Validación con agentes educativos** (checklists de revisión)
+
+### Agentes Educativos Integrados
+
+Los siguientes agentes educativos están disponibles para validar tu trabajo en esta clase:
+
+**Python Best Practices Coach** (`.claude/agents/educational/python-best-practices-coach.md`):
+- Valida scripts de CI/CD y configuraciones de workflows
+- Revisa que los scripts de seguridad sigan convenciones Pythonic
+- Detecta patrones anti-seguridad en código de pipeline
+
+**Docker Infrastructure Guide** (`.claude/agents/educational/docker-infrastructure-guide.md`):
+- Revisa configuraciones de deployment y Dockerfiles
+- Valida prácticas de seguridad en contenedores (non-root, secrets, etc.)
+- Optimiza health checks y restart policies
+
+### Flujo de Trabajo Recomendado con IA
+
+1. **Generación del pipeline base** (15 min):
+   - Usa prompts del AI_WORKFLOW.md para crear el workflow inicial
+   - La IA genera `.github/workflows/ci_security.yml` con Safety + Gitleaks
+
+2. **Configuración de Gitleaks** (20 min):
+   - Genera `.gitleaks.toml` con reglas personalizadas
+   - Configura allowlist para falsos positivos (docs, examples)
+   - Valida con Python Best Practices Coach
+
+3. **Setup de Dependabot** (20 min):
+   - Crea `.github/dependabot.yml` para auto-updates diarios
+   - Configura grupos de seguridad para dependencias críticas
+   - Establece límites de PRs abiertos simultáneos
+
+4. **Branch protection** (15 min):
+   - Configura reglas en GitHub Settings vía prompts guiados
+   - Requiere status checks (CI + security scans)
+   - Habilita auto-merge para Dependabot PRs
+
+5. **Validación final** (35 min):
+   - Ejecuta checklists de validación con agentes educativos
+   - Revisa que todos los escaneos pasen
+   - Documenta decisiones de seguridad en notes.md
+
+### Prompt Rápido para Empezar
 
 ```
-Rol: Ingeniero DevSecOps.
-Contexto: Proyecto FastAPI con tests, CI, auditoría y JWT.
+Rol: Ingeniero DevSecOps senior con experiencia en GitHub Actions.
+Contexto: Proyecto FastAPI con tests, CI, auditoría Bandit y JWT.
+Actualmente tengo .github/workflows/ci.yml básico con pytest.
+
 Objetivo:
-- Fortalecer el pipeline con escaneo de dependencias y secretos.
-- Mejorar reglas de protección de ramas.
-Entrega:
-- YAML de ejemplo con safety + gitleaks.
-- Recomendaciones de configuración en GitHub.
+- Fortalecer el pipeline con escaneo de dependencias (Safety) y secretos (Gitleaks).
+- Integrar Dependabot para auto-updates de seguridad.
+- Configurar branch protection rules en main y dev.
 
+Entrega:
+1. YAML completo de .github/workflows/ci_security.yml con:
+   - Safety scan con API key desde secrets
+   - Gitleaks con GITHUB_TOKEN automático
+   - Upload de artifacts para reportes
+2. Archivo .gitleaks.toml con reglas personalizadas (allowlist para docs/, tests/fixtures/)
+3. Configuración de .github/dependabot.yml para Python con updates diarios
+4. Instrucciones paso a paso para configurar branch protection en GitHub UI
+
+Formato: Código completo + explicaciones breves de cada decisión de seguridad.
 ```
 
-La IA te devolverá versiones más completas (por ejemplo, incluir `pip-audit`, `trivy`, o integración con dependabot).
-
-Tú decides hasta dónde llevarlo.
+**Ver más prompts y ejercicios detallados en**: `AI_WORKFLOW.md`
 
 ---
 
