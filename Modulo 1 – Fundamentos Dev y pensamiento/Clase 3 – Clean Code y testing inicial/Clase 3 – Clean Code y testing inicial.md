@@ -56,9 +56,409 @@ No vamos a estudiar un libro entero de Robert C. Martin, pero sí algunos princi
         Esa separación la IA ya la hizo en la versión con `argparse`, pero tú debes entenderla.
         
 
-La idea es que cualquier dev (incluido tu “yo del futuro”) pueda leer tu código y entenderlo sin un máster en jeroglíficos.
+La idea es que cualquier dev (incluido tu "yo del futuro") pueda leer tu código y entenderlo sin un máster en jeroglíficos.
 
-### 2. Introducción al testing
+---
+
+### 2. IA para diseñar estructura de proyectos
+
+Hasta ahora has visto código limpio a nivel de funciones y variables. Pero **¿cómo organizas carpetas y archivos en un proyecto más grande?**
+
+Aquí es donde la IA se convierte en tu **arquitecto de proyectos**.
+
+#### 2.1. Por qué la estructura importa
+
+Imagina tu código como una casa:
+- **Casa sin estructura**: Todo en un salón gigante (1 archivo con 2000 líneas)
+- **Casa bien organizada**: Cocina, baño, dormitorios separados (carpetas `api/`, `tests/`, `utils/`)
+
+**Beneficios de buena estructura**:
+- ✅ Encuentras código rápido ("¿dónde está la lógica de tareas?" → `servicio_tareas.py`)
+- ✅ Tests separados del código principal
+- ✅ Puedes trabajar en equipo sin pisarte
+- ✅ Proyecto escalable (agregar features sin romper todo)
+
+**Problema**: Diseñar estructura **antes de tener experiencia** es difícil. ¿Qué carpetas crear? ¿Qué archivos van juntos?
+
+**Solución**: Usar IA como mentor de arquitectura, pero **tú decides** si sus sugerencias tienen sentido.
+
+---
+
+#### 2.2. Workflow: Manual → IA → Decisión Crítica
+
+**Paso 1: Define tu proyecto (Manual - 5 min)**
+
+Antes de pedir estructura a la IA, necesitas claridad:
+
+**Pregúntate**:
+- ¿Qué tipo de proyecto es? (CLI, API, script)
+- ¿Qué componentes principales tiene? (lógica de tareas, persistencia JSON, interfaz CLI)
+- ¿Qué necesito testear?
+
+**Ejemplo: Tu CLI de tareas**
+```
+Proyecto: CLI de tareas con persistencia JSON
+Componentes:
+1. Funciones de negocio (agregar, completar, listar)
+2. Lectura/escritura JSON
+3. Interfaz CLI (argparse)
+4. Tests
+```
+
+**Anota esto** antes de pedir nada a la IA. Necesitas saber **qué estás construyendo**.
+
+---
+
+**Paso 2: Prompt estructurado a la IA (Con IA - 5 min)**
+
+**NO hagas esto** ❌:
+```
+Dame una estructura de carpetas para mi proyecto de tareas
+```
+
+**Haz esto** ✅:
+```
+Rol: Arquitecto de proyectos Python
+Contexto: Tengo un CLI de tareas (agregar/listar/completar) con persistencia JSON.
+
+Componentes:
+- Lógica de negocio (funciones agregar_tarea, completar_tarea, listar_tareas)
+- Acceso a datos (cargar/guardar JSON)
+- Interfaz CLI (argparse)
+- Tests (pytest)
+
+Objetivo: Propón estructura de carpetas y archivos para organizar este proyecto.
+Considera: separación de capas, testabilidad, escalabilidad.
+
+NO me generes código aún, solo la estructura de directorios con explicación de qué va en cada carpeta.
+```
+
+**La IA responderá** con algo como:
+
+```
+proyecto-tareas/
+├── src/
+│   ├── __init__.py
+│   ├── cli.py              # Interfaz CLI con argparse
+│   ├── servicio_tareas.py  # Lógica de negocio
+│   └── persistencia.py     # Cargar/guardar JSON
+├── tests/
+│   ├── __init__.py
+│   ├── test_servicio.py    # Tests de lógica
+│   └── test_persistencia.py # Tests de JSON
+├── tareas.json             # Datos (en .gitignore)
+├── requirements.txt        # Dependencias
+└── README.md               # Documentación
+
+Explicación:
+- src/: Código fuente (lógica separada de interfaz)
+- tests/: Tests aislados
+- cli.py: Punto de entrada (importa servicio)
+- servicio_tareas.py: Business logic (sin CLI, sin JSON)
+- persistencia.py: Solo lectura/escritura (sin lógica)
+```
+
+---
+
+**Paso 3: Validar con criterio (Manual + Clean Architecture Enforcer - 10 min)**
+
+**⚠️ IMPORTANTE**: La IA puede sugerir estructura innecesariamente compleja para un proyecto pequeño.
+
+**TU tarea**: Evaluar críticamente cada sugerencia.
+
+**Usa el Clean Architecture Enforcer agent** para validar si la estructura sigue principios sólidos:
+
+**Prompt para el agente**:
+```
+Rol: Clean Architecture Enforcer
+Contexto: Tengo esta estructura sugerida por IA para mi CLI de tareas:
+
+[Pega la estructura que te dio la IA]
+
+Objetivo: Valida si esta estructura sigue separation of concerns correctamente.
+Señala si es demasiado compleja para un CLI simple o si hay mejoras.
+```
+
+**El agente te dirá**:
+```markdown
+## ✅ Estructura Válida con Pequeñas Mejoras
+
+**Positivos**:
+- ✅ Separación clara: CLI → Servicio → Persistencia
+- ✅ Tests aislados
+- ✅ Business logic independiente de CLI
+
+**Mejoras sugeridas**:
+1. Para un CLI pequeño, carpeta `src/` puede ser overkill
+2. Considera estructura más plana si <200 líneas de código
+3. `persistencia.py` y `servicio_tareas.py` podrían estar en raíz
+
+**Decisión**:
+- Si proyecto pequeño (<3 archivos): Estructura plana OK
+- Si planeas crecer: Acepta estructura con src/
+```
+
+---
+
+**Paso 4: Decidir TÚ (Manual)**
+
+Ahora que tienes:
+1. Tu análisis inicial
+2. Sugerencia de IA
+3. Validación del Clean Architecture Enforcer
+
+**TÚ decides** qué estructura usar.
+
+**Criterios de decisión**:
+
+| Pregunta | Si SÍ → | Si NO → |
+|----------|---------|---------|
+| ¿Proyecto >200 líneas? | Usa carpeta `src/` | Estructura plana OK |
+| ¿Trabajarás en equipo? | Separa bien carpetas | Menos importante |
+| ¿Planeas agregar API después? | Prepara estructura escalable | YAGNI (You Ain't Gonna Need It) |
+| ¿Múltiples modos (CLI + Web)? | Separa interfaz de lógica | CLI único OK |
+
+**Ejemplo de decisión razonada**:
+
+```markdown
+## Mi decisión: Estructura plana con separación básica
+
+**Razón**:
+- Proyecto pequeño (~150 líneas)
+- Solo CLI (no web ni API)
+- Solo yo trabajando
+
+**Estructura elegida**:
+proyecto-tareas/
+├── tareas.py              # Lógica + persistencia juntas (cohesión)
+├── cli.py                 # Solo interfaz CLI (separada)
+├── test_tareas.py         # Tests
+└── tareas.json            # Datos
+
+**Justificación vs sugerencia IA**:
+- NO uso src/ → Demasiado para proyecto pequeño
+- NO separo persistencia.py → Solo 2 funciones (cargar/guardar), va bien en tareas.py
+- SÍ separo cli.py → Fácil testear lógica sin CLI
+
+**Cuándo refactorizar**:
+- Si proyecto crece >300 líneas → Crear src/
+- Si agrego API → Separar persistencia.py
+```
+
+---
+
+#### 2.3. Ejercicio práctico: Manual vs IA (20 min)
+
+**Objetivo**: Comparar estructura diseñada manualmente vs con ayuda de IA.
+
+**Parte A: Diseño manual (10 min)**
+
+Sin pedir ayuda a la IA, diseña estructura para:
+
+**Proyecto**: Sistema de inventario (CLI)
+- Agregar productos (nombre, precio, stock)
+- Listar productos
+- Actualizar stock
+- Buscar por nombre
+- Persistencia JSON
+- Tests
+
+**Tu tarea**: Dibuja en papel o `notes.md`:
+```
+inventario/
+├── ??? (tus carpetas y archivos)
+```
+
+**Anota**:
+- ¿Qué archivos creaste?
+- ¿Por qué los separaste así?
+- ¿Qué dudas tuviste?
+
+---
+
+**Parte B: Diseño con IA (10 min)**
+
+Ahora pide a la IA:
+
+```
+Rol: Arquitecto Python
+Proyecto: CLI de inventario (productos con nombre, precio, stock)
+Operaciones: CRUD + búsqueda + persistencia JSON + tests
+
+Dame estructura de carpetas/archivos con explicación.
+Considera: testabilidad, escalabilidad moderada.
+```
+
+**Compara**:
+```markdown
+## Comparación Manual vs IA
+
+### Mi diseño:
+[Pega tu estructura manual]
+
+### Sugerencia IA:
+[Pega estructura de IA]
+
+### Diferencias:
+1. IA sugirió X, yo no lo había pensado → ¿Tiene sentido?
+2. Yo puse Y, IA no lo mencionó → ¿Es necesario?
+3. Ambos coincidimos en Z → ✅ Buena señal
+
+### Mi decisión final:
+[Híbrido: toma lo mejor de ambos]
+
+### Aprendizajes:
+- IA me hizo pensar en: [aspecto que no habías considerado]
+- Yo tenía razón en: [decisión mejor que IA]
+- Próxima vez: [qué harías diferente]
+```
+
+---
+
+**Parte C: Validación con Clean Architecture Enforcer (5 min)**
+
+Toma tu diseño final híbrido y pide al agente:
+
+```
+Rol: Clean Architecture Enforcer
+Estructura propuesta para CLI inventario:
+[Pega tu estructura final]
+
+¿Sigue separation of concerns? ¿Mejoras?
+```
+
+**Incorpora feedback** y documenta en `notes.md`:
+```markdown
+## Feedback del Clean Architecture Enforcer
+
+**Validaciones pasadas**: ✅
+- [Aspectos correctos]
+
+**Mejoras sugeridas**: ⚠️
+- [Sugerencias del agente]
+
+**Aplicadas**: ✅
+- [Qué cambios hiciste]
+
+**Rechazadas**: ❌
+- [Qué no aplicaste y por qué]
+```
+
+---
+
+#### 2.4. Antipatrones comunes que la IA detecta
+
+**Antipatrón 1: Todo en un archivo**
+
+❌ **Problema**:
+```
+inventario.py  # 800 líneas: CLI + lógica + persistencia + tests
+```
+
+✅ **Solución** (IA te sugiere):
+```
+inventario/
+├── servicio.py     # Lógica
+├── persistencia.py # JSON
+├── cli.py          # Interfaz
+└── tests/
+```
+
+---
+
+**Antipatrón 2: Nombres genéricos**
+
+❌ **Problema**:
+```
+src/
+├── utils.py        # ¿Qué utils? 500 funciones mezcladas
+├── helpers.py      # ¿Helpers de qué?
+└── manager.py      # ¿Qué gestiona?
+```
+
+✅ **Solución** (Clean Architecture Enforcer detecta):
+```
+src/
+├── validacion_productos.py  # Nombres específicos
+├── formato_salida.py
+└── servicio_inventario.py
+```
+
+**Lección**: Nombres específicos > nombres genéricos.
+
+---
+
+**Antipatrón 3: Tests mezclados con código**
+
+❌ **Problema**:
+```
+src/
+├── servicio.py
+├── test_servicio.py  # Tests mezclados con código
+└── persistencia.py
+```
+
+✅ **Solución**:
+```
+src/
+├── servicio.py
+└── persistencia.py
+
+tests/              # Tests separados
+├── test_servicio.py
+└── test_persistencia.py
+```
+
+**Razón**: Tests son "documentación ejecutable", no parte del código productivo.
+
+---
+
+#### 2.5. Cuándo confiar en IA vs tu criterio
+
+**Confía en IA cuando**:
+✅ Sugiere separación clara de responsabilidades
+✅ Propone estructura estándar de la industria (src/, tests/, docs/)
+✅ Detecta antipatrones que no conocías (God Object, duplicación)
+✅ Nombra cosas específicamente (servicio_X, repositorio_Y)
+
+**Usa tu criterio cuando**:
+⚠️ IA sugiere estructura muy compleja para proyecto pequeño
+⚠️ Propone carpetas que no necesitas aún (YAGNI)
+⚠️ Usa patterns avanzados para casos simples (Factory, Strategy en CLI de 100 líneas)
+⚠️ No considera tu contexto específico (equipo, plazos, experiencia)
+
+**Regla de oro**:
+> "La IA te da la estructura ideal. Tú decides qué parte necesitas HOY y qué DESPUÉS."
+
+---
+
+#### 2.6. Checklist: ¿Es buena estructura?
+
+Usa este checklist para evaluar cualquier estructura (tuya, de IA, o híbrida):
+
+**Separación de capas**:
+- [ ] Interfaz (CLI) separada de lógica
+- [ ] Lógica de negocio sin dependencias de interfaz
+- [ ] Persistencia aislada (cambiable de JSON a DB sin tocar lógica)
+
+**Testabilidad**:
+- [ ] Tests en carpeta separada
+- [ ] Puedes testear lógica sin ejecutar CLI
+- [ ] Fixtures/mocks fáciles de crear
+
+**Escalabilidad**:
+- [ ] Fácil agregar nueva operación sin tocar todo
+- [ ] Nombres claros (sé qué hay en cada archivo sin abrirlo)
+- [ ] No God Objects (archivos >300 líneas son sospechosos)
+
+**Pragmatismo**:
+- [ ] No más complejo de lo necesario
+- [ ] Estructura justificada para tamaño del proyecto
+- [ ] Fácil de navegar (no 10 niveles de carpetas)
+
+---
+
+### 3. Introducción al testing
 
 Testing no es magia. En Python, lo mínimo se hace con `unittest`.
 
