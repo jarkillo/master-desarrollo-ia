@@ -4,8 +4,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# SQLite database URL
-SQLALCHEMY_DATABASE_URL = "sqlite:///./ai_dev_academy.db"
+from app.config import get_settings
+
+settings = get_settings()
+
+# SQLite database URL from environment
+SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
 # Create engine
 engine = create_engine(
