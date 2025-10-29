@@ -138,7 +138,8 @@ def health_check():
             content={
                 "status": "unhealthy",
                 "api": "ok",
-                "database": db_health
+                "database": "disconnected",
+                "reason": "internal error"
             }
         )
 
