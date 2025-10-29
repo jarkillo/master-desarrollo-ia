@@ -26,7 +26,7 @@ from sqlalchemy.pool import QueuePool, NullPool
 from api.config import settings
 from api.models import Base
 
-
+import logging
 def get_engine_config():
     """
     Retorna la configuración del engine según el entorno.
@@ -139,8 +139,9 @@ def check_database_health() -> dict:
             "url": settings.database_url.split("@")[-1] if "@" in settings.database_url else "local"
         }
     except Exception as e:
+        logging.exception("Database health check failed")
         return {
             "status": "error",
             "database": "disconnected",
-            "error": str(e)
+            "error": "Database connection failed"
         }
