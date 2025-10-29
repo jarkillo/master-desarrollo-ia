@@ -4,22 +4,44 @@ Este módulo implementa los endpoints REST para la gestión de tareas,
 usando Pydantic para validaciones robustas y FastAPI para la API.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import date
-from typing import Any
-from api.servicio_tareas import ServicioTareas
+from typing import Annotated
+from api.servicio_tareas import ServicioTareas, Tarea
 
 
-__all__ = ['app', 'CrearTareaRequest', 'crear_tarea', 'listar_tareas']
+__all__ = ['app', 'CrearTareaRequest', 'TareaResponse', 'crear_tarea', 'listar_tareas', 'obtener_servicio']
 
 
 app = FastAPI(
     title="API de Tareas",
-    description="API educativa - Clase 3 con validaciones avanzadas",
+    description="API educativa - Clase 3 con validaciones avanzadas y Dependency Injection",
     version="1.0.0"
 )
-servicio = ServicioTareas()
+
+
+def obtener_servicio() -> ServicioTareas:
+    """Factory function para inyectar el servicio de tareas.
+
+    Esta función crea una instancia del servicio que se inyecta
+    automáticamente en los endpoints mediante Depends().
+
+    Returns:
+        ServicioTareas: Instancia del servicio de tareas
+
+    Note:
+        En aplicaciones reales, aquí podrías:
+        - Inyectar diferentes implementaciones (memoria, BD, etc.)
+        - Configurar el servicio según el entorno
+        - Aplicar decoradores o middleware
+
+    Example:
+        >>> @app.get("/tareas")
+        >>> def listar(servicio: ServicioTareas = Depends(obtener_servicio)):
+        >>>     return servicio.listar()
+    """
+    return ServicioTareas()
 
 
 class CrearTareaRequest(BaseModel):
@@ -157,15 +179,54 @@ class CrearTareaRequest(BaseModel):
         return self
 
 
-@app.post("/tareas", status_code=201)
-def crear_tarea(cuerpo: CrearTareaRequest) -> dict[str, Any]:
+class TareaResponse(BaseModel):
+    """Response model para tareas.
+
+    Este modelo define la estructura de las respuestas de la API,
+    separando concerns entre Request y Response models.
+
+    Attributes:
+        id: Identificador único de la tarea
+        nombre: Nombre de la tarea
+        completada: Estado de completitud
+        prioridad: Nivel de prioridad 1-5
+        fecha_limite: Fecha límite opcional
+        etiquetas: Lista de etiquetas
+
+    Note:
+        La configuración `from_attributes=True` permite que Pydantic
+        convierta objetos Tarea del servicio a este modelo de respuesta,
+        validando automáticamente que todos los campos sean correctos.
+
+    Example:
+        >>> tarea_servicio = Tarea(id=1, nombre="Test", completada=False)
+        >>> response = TareaResponse.model_validate(tarea_servicio)
+        >>> response.id
+        1
+    """
+    id: int
+    nombre: str
+    completada: bool
+    prioridad: int
+    fecha_limite: date | None
+    etiquetas: list[str]
+
+    model_config = {"from_attributes": True}
+
+
+@app.post("/tareas", status_code=201, response_model=TareaResponse)
+def crear_tarea(
+    cuerpo: CrearTareaRequest,
+    servicio: Annotated[ServicioTareas, Depends(obtener_servicio)]
+) -> TareaResponse:
     """Crea una nueva tarea en el sistema.
 
     Args:
         cuerpo: Datos de la tarea a crear (validados por Pydantic)
+        servicio: Servicio de tareas inyectado automáticamente por FastAPI
 
     Returns:
-        Diccionario con los datos de la tarea creada incluyendo ID
+        TareaResponse validado con los datos de la tarea creada
 
     Example:
         POST /tareas
@@ -185,6 +246,11 @@ def crear_tarea(cuerpo: CrearTareaRequest) -> dict[str, Any]:
             "fecha_limite": "2025-12-31",
             "etiquetas": ["python", "educación"]
         }
+
+    Note:
+        El servicio se inyecta automáticamente mediante Depends(),
+        permitiendo testear fácilmente con mocks y facilitar el cambio
+        de implementaciones (memoria → base de datos).
     """
     tarea = servicio.crear(
         nombre=cuerpo.nombre,
@@ -192,15 +258,21 @@ def crear_tarea(cuerpo: CrearTareaRequest) -> dict[str, Any]:
         fecha_limite=cuerpo.fecha_limite,
         etiquetas=cuerpo.etiquetas
     )
-    return tarea.model_dump()
+    # Validar respuesta con Pydantic antes de retornar
+    return TareaResponse.model_validate(tarea)
 
 
-@app.get("/tareas")
-def listar_tareas() -> list[dict[str, Any]]:
+@app.get("/tareas", response_model=list[TareaResponse])
+def listar_tareas(
+    servicio: Annotated[ServicioTareas, Depends(obtener_servicio)]
+) -> list[TareaResponse]:
     """Lista todas las tareas almacenadas.
 
+    Args:
+        servicio: Servicio de tareas inyectado automáticamente por FastAPI
+
     Returns:
-        Lista de diccionarios con los datos de cada tarea
+        Lista de TareaResponse validadas con los datos de cada tarea
 
     Example:
         GET /tareas
@@ -227,5 +299,8 @@ def listar_tareas() -> list[dict[str, Any]]:
 
     Note:
         Retorna una lista vacía si no hay tareas.
+        Cada tarea se valida con Pydantic antes de retornar.
     """
-    return [tarea.model_dump() for tarea in servicio.listar()]
+    tareas = servicio.listar()
+    # Validar cada tarea con Pydantic antes de retornar
+    return [TareaResponse.model_validate(tarea) for tarea in tareas]
