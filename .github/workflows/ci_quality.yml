@@ -30,9 +30,14 @@ jobs:
           - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
           - "Modulo 3 – Calidad y Seguridad/Clase 6 – Defensa completa y CICD inteligente"
           - "Modulo 3 – Calidad y Seguridad/Clase 7 - Clase Bonus – Observabilidad y alertas con Sentry"
-          # Módulo 4 - Infraestructura y Cloud (2 clases)
+          # Módulo 4 - Infraestructura y Cloud (7 clases)
           - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"
           - "Modulo 4 - Infraestructura y Cloud/Clase 2 - Tu API en un contenedor"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 3 - Base de Datos con SQLAlchemy"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 4 - Migraciones con Alembic"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 5 - Deploy en Cloud Railway y Render"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 6.7 - Writing Tools for AI Agents"
+          - "Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final"
 
     steps:
       - name: Checkout
