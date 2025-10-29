@@ -1,8 +1,10 @@
-# Ejercicio Clase 3: Testing con IA
+# Ejercicio Clase 3: Clean Code y Testing con IA
 
-## 🎯 Objetivo
+## 🎯 Objetivos
 
-Alcanzar 80%+ coverage en tu CLI de tareas usando el **Test Coverage Strategist agent** para identificar edge cases y gaps de cobertura.
+1. **Diseñar estructura de proyecto** usando IA como arquitecto (manual vs IA)
+2. **Alcanzar 80%+ coverage** en tu CLI de tareas usando el Test Coverage Strategist agent
+3. **Aprender cuándo confiar en IA** vs usar criterio propio
 
 ---
 
@@ -26,7 +28,149 @@ Antes de empezar:
 
 ---
 
-## 🚀 Tareas
+## 🚀 Parte 1: Diseño de Estructura de Proyectos con IA
+
+### Tarea 0: Diseño Manual vs IA (30 min)
+
+**Objetivo**: Comparar tu intuición de estructura vs sugerencias de IA, validadas con Clean Architecture Enforcer.
+
+#### Subtarea 0.1: Diseño Manual (10 min)
+
+**Sin pedir ayuda a la IA**, diseña estructura para:
+
+**Proyecto**: Sistema de inventario (CLI)
+- Agregar productos (nombre, precio, stock)
+- Listar productos
+- Actualizar stock
+- Buscar por nombre
+- Persistencia JSON
+- Tests con pytest
+
+**Instrucciones**:
+
+1. Abre `notes.md` y dibuja tu estructura:
+   ```
+   inventario/
+   ├── ??? (tus carpetas y archivos)
+   └── ???
+   ```
+
+2. Anota:
+   - ¿Qué archivos creaste?
+   - ¿Por qué los separaste así?
+   - ¿Qué dudas tuviste?
+
+**Ejemplo de reflexión**:
+```markdown
+## Mi diseño inicial (sin IA)
+
+inventario/
+├── inventario.py    # ¿Todo junto? ¿O separar?
+├── tests.py         # ¿Aquí los tests?
+└── productos.json
+
+Dudas:
+- ¿Separo lógica de CLI?
+- ¿Dónde van las funciones de JSON?
+- ¿Tests en archivo separado o carpeta?
+```
+
+---
+
+#### Subtarea 0.2: Diseño con IA (10 min)
+
+Ahora pide estructura a la IA usando un **prompt estructurado**:
+
+**Prompt para Claude Code**:
+```
+Rol: Arquitecto de proyectos Python
+Proyecto: CLI de inventario (productos con nombre, precio, stock)
+
+Operaciones:
+- Agregar producto
+- Listar productos
+- Actualizar stock
+- Buscar por nombre
+- Persistencia JSON
+- Tests con pytest
+
+Dame estructura de carpetas/archivos con explicación.
+Considera: testabilidad, escalabilidad moderada, CLI simple.
+
+NO generes código, solo estructura de directorios explicada.
+```
+
+**Acción TÚ**:
+
+1. **Lee** la estructura que te dio la IA
+2. **Compara** con tu diseño manual en `notes.md`:
+   ```markdown
+   ## Sugerencia IA
+
+   [Pega aquí la estructura que te dio]
+
+   ## Comparación
+
+   ### Coincidencias: ✅
+   - [Cosas en las que ambos coincidimos]
+
+   ### IA sugirió (yo no): 🤔
+   - [Cosas que la IA propuso y no habías pensado]
+
+   ### Yo propuse (IA no): 💡
+   - [Cosas que tú pensaste y la IA no mencionó]
+   ```
+
+---
+
+#### Subtarea 0.3: Validación con Clean Architecture Enforcer (10 min)
+
+Ahora valida **ambas estructuras** (tuya y la de IA) usando el agente educativo:
+
+**Prompt para el agente**:
+```
+Rol: Clean Architecture Enforcer
+Contexto: Tengo DOS estructuras propuestas para CLI de inventario.
+
+Estructura 1 (manual):
+[Pega tu estructura manual]
+
+Estructura 2 (IA):
+[Pega estructura de IA]
+
+Objetivo: Compara ambas. ¿Cuál sigue mejor separation of concerns?
+¿Alguna es demasiado compleja para CLI simple?
+Dame feedback educativo sobre ambas.
+```
+
+**El agente te dirá** cuál estructura es mejor y por qué.
+
+**Acción TÚ**:
+
+1. Lee el feedback del agente
+2. **Decide tu estructura final** (híbrido):
+   ```markdown
+   ## Mi decisión final
+
+   [Dibuja la estructura final que usarás]
+
+   ## Justificación
+
+   - Tomé de mi diseño: [qué y por qué]
+   - Tomé de IA: [qué y por qué]
+   - Rechacé de IA: [qué y por qué]
+   - Aprendí: [insights del Clean Architecture Enforcer]
+   ```
+
+**Validación**: Has documentado en `notes.md`:
+- [ ] Tu diseño manual inicial
+- [ ] Sugerencia de IA
+- [ ] Feedback del Clean Architecture Enforcer
+- [ ] Tu decisión final razonada
+
+---
+
+## 🚀 Parte 2: Testing con IA
 
 ### Tarea 1: Escribir test happy path (Manual - 15 min)
 
@@ -215,22 +359,48 @@ Al final de este ejercicio, debes tener:
    - Al menos 2 escritos 100% manualmente
    - Al menos 1 con ayuda de IA (documentado)
 
-2. **notes.md** con reflexiones:
+2. **notes.md** con reflexiones completas:
    ```markdown
-   # Clase 3 - Testing con IA
+   # Clase 3 - Clean Code y Testing con IA
 
-   ## Edge cases descubiertos con IA
+   ## Parte 1: Diseño de Estructura (Manual vs IA)
+
+   ### Mi diseño inicial (sin IA)
+   [Tu estructura manual para inventario]
+
+   ### Sugerencia IA
+   [Estructura que propuso la IA]
+
+   ### Feedback Clean Architecture Enforcer
+   [Qué te dijo el agente sobre ambas estructuras]
+
+   ### Mi decisión final
+   [Estructura híbrida que elegiste]
+   - Tomé de mi diseño: [...]
+   - Tomé de IA: [...]
+   - Rechacé de IA: [...]
+
+   ### Aprendizajes sobre estructura
+   - La IA me hizo pensar en: [...]
+   - Yo tenía razón en: [...]
+   - Próxima vez haré: [...]
+
+   ---
+
+   ## Parte 2: Testing con IA
+
+   ### Edge cases descubiertos con IA
    - [Lista de casos que la IA te sugirió y no habías pensado]
 
-   ## Tests escritos
+   ### Tests escritos
    - `test_agregar_tarea`: Manual ✅
    - `test_nombre_vacio`: Manual (con sugerencia de IA para assert)
    - `test_json_corrupto`: Con ayuda de IA (entendí cada línea)
 
-   ## Coverage alcanzado
+   ### Coverage alcanzado
    - X% (objetivo 80%+)
 
-   ## Aprendizajes
+   ### Aprendizajes sobre testing
    - [Qué aprendiste sobre testing con pytest]
    - [Qué aprendiste sobre usar IA como asistente (no como copiador)]
    ```
@@ -251,11 +421,19 @@ pytest --cov=. --cov-report=term-missing --cov-fail-under=80
 
 Has completado el ejercicio si:
 
+**Parte 1: Diseño de Estructura**
+- [ ] Diseñaste estructura manualmente primero (sin IA)
+- [ ] Pediste estructura a IA con prompt estructurado
+- [ ] Validaste ambas con Clean Architecture Enforcer
+- [ ] Decidiste estructura final híbrida con justificación
+- [ ] Documentaste comparación y aprendizajes en notes.md
+
+**Parte 2: Testing con IA**
 - [ ] Escribiste al menos 2 tests 100% manual (sin copiar)
 - [ ] Usaste IA para descubrir edge cases (lista de casos)
 - [ ] Implementaste al menos 1 test con ayuda de IA (entendiendo cada línea)
 - [ ] Alcanzaste 80%+ coverage
-- [ ] Documentaste en notes.md qué aprendiste
+- [ ] Documentaste en notes.md qué aprendiste sobre testing
 
 ---
 

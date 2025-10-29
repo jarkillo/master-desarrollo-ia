@@ -1,0 +1,3 @@
+# Procfile for Free Tier (Railway/Render)
+# Free tier typically has ~512MB RAM - use 1-2 workers max
+web: gunicorn -w 1 -k uvicorn.workers.UvicornWorker api.api:app --bind 0.0.0.0:$PORT --timeout 120

@@ -1,0 +1,76 @@
+# render.yaml
+# Configuración Infrastructure-as-Code para Render
+#
+# Este archivo define toda la infraestructura necesaria:
+# - Web Service (API)
+# - PostgreSQL Database
+#
+# Documentación: https://render.com/docs/infrastructure-as-code
+
+services:
+  # ===========================================================================
+  # PostgreSQL Database
+  # ===========================================================================
+  - type: pserv
+    name: tareas-db
+    env: docker
+    plan: free  # free, starter, standard, pro
+    region: oregon  # oregon, frankfurt, singapore
+    databaseName: tareas_db
+    databaseUser: tareas_user
+    # La contraseña se genera automáticamente
+    # Se expone como DATABASE_URL
+
+  # ===========================================================================
+  # Web Service (FastAPI)
+  # ===========================================================================
+  - type: web
+    name: tareas-api
+    env: docker
+    plan: free  # free, starter, standard, pro
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+
+    # Autoscaling (planes pagos)
+    # numInstances: 1
+    # autoDeploy: true
+
+    # Environment variables
+    envVars:
+      - key: ENVIRONMENT
+        value: prod
+
+      - key: LOG_LEVEL
+        value: INFO
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tareas-db
+          property: connectionString
+
+      - key: SECRET_KEY
+        generateValue: true  # Genera automáticamente
+
+      - key: CORS_ORIGINS
+        value: '["*"]'  # En producción, especifica tus dominios
+
+      # Pydantic Settings (configuración adicional)
+      - key: API_TITLE
+        value: API de Tareas - Render Cloud
+
+      - key: API_VERSION
+        value: 1.0.0
+
+      # Database pool (PostgreSQL)
+      - key: DB_POOL_SIZE
+        value: 5
+
+      - key: DB_MAX_OVERFLOW
+        value: 10
+
+    # Build configuration
+    buildCommand: "pip install -r requirements.txt"
+
+    # Start command (Render proporciona $PORT automáticamente)
+    startCommand: "uvicorn api.api:app --host 0.0.0.0 --port $PORT --workers 2 --timeout-keep-alive 120"

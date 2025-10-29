@@ -789,7 +789,7 @@ Ahora, usa IA para crear una versión "production-ready" completa.
 
 **Prompt efectivo** (guárdalo en `prompts_usados.md`):
 
-```markdown
+````markdown
 # Prompts Usados
 
 ## Prompt 1: Versión Production-Ready
@@ -823,7 +823,7 @@ Crea una CLI de gestión de tareas en Python con las siguientes características
 ¿Qué generó la IA que no esperabas?
 ¿Hay algo que no entiendes?
 ¿Qué adoptarías para tu versión híbrida?
-```
+````
 
 ---
 
@@ -831,7 +831,7 @@ Crea una CLI de gestión de tareas en Python con las siguientes características
 
 Crea `COMPARACION.md` con este template:
 
-```markdown
+````markdown
 # Comparación: Manual vs IA vs Híbrido
 
 ## 1. Versión Manual (`tareas.py`)
@@ -886,7 +886,7 @@ Crea `COMPARACION.md` con este template:
 
 **Principal aprendizaje de esta clase**:
 - [Tu mayor insight sobre desarrollo manual vs IA-asistido]
-```
+````
 
 ---
 
@@ -894,7 +894,7 @@ Crea `COMPARACION.md` con este template:
 
 Ya iniciaste `prompts_usados.md` en el Paso 4. Ahora añade:
 
-```markdown
+````markdown
 ## Prompts que NO funcionaron bien
 
 ### Prompt malo #1:
@@ -925,7 +925,7 @@ Mejora este código [pegar código]
 2. **Contexto** es crítico (lenguaje, versión, frameworks)
 3. **Output claro**: especifica formato, estructura, qué incluir/excluir
 4. **Constraints** ayudan: "solo usa stdlib", "máximo 100 líneas", "sin dependencias"
-```
+````
 
 ---
 
