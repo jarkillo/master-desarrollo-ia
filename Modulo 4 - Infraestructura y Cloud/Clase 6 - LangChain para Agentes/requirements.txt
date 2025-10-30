@@ -1,0 +1,49 @@
+# Clase 6: LangChain y Agent Skills - Dependencies
+
+# Core LangChain
+langchain>=0.1.0
+langchain-anthropic>=0.1.0
+langchain-community>=0.0.20
+
+# Anthropic Claude SDK
+anthropic>=0.18.0
+
+# Vector Stores & Embeddings
+faiss-cpu>=1.7.4  # Use faiss-gpu if you have CUDA
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# Document Loaders
+pypdf2>=3.0.0
+python-docx>=1.1.0
+unstructured>=0.11.0
+
+# Text Splitting & Processing
+tiktoken>=0.5.0
+
+# Web Tools
+httpx>=0.27.0
+beautifulsoup4>=4.12.0
+google-search-results>=2.4.0  # For SerpAPI (requires API key)
+
+# Memory & Persistence
+redis>=5.0.0  # For advanced memory patterns
+
+# Development Tools
+jupyter>=1.0.0
+ipykernel>=6.29.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Type Checking
+pydantic>=2.0.0
+
+# Code Quality
+ruff>=0.1.0
+bandit>=1.7.0
+
+# Utilities
+python-dotenv>=1.0.0
+rich>=13.0.0  # For pretty console output
