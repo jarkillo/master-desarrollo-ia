@@ -1,0 +1,12 @@
+# Dependencias para el sistema multi-agente
+
+# Core
+anthropic>=0.40.0  # Cliente Claude API
+python-dotenv>=1.0.0  # Variables de entorno
+
+# Testing
+pytest>=8.4.0
+pytest-asyncio>=0.25.0
+pytest-cov>=6.0.0
+
+# Logging
