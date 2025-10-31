@@ -23,11 +23,11 @@ def crear_token(claims: Dict[str, Any], minutos: Optional[int] = None) -> str:
 
 
 def verificar_jwt(
-    authorization: Optional[str] = Header(None, alias="Authorization")
+    authorization: str = Header(...)
 ) -> Dict[str, Any]:
-    # 401 si no hay cabecera o formato incorrecto
-    if not authorization or not authorization.lower().startswith("bearer "):
-        raise HTTPException(status_code=401, detail="Token ausente o formato inválido")
+    # 401 si formato incorrecto
+    if not authorization.lower().startswith("bearer "):
+        raise HTTPException(status_code=401, detail="Token formato inválido")
 
     token = authorization.split(" ", 1)[1].strip()
     secret, _ = _config()
