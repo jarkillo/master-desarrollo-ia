@@ -1,0 +1,209 @@
+/**
+ * Notifications Styles
+ */
+
+.notifications-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+.notification {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+  transition: all 0.3s;
+}
+
+.notification:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.notification-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.notification-close:hover {
+  color: #333;
+}
+
+/* Achievement Notification */
+.achievement-notification {
+  display: flex;
+  gap: 1rem;
+  padding-right: 24px;
+}
+
+.achievement-icon-large {
+  font-size: 4rem;
+  flex-shrink: 0;
+}
+
+.achievement-details {
+  flex: 1;
+}
+
+.achievement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-badge {
+  font-weight: 700;
+  color: #FF9800;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rarity-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.rarity-badge.common {
+  background: #E0E0E0;
+  color: #616161;
+}
+
+.rarity-badge.rare {
+  background: #BBDEFB;
+  color: #1565C0;
+}
+
+.rarity-badge.epic {
+  background: #E1BEE7;
+  color: #6A1B9A;
+}
+
+.rarity-badge.legendary {
+  background: #FFE0B2;
+  color: #E65100;
+}
+
+.achievement-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.achievement-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-xp {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4CAF50;
+}
+
+/* Simple Notification */
+.simple-notification {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 24px;
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.notification-message {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Notification Types */
+.notification.success {
+  border-left: 4px solid #4CAF50;
+}
+
+.notification.success .notification-icon {
+  color: #4CAF50;
+}
+
+.notification.error {
+  border-left: 4px solid #F44336;
+}
+
+.notification.error .notification-icon {
+  color: #F44336;
+}
+
+.notification.info {
+  border-left: 4px solid #2196F3;
+}
+
+.notification.info .notification-icon {
+  color: #2196F3;
+}
+
+.notification.achievement {
+  border-left: 4px solid #FF9800;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notifications-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .achievement-notification {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .achievement-icon-large {
+    font-size: 3rem;
+  }
+
+  .achievement-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
