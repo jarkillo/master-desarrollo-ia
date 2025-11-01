@@ -5,10 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import init_db
-from app.routes import minigames, player
+from app.routes import minigames, player, progress
 
 # Import other routes when implemented
-# from app.routes import progress, achievements
+# from app.routes import achievements
 
 # Load settings
 settings = get_settings()
@@ -58,9 +58,9 @@ async def health_check():
 # Include routers
 app.include_router(minigames.router, prefix="/api/minigames", tags=["minigames"])
 app.include_router(player.router, prefix="/api/player", tags=["player"])
+app.include_router(progress.router, prefix="/api/progress", tags=["progress"])
 
 # Other routers (will add when implemented)
-# app.include_router(progress.router, prefix="/api/progress", tags=["progress"])
 # app.include_router(achievements.router, prefix="/api/achievements", tags=["achievements"])
 
 
