@@ -1,122 +1,49 @@
 /**
- * App - Main application component that orchestrates the Bug Hunt game
+ * App - Main application with routing for Game and Bug Hunt
  */
-import { useState } from 'react';
-import { BugHuntStart } from './components/BugHuntStart';
-import { BugHuntGame } from './components/BugHuntGame';
-import { BugHuntResults } from './components/BugHuntResults';
-import { BugHuntLeaderboard } from './components/BugHuntLeaderboard';
-import { bugHuntApi } from './services/bugHuntApi';
-import type {
-  GameState,
-  BugHuntStartResponse,
-  BugHuntSubmitResponse,
-  Difficulty,
-} from './types/bugHunt';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { GameApp } from './components/game/GameApp';
+import { BugHuntApp } from './components/BugHuntApp';
 import './App.css';
 
 function App() {
-  const [gameState, setGameState] = useState<GameState>('start');
-  const [gameData, setGameData] = useState<BugHuntStartResponse | null>(null);
-  const [results, setResults] = useState<BugHuntSubmitResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // In a real app, this would come from authentication
-  const playerId = parseInt(
-    import.meta.env.VITE_DEFAULT_PLAYER_ID || '1',
-    10
-  );
-
-  const handleStartGame = async (difficulty?: Difficulty) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await bugHuntApi.startGame(playerId, difficulty);
-      setGameData(data);
-      setGameState('playing');
-    } catch (err) {
-      console.error('Failed to start game:', err);
-      setError('Failed to start game. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmitGame = async (
-    selectedLines: number[],
-    timeSeconds: number
-  ) => {
-    if (!gameData) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const submitResults = await bugHuntApi.submitGame(
-        gameData.session_id,
-        playerId,
-        selectedLines,
-        timeSeconds
-      );
-      setResults(submitResults);
-      setGameState('results');
-    } catch (err) {
-      console.error('Failed to submit game:', err);
-      setError('Failed to submit game. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePlayAgain = () => {
-    setGameData(null);
-    setResults(null);
-    setError(null);
-    setGameState('start');
-  };
-
-  const handleViewLeaderboard = () => {
-    setGameState('leaderboard');
-  };
-
-  const handleBackToStart = () => {
-    setGameState('start');
-  };
-
   return (
-    <div className="app">
-      {error && (
-        <div className="error-banner">
-          <span>⚠️ {error}</span>
-          <button onClick={() => setError(null)}>✕</button>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/game" element={<GameApp />} />
+        <Route path="/bug-hunt" element={<BugHuntApp />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Home() {
+  return (
+    <div className="home">
+      <div className="home-container">
+        <h1 className="home-title">
+          <span className="home-icon">🤖</span>
+          AI Dev Academy
+        </h1>
+        <p className="home-subtitle">Choose your adventure</p>
+
+        <div className="game-selection">
+          <Link to="/game" className="game-card main-game">
+            <div className="game-icon">🎓</div>
+            <h2>Main Game</h2>
+            <p>Complete modules, unlock achievements, and level up your skills</p>
+            <button className="game-btn">Play Now</button>
+          </Link>
+
+          <Link to="/bug-hunt" className="game-card bug-hunt">
+            <div className="game-icon">🐛</div>
+            <h2>Bug Hunt</h2>
+            <p>Find bugs in code snippets and compete on the leaderboard</p>
+            <button className="game-btn">Hunt Bugs</button>
+          </Link>
         </div>
-      )}
-
-      {gameState === 'start' && (
-        <BugHuntStart onStart={handleStartGame} isLoading={isLoading} />
-      )}
-
-      {gameState === 'playing' && gameData && (
-        <BugHuntGame
-          gameData={gameData}
-          onSubmit={handleSubmitGame}
-          isSubmitting={isLoading}
-        />
-      )}
-
-      {gameState === 'results' && results && (
-        <BugHuntResults
-          results={results}
-          onPlayAgain={handlePlayAgain}
-          onViewLeaderboard={handleViewLeaderboard}
-        />
-      )}
-
-      {gameState === 'leaderboard' && (
-        <BugHuntLeaderboard onBack={handleBackToStart} />
-      )}
+      </div>
     </div>
   );
 }
