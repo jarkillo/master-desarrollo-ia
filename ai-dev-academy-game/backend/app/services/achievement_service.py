@@ -3,8 +3,8 @@
 from typing import Dict, List, Optional
 from sqlalchemy.orm import Session
 
-from app.models.achievement import Achievement
-from app.models.progress import Progress, PlayerStats
+from app.models.achievement import Achievement, PlayerStats
+from app.models.progress import Progress
 from app.schemas.achievement import (
     AchievementDefinition,
     AchievementCategory,
