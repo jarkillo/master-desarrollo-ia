@@ -1,7 +1,6 @@
 /**
  * ModuleViewer - Shows all classes in a module with their status
  */
-import { useEffect } from 'react';
 import { useGameStore } from '../../stores/gameStore';
 import './ModuleViewer.css';
 
