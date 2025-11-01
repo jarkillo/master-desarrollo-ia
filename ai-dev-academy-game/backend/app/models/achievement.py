@@ -14,7 +14,7 @@ class Achievement(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     player_id = Column(Integer, ForeignKey("players.id"), nullable=False)
-    achievement_key = Column(String, nullable=False)  # 'first_steps', 'bug_hunter', etc.
+    achievement_id = Column(String, nullable=False)  # 'first_class', 'bug_hunter', etc.
     unlocked_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -22,11 +22,11 @@ class Achievement(Base):
 
     # Unique constraint: player can only unlock each achievement once
     __table_args__ = (
-        UniqueConstraint('player_id', 'achievement_key', name='_player_achievement_uc'),
+        UniqueConstraint('player_id', 'achievement_id', name='_player_achievement_uc'),
     )
 
     def __repr__(self):
-        return f"<Achievement(player_id={self.player_id}, key='{self.achievement_key}')>"
+        return f"<Achievement(player_id={self.player_id}, achievement_id='{self.achievement_id}')>"
 
 
 class PlayerStats(Base):
@@ -36,18 +36,19 @@ class PlayerStats(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     player_id = Column(Integer, ForeignKey("players.id"), nullable=False, unique=True)
-    total_classes_completed = Column(Integer, default=0)
-    total_exercises_done = Column(Integer, default=0)
-    total_minigames_played = Column(Integer, default=0)
-    total_code_lines = Column(Integer, default=0)
-    streak_days = Column(Integer, default=0)
+    classes_completed = Column(Integer, default=0)
+    exercises_completed = Column(Integer, default=0)
+    bug_hunt_wins = Column(Integer, default=0)
+    bug_hunt_games_played = Column(Integer, default=0)
+    current_streak = Column(Integer, default=0)
+    longest_streak = Column(Integer, default=0)
     last_activity_date = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
     player = relationship("Player", back_populates="stats")
 
     def __repr__(self):
-        return f"<PlayerStats(player_id={self.player_id}, classes={self.total_classes_completed}, streak={self.streak_days})>"
+        return f"<PlayerStats(player_id={self.player_id}, classes={self.classes_completed}, streak={self.current_streak})>"
 
 
 class UnlockedTool(Base):
