@@ -25,6 +25,13 @@ on:
     branches:
       - main        # Tests en PRs a main
 
+# Permisos necesarios para este workflow
+# packages:write - Permite push de imágenes a GitHub Container Registry (GHCR)
+# contents:read - Permite leer el código del repositorio
+permissions:
+  contents: read
+  packages: write
+
 # Variables de entorno globales (disponibles en todos los jobs)
 env:
   PYTHON_VERSION: '3.12'
