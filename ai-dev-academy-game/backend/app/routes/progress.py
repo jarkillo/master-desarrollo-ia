@@ -18,7 +18,7 @@ from app.schemas.progress import (
     ClassProgress,
     FullProgressResponse
 )
-from app.services import content_service
+from app.services import content_service, xp_service
 
 router = APIRouter()
 
@@ -315,20 +315,21 @@ async def update_progress(
         if progress_data.status == ProgressStatus.COMPLETED and old_status != ProgressStatus.COMPLETED:
             progress.completed_at = datetime.utcnow()
 
-            # Award XP
+            # Award XP using centralized service
             if class_info:
-                player = db.query(Player).filter(Player.id == progress.player_id).first()
-                if player:
-                    player.xp += class_info.xp_reward
-                    # Update level (same formula as Bug Hunt)
-                    player.level = int((player.xp / 100) ** 0.5) + 1
+                xp_service.award_xp(
+                    player_id=progress.player_id,
+                    xp_amount=class_info.xp_reward,
+                    db=db,
+                    reason=f"Completed class {progress.module_number}.{progress.class_number}"
+                )
 
-                    # Update player stats
-                    stats = db.query(PlayerStats).filter(
-                        PlayerStats.player_id == player.id
-                    ).first()
-                    if stats:
-                        stats.classes_completed += 1
+                # Update player stats
+                stats = db.query(PlayerStats).filter(
+                    PlayerStats.player_id == progress.player_id
+                ).first()
+                if stats:
+                    stats.classes_completed += 1
 
         # If marking as in_progress for the first time
         elif progress_data.status == ProgressStatus.IN_PROGRESS and not progress.started_at:

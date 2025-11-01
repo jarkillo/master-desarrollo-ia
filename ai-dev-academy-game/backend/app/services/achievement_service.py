@@ -11,6 +11,7 @@ from app.schemas.achievement import (
     AchievementRarity,
     AchievementWithDetails
 )
+from app.services import xp_service
 
 
 # Achievement definitions - all available achievements in the game
@@ -444,12 +445,13 @@ def _unlock_achievement(
     db.add(new_achievement)
     db.flush()
 
-    # Award XP to player
-    from app.models.player import Player
-    player = db.query(Player).filter(Player.id == player_id).first()
-    if player:
-        player.xp += definition.xp_reward
-        player.level = int((player.xp / 100) ** 0.5) + 1
+    # Award XP using centralized service
+    xp_service.award_xp(
+        player_id=player_id,
+        xp_amount=definition.xp_reward,
+        db=db,
+        reason=f"Unlocked achievement: {definition.title}"
+    )
 
     db.commit()
     db.refresh(new_achievement)

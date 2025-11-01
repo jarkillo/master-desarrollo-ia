@@ -16,7 +16,7 @@ from app.schemas.achievement import (
     CheckAchievementsRequest,
     CheckAchievementsResponse
 )
-from app.services import achievement_service
+from app.services import achievement_service, xp_service
 
 router = APIRouter()
 
@@ -138,9 +138,13 @@ async def unlock_achievement(
     db.add(new_achievement)
     db.flush()
 
-    # Award XP
-    player.xp += definition.xp_reward
-    player.level = int((player.xp / 100) ** 0.5) + 1
+    # Award XP using centralized service
+    xp_service.award_xp(
+        player_id=request.player_id,
+        xp_amount=definition.xp_reward,
+        db=db,
+        reason=f"Unlocked achievement: {definition.title}"
+    )
 
     db.commit()
     db.refresh(new_achievement)
