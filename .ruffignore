@@ -1,0 +1,9 @@
+# Archivos con bugs intencionales (material didáctico)
+**/tareas_bugs.py
+**/cli-tareas/tareas_bugs*.py
+
+# Archivos temporales
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
