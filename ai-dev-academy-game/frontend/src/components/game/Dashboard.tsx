@@ -37,7 +37,7 @@ export const Dashboard = () => {
 
   const levelTitle = getLevelTitle(player.level);
   const xpProgress = getXPProgress(player.xp);
-  const recentAchievements = unlockedAchievements.slice(-3).reverse();
+  const recentAchievements = (unlockedAchievements || []).slice(-3).reverse();
 
   return (
     <div className="dashboard">
@@ -58,7 +58,7 @@ export const Dashboard = () => {
             Profile
           </button>
           <button onClick={() => setCurrentView('achievements')} className="btn-secondary">
-            Achievements ({unlockedAchievements.length})
+            Achievements ({(unlockedAchievements || []).length})
           </button>
         </div>
       </div>

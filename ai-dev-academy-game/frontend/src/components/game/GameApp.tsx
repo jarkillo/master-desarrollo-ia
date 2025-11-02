@@ -55,7 +55,7 @@ const AchievementsPlaceholder = () => {
         ← Back to Dashboard
       </button>
       <h2>All Achievements</h2>
-      <p>You have unlocked {unlockedAchievements.length} achievements!</p>
+      <p>You have unlocked {(unlockedAchievements || []).length} achievements!</p>
       <p>Full achievements gallery coming soon...</p>
     </div>
   );
