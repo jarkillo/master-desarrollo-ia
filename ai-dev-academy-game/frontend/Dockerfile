@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (dev + prod) for build stage
+# TypeScript and Vite are in devDependencies and needed for build
+RUN npm ci
 
 # Copy source code
 COPY . .
