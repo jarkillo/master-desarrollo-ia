@@ -88,7 +88,23 @@ openssl rand -hex 32
 # Copia el resultado y pégalo en SECRET_KEY
 ```
 
-### Paso 2: Build y Deploy con Docker Compose
+### Paso 2: Configurar Docker Compose Override para Easypanel
+
+**⚠️ CRÍTICO**: Easypanel usa su propio proxy (Traefik) en el puerto 80. Necesitamos evitar conflictos de puertos.
+
+```bash
+# Copiar override específico para Easypanel
+cp docker-compose.override.example.yml docker-compose.override.yml
+```
+
+**¿Qué hace esto?**
+- Quita la exposición directa de puertos (Easypanel los maneja)
+- Deja que el proxy de Easypanel maneje el routing
+- Evita el error: "Bind for 0.0.0.0:80 failed: port is already allocated"
+
+**NOTA**: Este archivo override solo debe usarse en VPS con Easypanel. En desarrollo local, NO lo copies.
+
+### Paso 3: Build y Deploy con Docker Compose
 
 ```bash
 # Asegúrate de estar en ai-dev-academy-game/
@@ -112,7 +128,7 @@ docker-compose logs -f frontend
 - Build frontend: ~4-6 minutos (primera vez)
 - Deploy: ~10 segundos
 
-### Paso 3: Verificar que está funcionando
+### Paso 4: Verificar que está funcionando
 
 ```bash
 # Health check del backend
@@ -131,7 +147,7 @@ docker-compose ps
 # ai-dev-academy-frontend  Up   80/tcp, healthy
 ```
 
-### Paso 4: Abrir puertos en el firewall
+### Paso 5: Abrir puertos en el firewall
 
 ```bash
 # UFW (Ubuntu/Debian)
@@ -145,7 +161,7 @@ sudo firewall-cmd --permanent --add-port=8000/tcp
 sudo firewall-cmd --reload
 ```
 
-### Paso 5: Probar desde tu navegador
+### Paso 6: Probar desde tu navegador
 
 ```
 Frontend: http://tu-vps-ip
