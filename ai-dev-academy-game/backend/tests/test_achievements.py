@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.database import Base, get_db
 from app.models.player import Player
-from app.models.progress import PlayerStats
+from app.models.achievement import PlayerStats
 
 
 # Test database setup
