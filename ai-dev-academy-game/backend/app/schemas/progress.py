@@ -78,3 +78,21 @@ class FullProgressResponse(BaseModel):
     total_exercises_completed: int
     overall_progress_percentage: float
     modules: list[ModuleProgressResponse]
+
+
+class ClassInfoResponse(BaseModel):
+    """Schema for class metadata from curriculum."""
+    class_number: int
+    title: str
+    description: str
+    exercises_count: int
+    xp_reward: int
+
+
+class ModuleInfoResponse(BaseModel):
+    """Schema for module metadata from curriculum."""
+    module_number: int
+    title: str
+    description: str
+    total_classes: int
+    classes: list[ClassInfoResponse]

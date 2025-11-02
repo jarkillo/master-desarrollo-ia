@@ -85,7 +85,7 @@ export const progressApi = {
    * Get full progress for a player
    */
   getFullProgress: async (playerId: number): Promise<FullProgressResponse> => {
-    const response = await axios.get<FullProgressResponse>(`${API_BASE_URL}/progress/player/${playerId}`);
+    const response = await axios.get<FullProgressResponse>(`${API_BASE_URL}/progress/${playerId}`);
     return response.data;
   },
 
@@ -94,7 +94,7 @@ export const progressApi = {
    */
   getModuleProgress: async (playerId: number, moduleNumber: number): Promise<Progress[]> => {
     const response = await axios.get<Progress[]>(
-      `${API_BASE_URL}/progress/player/${playerId}/module/${moduleNumber}`
+      `${API_BASE_URL}/progress/${playerId}/module/${moduleNumber}`
     );
     return response.data;
   },
@@ -112,7 +112,7 @@ export const progressApi = {
    */
   getNextUnlockable: async (playerId: number): Promise<NextUnlockableClass | null> => {
     const response = await axios.get<NextUnlockableClass | null>(
-      `${API_BASE_URL}/progress/player/${playerId}/next-unlockable`
+      `${API_BASE_URL}/progress/${playerId}/next-unlockable`
     );
     return response.data;
   },
