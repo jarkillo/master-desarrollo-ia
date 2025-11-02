@@ -190,6 +190,16 @@
       "completedOnDate": "Completed on {{date}}",
       "continueToNextClass": "Continue to Next Class",
       "moduleCompleteMessage": "You've completed all classes in this module!"
+    },
+    "app": {
+      "logoText": "AI Dev Academy",
+      "footer": "Learn, code, grow.",
+      "allAchievements": "All Achievements",
+      "achievementsUnlocked": "You have unlocked {{count}} achievements!",
+      "achievementsComingSoon": "Full achievements gallery coming soon...",
+      "profile": "Profile",
+      "username": "Username",
+      "profileComingSoon": "Full profile editor coming soon..."
     }
   },
   "navigation": {

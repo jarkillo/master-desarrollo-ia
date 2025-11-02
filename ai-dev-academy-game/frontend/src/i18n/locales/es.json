@@ -190,6 +190,16 @@
       "completedOnDate": "Completado el {{date}}",
       "continueToNextClass": "Continuar a la Siguiente Clase",
       "moduleCompleteMessage": "¡Has completado todas las clases de este módulo!"
+    },
+    "app": {
+      "logoText": "AI Dev Academy",
+      "footer": "Aprende, programa, crece.",
+      "allAchievements": "Todos los Logros",
+      "achievementsUnlocked": "¡Has desbloqueado {{count}} logros!",
+      "achievementsComingSoon": "Galería completa de logros próximamente...",
+      "profile": "Perfil",
+      "username": "Usuario",
+      "profileComingSoon": "Editor de perfil completo próximamente..."
     }
   },
   "navigation": {
