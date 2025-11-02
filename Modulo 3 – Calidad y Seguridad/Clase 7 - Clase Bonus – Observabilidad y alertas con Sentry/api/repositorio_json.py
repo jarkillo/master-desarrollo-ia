@@ -5,8 +5,10 @@ Este módulo implementa el patrón Repository para almacenar tareas en un archiv
 JSON local. Usa pathlib para operaciones de archivo cross-platform.
 """
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
 from api.servicio_tareas import Tarea
 
 

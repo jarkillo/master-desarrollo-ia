@@ -9,13 +9,10 @@ Estos tests verifican que:
 """
 import os
 import subprocess
-import pytest
 from pathlib import Path
-from sqlalchemy import create_engine, inspect, text, Integer, String, Boolean, DateTime
-from sqlalchemy.orm import Session
-from api.models import Base, TareaModel
-from api.database import DATABASE_URL
 
+import pytest
+from sqlalchemy import create_engine, inspect, text
 
 # Path al directorio del proyecto
 PROJECT_DIR = Path(__file__).parent.parent

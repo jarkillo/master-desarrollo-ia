@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 CLI para el gestor de tareas usando argparse.
@@ -12,9 +11,9 @@ import sys
 # Importa la lógica existente sin cambiar firmas
 from tareas import (
     ARCHIVO_POR_DEFECTO,
-    listar_tareas,
     agregar_tarea,
     completar_tarea,
+    listar_tareas,
 )
 
 

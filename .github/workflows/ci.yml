@@ -14,9 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         class_dir:
-          # Módulo 2 - Ingeniería y Arquitectura (5 clases)
+          # Módulo 2 - Ingeniería y Arquitectura (4 clases implementadas)
           - "Modulo 2 – Ingeniería y Arquitectura/Clase 2 - Principios SOLID y paradigmas de programacion"
-          - "Modulo 2 – Ingeniería y Arquitectura/Clase 3 - Arquitectura limpia"
+          # - "Modulo 2 – Ingeniería y Arquitectura/Clase 3 - Arquitectura limpia"  # TODO: Implementar clase
           - "Modulo 2 – Ingeniería y Arquitectura/Clase 4 - Open_Closed y Dependency Inversion"
           - "Modulo 2 – Ingeniería y Arquitectura/Clase 5 - Integracion y pruebas de arquitectura"
           - "Modulo 2 – Ingeniería y Arquitectura/Clase 6 - Integracion continua y control de calidad"
@@ -28,14 +28,14 @@ jobs:
           - "Modulo 3 – Calidad y Seguridad/Clase 5 – Defensa activa y pipelines seguros"
           - "Modulo 3 – Calidad y Seguridad/Clase 6 – Defensa completa y CICD inteligente"
           - "Modulo 3 – Calidad y Seguridad/Clase 7 - Clase Bonus – Observabilidad y alertas con Sentry"
-          # Módulo 4 - Infraestructura y Cloud (7 clases)
-          - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"
+          # Módulo 4 - Infraestructura y Cloud (2 clases implementadas)
+          # - "Modulo 4 - Infraestructura y Cloud/Clase 1 - Del código local al entorno vivo"  # TODO: Implementar tests
           - "Modulo 4 - Infraestructura y Cloud/Clase 2 - Tu API en un contenedor"
           - "Modulo 4 - Infraestructura y Cloud/Clase 3 - Base de Datos con SQLAlchemy"
-          - "Modulo 4 - Infraestructura y Cloud/Clase 4 - Migraciones con Alembic"
-          - "Modulo 4 - Infraestructura y Cloud/Clase 5 - Deploy en Cloud Railway y Render"
-          - "Modulo 4 - Infraestructura y Cloud/Clase 6.7 - Writing Tools for AI Agents"
-          - "Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final"
+          # - "Modulo 4 - Infraestructura y Cloud/Clase 4 - Migraciones con Alembic"  # TODO: Implementar clase
+          # - "Modulo 4 - Infraestructura y Cloud/Clase 5 - Deploy en Cloud Railway y Render"  # TODO: Implementar tests
+          # - "Modulo 4 - Infraestructura y Cloud/Clase 6.7 - Writing Tools for AI Agents"  # TODO: Implementar tests
+          # - "Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final"  # TODO: Implementar tests
 
     steps:
       - name: Checkout

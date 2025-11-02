@@ -1,16 +1,15 @@
 """Pydantic schemas for minigame endpoints."""
 
 from datetime import datetime
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
 
+from pydantic import BaseModel, Field
 
 # Bug Hunt Schemas
 
 class BugHuntStartRequest(BaseModel):
     """Request to start a Bug Hunt game."""
     player_id: int = Field(..., description="Player ID")
-    difficulty: Optional[str] = Field(None, description="Difficulty: easy, medium, or hard (random if not specified)")
+    difficulty: str | None = Field(None, description="Difficulty: easy, medium, or hard (random if not specified)")
 
 
 class BugInfo(BaseModel):
@@ -38,7 +37,7 @@ class BugHuntSubmitRequest(BaseModel):
     """Request to submit Bug Hunt answers."""
     session_id: int = Field(..., description="Session ID from start response")
     player_id: int = Field(..., description="Player ID")
-    found_bug_lines: List[int] = Field(..., description="List of line numbers identified as bugs")
+    found_bug_lines: list[int] = Field(..., description="List of line numbers identified as bugs")
     time_seconds: float = Field(..., description="Time taken in seconds", ge=0)
 
 
@@ -47,8 +46,8 @@ class BugResult(BaseModel):
     line: int
     found: bool
     is_correct: bool
-    bug_type: Optional[str] = None
-    description: Optional[str] = None
+    bug_type: str | None = None
+    description: str | None = None
 
 
 class BugHuntSubmitResponse(BaseModel):
@@ -65,11 +64,11 @@ class BugHuntSubmitResponse(BaseModel):
     is_perfect: bool = Field(..., description="Whether all bugs were found with no false positives")
 
     # Detailed results
-    results: List[BugResult] = Field(..., description="Detailed results per bug")
+    results: list[BugResult] = Field(..., description="Detailed results per bug")
     performance_bonus: int = Field(default=0, description="Bonus XP for speed/accuracy")
 
     # Achievements unlocked
-    achievements_unlocked: List[str] = Field(default_factory=list, description="Achievement keys unlocked")
+    achievements_unlocked: list[str] = Field(default_factory=list, description="Achievement keys unlocked")
 
 
 class LeaderboardEntry(BaseModel):
@@ -92,8 +91,8 @@ class LeaderboardEntry(BaseModel):
 class LeaderboardResponse(BaseModel):
     """Leaderboard response."""
     total_entries: int
-    entries: List[LeaderboardEntry]
-    difficulty_filter: Optional[str] = None
+    entries: list[LeaderboardEntry]
+    difficulty_filter: str | None = None
 
 
 class PlayerBugHuntStatsResponse(BaseModel):
@@ -104,5 +103,5 @@ class PlayerBugHuntStatsResponse(BaseModel):
     best_score: int
     average_score: float
     average_accuracy: float
-    favorite_difficulty: Optional[str] = None
+    favorite_difficulty: str | None = None
     total_xp_earned: int

@@ -1,11 +1,11 @@
 # api/api.py
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List
 
-from api.servicio_tareas import ServicioTareas, Tarea
 from api.repositorio_memoria import RepositorioMemoria
+from api.servicio_tareas import ServicioTareas
 
 # Configuración de la aplicación FastAPI
 app = FastAPI(
@@ -75,7 +75,7 @@ def crear_tarea(cuerpo: CrearTareaRequest):
         raise HTTPException(status_code=422, detail=str(e))
 
 
-@app.get("/tareas", response_model=List[TareaResponse])
+@app.get("/tareas", response_model=list[TareaResponse])
 def listar_tareas():
     """Lista todas las tareas.
 

@@ -1,7 +1,6 @@
 """Application configuration using environment variables."""
 
 import os
-from typing import List
 from functools import lru_cache
 
 
@@ -28,7 +27,7 @@ class Settings:
     API_VERSION: str = os.getenv("API_VERSION", "1.0.0")
 
     @property
-    def cors_origins(self) -> List[str]:
+    def cors_origins(self) -> list[str]:
         """Parse ALLOWED_ORIGINS string into a list."""
         return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
 
@@ -38,7 +37,7 @@ class Settings:
         return self.ENVIRONMENT.lower() == "production"
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()

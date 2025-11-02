@@ -8,11 +8,11 @@ Implementa los componentes principales:
 - Shared Memory (estado compartido)
 """
 
-from typing import List, Dict, Any, Optional
-from dataclasses import dataclass, field
-from enum import Enum
 import asyncio
+from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
+from typing import Any
 
 
 class AgentRole(str, Enum):
@@ -44,7 +44,7 @@ class Task:
     id: int
     description: str
     agent_role: AgentRole
-    tools: List[str]
+    tools: list[str]
     max_searches: int
     success_criteria: str
     output_format: str
@@ -68,10 +68,10 @@ class AgentResult:
     task_id: int
     agent_role: AgentRole
     findings: str
-    sources: List[str]
+    sources: list[str]
     confidence: float = 0.0
-    gaps_identified: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    gaps_identified: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class MessageBus:
@@ -83,8 +83,8 @@ class MessageBus:
     """
 
     def __init__(self):
-        self._messages: List[Dict[str, Any]] = []
-        self._subscribers: Dict[str, List[callable]] = {}
+        self._messages: list[dict[str, Any]] = []
+        self._subscribers: dict[str, list[callable]] = {}
 
     def publish(self, sender: str, receiver: str, message: Any, message_type: str = "data"):
         """
@@ -124,8 +124,8 @@ class MessageBus:
         self._subscribers[receiver].append(callback)
 
     def get_messages(
-        self, receiver: str, message_type: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+        self, receiver: str, message_type: str | None = None
+    ) -> list[dict[str, Any]]:
         """
         Obtiene mensajes para un agente específico.
 
@@ -147,7 +147,7 @@ class MessageBus:
         """Limpia todos los mensajes del bus."""
         self._messages.clear()
 
-    def export_trace(self) -> List[Dict[str, Any]]:
+    def export_trace(self) -> list[dict[str, Any]]:
         """
         Exporta el trace completo de mensajes.
 
@@ -166,7 +166,7 @@ class SharedMemory:
     """
 
     def __init__(self):
-        self._data: Dict[str, Any] = {}
+        self._data: dict[str, Any] = {}
 
     def store(self, key: str, value: Any):
         """
@@ -212,7 +212,7 @@ class SharedMemory:
         """Limpia toda la memoria."""
         self._data.clear()
 
-    def keys(self) -> List[str]:
+    def keys(self) -> list[str]:
         """Retorna todas las claves almacenadas."""
         return list(self._data.keys())
 
@@ -250,7 +250,7 @@ class LeadAgent:
         self.memory = memory
         self.agent_id = agent_id
 
-    async def create_research_plan(self, query: str) -> List[Task]:
+    async def create_research_plan(self, query: str) -> list[Task]:
         """
         Crea plan de investigación dividiendo la query en subtareas.
 
@@ -313,7 +313,7 @@ IMPORTANTE: Evita instrucciones vagas. Sé específico sobre:
 Output en formato JSON con estructura Task[].
 """
 
-    def _create_example_tasks(self, query: str) -> List[Task]:
+    def _create_example_tasks(self, query: str) -> list[Task]:
         """Crea tareas de ejemplo para demostración."""
         # Esta función sería reemplazada por parsing del LLM response
         return [
@@ -337,7 +337,7 @@ Output en formato JSON con estructura Task[].
             ),
         ]
 
-    async def synthesize_results(self, results: List[AgentResult]) -> str:
+    async def synthesize_results(self, results: list[AgentResult]) -> str:
         """
         Sintetiza resultados de múltiples subagents.
 
@@ -374,7 +374,7 @@ Output en formato JSON con estructura Task[].
 
         return synthesis
 
-    def _combine_findings(self, results: List[AgentResult]) -> str:
+    def _combine_findings(self, results: list[AgentResult]) -> str:
         """Combina findings de múltiples resultados."""
         sections = []
         for r in results:
@@ -384,14 +384,14 @@ Output en formato JSON con estructura Task[].
 
         return "\n".join(sections)
 
-    def _collect_unique_sources(self, results: List[AgentResult]) -> List[str]:
+    def _collect_unique_sources(self, results: list[AgentResult]) -> list[str]:
         """Recolecta fuentes únicas de todos los resultados."""
         all_sources = []
         for r in results:
             all_sources.extend(r.sources)
         return list(set(all_sources))
 
-    def _detect_gaps(self, results: List[AgentResult]) -> List[str]:
+    def _detect_gaps(self, results: list[AgentResult]) -> list[str]:
         """Detecta gaps de información reportados por agentes."""
         all_gaps = []
         for r in results:
@@ -399,7 +399,7 @@ Output en formato JSON con estructura Task[].
         return list(set(all_gaps))
 
     def _build_synthesis_prompt(
-        self, findings: str, sources: List[str], gaps: List[str]
+        self, findings: str, sources: list[str], gaps: list[str]
     ) -> str:
         """Construye prompt para síntesis."""
         return f"""
@@ -426,7 +426,7 @@ Si hay contradicciones entre fuentes, repórtalas explícitamente.
 """
 
     def _create_example_synthesis(
-        self, findings: str, sources: List[str], gaps: List[str]
+        self, findings: str, sources: list[str], gaps: list[str]
     ) -> str:
         """Crea síntesis de ejemplo."""
         return f"""# Síntesis de Investigación
@@ -483,7 +483,7 @@ class SubAgent:
         self.bus = message_bus
         self.memory = memory
         self.agent_id = f"{task.agent_role.value}_{task.id}"
-        self.private_memory: Dict[str, Any] = {}
+        self.private_memory: dict[str, Any] = {}
 
     async def research(self) -> AgentResult:
         """
@@ -609,7 +609,7 @@ class MultiAgentResearchSystem:
         Returns:
             Síntesis final de investigación
         """
-        print(f"🔍 Iniciando investigación multi-agente\n")
+        print("🔍 Iniciando investigación multi-agente\n")
         print(f"Query: {query}\n")
 
         # Paso 1: Lead Agent crea plan
@@ -642,7 +642,7 @@ class MultiAgentResearchSystem:
 
         return synthesis
 
-    def export_trace(self) -> Dict[str, Any]:
+    def export_trace(self) -> dict[str, Any]:
         """
         Exporta trace completo de la ejecución.
 

@@ -1,5 +1,5 @@
 # api/repositorio_base.py
-from typing import Protocol, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Protocol
 
 if TYPE_CHECKING:
     # Solo para tipos (no se ejecuta en runtime, evita el ciclo)
@@ -18,7 +18,7 @@ class RepositorioTareas(Protocol):
         """Guarda una tarea (nueva o existente)"""
         ...
 
-    def listar(self) -> List["Tarea"]:
+    def listar(self) -> list["Tarea"]:
         """Lista todas las tareas"""
         ...
 

@@ -1,7 +1,7 @@
 """Bug Hunt - Educational bug templates for the mini-game."""
 
-from typing import List, Dict, Any
 from enum import Enum
+from typing import Any
 
 
 class BugType(Enum):
@@ -27,7 +27,7 @@ class BugTemplate:
         title: str,
         difficulty: str,  # "easy", "medium", "hard"
         code: str,
-        bugs: List[Dict[str, Any]],
+        bugs: list[dict[str, Any]],
         description: str,
         xp_reward: int
     ):
@@ -321,6 +321,6 @@ def get_template_by_id(template_id: str) -> BugTemplate:
     raise ValueError(f"Template not found: {template_id}")
 
 
-def get_all_templates() -> List[BugTemplate]:
+def get_all_templates() -> list[BugTemplate]:
     """Get all available bug templates."""
     return BUG_TEMPLATES

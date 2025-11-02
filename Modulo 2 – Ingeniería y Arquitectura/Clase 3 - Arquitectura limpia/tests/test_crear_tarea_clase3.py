@@ -1,6 +1,7 @@
-from fastapi.testclient import TestClient
-from api.api import app
 from datetime import date, timedelta
+
+from api.api import app
+from fastapi.testclient import TestClient
 
 cliente_http = TestClient(app)
 

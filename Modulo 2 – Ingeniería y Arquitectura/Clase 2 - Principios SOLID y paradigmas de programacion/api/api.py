@@ -1,8 +1,7 @@
 # api/api.py
-from typing import List
+
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
-
 
 # === MODELS ===
 
@@ -27,7 +26,7 @@ app = FastAPI(
 )
 
 # Almacenamiento en memoria (simple para la clase)
-_tareas: List[TareaResponse] = []
+_tareas: list[TareaResponse] = []
 _contador_id: int = 0
 
 
@@ -64,12 +63,12 @@ def crear_tarea(cuerpo: CrearTareaRequest) -> TareaResponse:
 
 @app.get(
     "/tareas",
-    response_model=List[TareaResponse],
+    response_model=list[TareaResponse],
     status_code=status.HTTP_200_OK,
     summary="Listar todas las tareas",
     tags=["tareas"]
 )
-def listar_tareas() -> List[TareaResponse]:
+def listar_tareas() -> list[TareaResponse]:
     """Devuelve la lista completa de tareas.
 
     Returns:

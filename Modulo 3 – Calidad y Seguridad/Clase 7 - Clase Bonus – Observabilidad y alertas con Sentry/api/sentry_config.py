@@ -9,10 +9,10 @@ Este módulo implementa las mejores prácticas de seguridad para Sentry:
 """
 import os
 import re
+
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
-
 
 # Lista de campos sensibles que NUNCA deben enviarse a Sentry
 SENSITIVE_FIELDS = [

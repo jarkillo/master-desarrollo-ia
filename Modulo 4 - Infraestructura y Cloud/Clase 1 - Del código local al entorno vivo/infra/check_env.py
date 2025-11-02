@@ -1,7 +1,7 @@
 # infra/check_env.py
+import os
 import re
 import sys
-import os
 
 TEMPLATE_PATH = os.path.join("infra", ".env.template")
 ENV_PATH = ".env"
@@ -21,10 +21,10 @@ if not os.path.exists(ENV_PATH):
         print("⚠️  No hay archivo .env, créalo a partir del template.")
         sys.exit(1)
 
-with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+with open(TEMPLATE_PATH, encoding="utf-8") as f:
     variables = re.findall(r"^([A-Z_]+)=", f.read(), re.MULTILINE)
 
-with open(ENV_PATH, "r", encoding="utf-8") as f:
+with open(ENV_PATH, encoding="utf-8") as f:
     contenido_env = f.read()
 
 missing = [var for var in variables if var not in contenido_env]

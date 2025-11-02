@@ -13,8 +13,8 @@ VULNERABILIDADES:
 5. Tokens sin expiración
 """
 
-from fastapi import FastAPI, HTTPException, Depends, Header
-from typing import Optional
+
+from fastapi import Depends, FastAPI, Header, HTTPException
 
 app = FastAPI()
 
@@ -30,7 +30,7 @@ USUARIOS_DB = {
 }
 
 
-def obtener_api_key_del_header(x_api_key: Optional[str] = Header(None)) -> str:
+def obtener_api_key_del_header(x_api_key: str | None = Header(None)) -> str:
     """Extrae API Key del header"""
     if not x_api_key:
         raise HTTPException(status_code=401, detail="API Key requerida")

@@ -1,0 +1,391 @@
+# Template: CI/CD Completo para FastAPI
+#
+# Este workflow ejecuta:
+# 1. Linting (ruff) - Verifica estilo de código
+# 2. Tests (pytest) - Ejecuta tests con coverage mínimo 80%
+# 3. Security scan (bandit) - Detecta vulnerabilidades
+# 4. Build Docker - Construye imagen de Docker
+# 5. Deploy (solo en main) - Despliega a Railway automáticamente
+#
+# CÓMO USAR ESTE TEMPLATE:
+# 1. Copia este archivo a .github/workflows/ci-cd.yml
+# 2. Reemplaza los valores marcados con [REEMPLAZAR]
+# 3. Añade secrets necesarios en GitHub repo settings
+# 4. Push y observa la magia ✨
+
+name: CI/CD Pipeline
+
+# Eventos que disparan el workflow
+on:
+  push:
+    branches:
+      - main        # Deploy automático solo en main
+      - develop     # Ejecuta tests pero NO deploy
+  pull_request:
+    branches:
+      - main        # Tests en PRs a main
+
+# Permisos necesarios para este workflow
+# packages:write - Permite push de imágenes a GitHub Container Registry (GHCR)
+# contents:read - Permite leer el código del repositorio
+permissions:
+  contents: read
+  packages: write
+
+# Variables de entorno globales (disponibles en todos los jobs)
+env:
+  PYTHON_VERSION: '3.12'
+  # [REEMPLAZAR] con tu imagen de Docker
+  DOCKER_IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+jobs:
+  # ============================================================================
+  # JOB 1: LINTING
+  # Verifica que el código siga estándares de estilo (PEP 8)
+  # ============================================================================
+  lint:
+    name: 🧹 Linting (Ruff)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout del código (necesario en todos los jobs)
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Setup de Python con cache de pip (acelera instalaciones)
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'  # Cache automático de dependencias
+
+      # Instalar solo herramientas de linting (rápido)
+      - name: 📦 Install linting tools
+        run: |
+          pip install ruff
+
+      # Ejecutar linting
+      # --fix: Auto-corrige problemas simples
+      # --exit-non-zero-on-fix: Falla si hubo auto-correcciones
+      - name: 🔍 Run ruff linting
+        run: |
+          ruff check . --fix --exit-non-zero-on-fix
+
+  # ============================================================================
+  # JOB 2: TESTS
+  # Ejecuta suite de tests con coverage mínimo 80%
+  # ============================================================================
+  test:
+    name: 🧪 Tests (Pytest + Coverage)
+    runs-on: ubuntu-latest
+
+    # Matriz de versiones (ejecuta tests en múltiples versiones de Python)
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      # Instalar todas las dependencias (incluye pytest, pytest-cov)
+      - name: 📦 Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Ejecutar tests con coverage
+      # --cov: Medir coverage
+      # --cov-report=term-missing: Mostrar líneas no cubiertas
+      # --cov-fail-under=80: Fallar si coverage <80%
+      # -v: Verbose (mostrar cada test)
+      - name: 🧪 Run tests with coverage
+        run: |
+          pytest --cov=api --cov-report=term-missing --cov-fail-under=80 -v
+
+      # Subir reporte de coverage (opcional, para ver en PRs)
+      - name: 📊 Upload coverage report
+        uses: codecov/codecov-action@v4
+        if: matrix.python-version == '3.12'  # Solo una vez
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false  # No fallar CI si Codecov falla
+
+  # ============================================================================
+  # JOB 3: SECURITY SCAN
+  # Detecta vulnerabilidades de seguridad en código y dependencias
+  # ============================================================================
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      # Instalar herramientas de seguridad
+      - name: 📦 Install security tools
+        run: |
+          pip install bandit[toml] safety
+
+      # Bandit: Detecta problemas de seguridad en código Python
+      # -r: Recursivo
+      # -ll: Solo severidad medium/high
+      # -f json: Output JSON (más fácil de parsear)
+      #
+      # ⚠️ IMPORTANTE: Este step FALLA si hay vulnerabilidades (no usa || true)
+      # Esto previene que código con vulnerabilidades llegue a producción
+      - name: 🔍 Run Bandit (code security)
+        run: |
+          bandit -r api/ -ll -f json -o bandit-report.json
+
+          # Verificar si hay vulnerabilidades
+          VULN_COUNT=$(cat bandit-report.json | jq '.results | length')
+
+          if [ "$VULN_COUNT" -gt 0 ]; then
+            echo "❌ Se encontraron $VULN_COUNT vulnerabilidades de seguridad!"
+            cat bandit-report.json | jq '.results'
+            exit 1
+          fi
+
+          echo "✅ No se encontraron vulnerabilidades de seguridad"
+
+      # Safety: Verifica vulnerabilidades en dependencias
+      # --json: Output JSON
+      #
+      # NOTA: Safety puede fallar si hay dependencias vulnerables
+      # Configurar para fallar solo en vulnerabilidades HIGH/CRITICAL
+      - name: 🛡️ Run Safety (dependency check)
+        run: |
+          # Safety retorna exit code != 0 si hay vulnerabilidades
+          # Capturar output para análisis
+          safety check --json > safety-report.json || SAFETY_FAILED=true
+
+          if [ "$SAFETY_FAILED" = true ]; then
+            echo "⚠️ Safety encontró vulnerabilidades en dependencias"
+            cat safety-report.json | jq '.'
+
+            # Puedes ajustar esta política:
+            # - exit 1: Bloquear deployment
+            # - echo "warning": Solo advertir pero permitir deployment
+            echo "⚠️ Advertencia: Revisa las vulnerabilidades pero permitiendo continuar"
+          else
+            echo "✅ No se encontraron vulnerabilidades en dependencias"
+          fi
+
+  # ============================================================================
+  # JOB 4: BUILD DOCKER IMAGE
+  # Construye imagen Docker y la sube a GitHub Container Registry
+  # Solo corre si lint y tests pasan
+  # ============================================================================
+  build:
+    name: 🐳 Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [lint, test, security]  # Espera a que pasen estos jobs
+
+    # Solo construir en push a main o develop (no en PRs)
+    if: github.event_name == 'push'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Login a GitHub Container Registry
+      - name: 🔐 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Setup Docker Buildx (para builds avanzados)
+      - name: 🛠️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build y push imagen
+      # --cache-from/--cache-to: Usa cache para builds rápidos
+      # --push: Sube imagen a registry
+      # tags: Etiquetas de la imagen (latest + SHA)
+      - name: 🐳 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}
+            ghcr.io/${{ github.repository }}:latest
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+
+  # ============================================================================
+  # JOB 5: DEPLOY TO PRODUCTION
+  # Despliega a Railway automáticamente
+  # Solo corre en push a main (NO en PRs ni en develop)
+  # ============================================================================
+  deploy:
+    name: 🚀 Deploy to Railway
+    runs-on: ubuntu-latest
+    needs: [build]  # Solo después de build exitoso
+
+    # CRÍTICO: Solo deploy en push a main
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Instalar Railway CLI
+      - name: 📦 Install Railway CLI
+        run: |
+          npm i -g @railway/cli
+
+      # Validar que secrets estén configurados
+      - name: 🔐 Validate required secrets
+        run: |
+          if [ -z "${{ secrets.RAILWAY_TOKEN }}" ]; then
+            echo "❌ Error: RAILWAY_TOKEN secret no está configurado"
+            echo "Ve a Settings → Secrets → Actions y añade RAILWAY_TOKEN"
+            exit 1
+          fi
+          echo "✅ Secrets requeridos están configurados"
+
+      # Deploy con Railway
+      # RAILWAY_TOKEN debe estar en GitHub Secrets
+      #
+      # ⚠️ IMPORTANTE: No usar --detach sin validación posterior
+      # Railway puede retornar success aunque el deploy falle
+      - name: 🚀 Deploy to Railway
+        id: deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "🚀 Iniciando deployment a Railway..."
+
+          # Deploy (sin --detach para capturar resultado)
+          # Si necesitas --detach, debes validar status después
+          railway up
+
+          echo "✅ Railway CLI completó el deployment"
+
+      # Esperar a que deployment se propague
+      # Railway puede tardar 30-60s en hacer deploy completo
+      - name: ⏳ Wait for deployment propagation
+        run: |
+          echo "⏳ Esperando 45s para que deployment se propague..."
+          sleep 45
+
+      # Verificar que deploy funcionó (health check)
+      # [REEMPLAZAR] URL con tu URL de Railway
+      - name: 🏥 Health check with retries
+        run: |
+          HEALTH_URL="https://[REEMPLAZAR-TU-DOMINIO].railway.app/health"
+          MAX_RETRIES=10
+          RETRY_COUNT=0
+          RETRY_DELAY=10
+
+          echo "🏥 Verificando health check: $HEALTH_URL"
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            echo "Intento $RETRY_COUNT de $MAX_RETRIES..."
+
+            # Hacer request con timeout de 10s
+            if curl -f -s --max-time 10 "$HEALTH_URL" > /dev/null 2>&1; then
+              echo "✅ Deployment successful! API is healthy."
+              echo "URL: $HEALTH_URL"
+              exit 0
+            fi
+
+            if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+              echo "⚠️ Health check falló. Reintentando en ${RETRY_DELAY}s..."
+              sleep "$RETRY_DELAY"
+            fi
+          done
+
+          echo "❌ Health check failed after $MAX_RETRIES attempts"
+          echo "Deployment puede haber fallado o API no está respondiendo"
+          echo "Verifica logs en Railway: railway logs"
+          exit 1
+
+      # Notificar a Slack (opcional)
+      # [REEMPLAZAR] o eliminar este step si no usas Slack
+      - name: 📢 Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "✅ Deployment successful!",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment Successful* 🚀\n• Repository: `${{ github.repository }}`\n• Branch: `${{ github.ref_name }}`\n• Commit: `${{ github.sha }}`\n• Author: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+
+      # Notificar a Slack en caso de fallo
+      - name: 📢 Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "❌ Deployment failed!",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment Failed* 💥\n• Repository: `${{ github.repository }}`\n• Branch: `${{ github.ref_name }}`\n• Commit: `${{ github.sha }}`\n• Author: ${{ github.actor }}\n• <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+                  }
+                }
+              ]
+            }
+
+# ============================================================================
+# SECRETS NECESARIOS (añadir en GitHub repo → Settings → Secrets)
+# ============================================================================
+#
+# RAILWAY_TOKEN: Token de Railway (obtener con: railway whoami)
+# CODECOV_TOKEN: Token de Codecov (opcional, para coverage reports)
+# SLACK_WEBHOOK: Webhook de Slack (opcional, para notificaciones)
+#
+# ============================================================================
+# PERSONALIZACIÓN
+# ============================================================================
+#
+# Busca [REEMPLAZAR] en este archivo y reemplaza con tus valores:
+# 1. DOCKER_IMAGE: Tu imagen de Docker
+# 2. HEALTH_URL: Tu URL de Railway
+# 3. Elimina steps de Slack si no los usas
+#
+# ============================================================================
+# OPTIMIZACIONES APLICADAS
+# ============================================================================
+#
+# ✅ Cache de pip (acelera instalación de dependencias)
+# ✅ Jobs en paralelo (lint + test + security corren simultáneamente)
+# ✅ Matriz de versiones (testa en Python 3.11 y 3.12)
+# ✅ Docker Buildx con cache (builds ~80% más rápidos)
+# ✅ Health checks con retries (evita falsos negativos)
+# ✅ Notificaciones a Slack (awareness del equipo)
+# ✅ Condicionales estrictos (deploy SOLO en main)
+#
+# ============================================================================

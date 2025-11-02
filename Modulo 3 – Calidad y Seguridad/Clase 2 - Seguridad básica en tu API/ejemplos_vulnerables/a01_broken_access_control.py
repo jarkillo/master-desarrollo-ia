@@ -11,9 +11,9 @@ VULNERABILIDADES:
 3. No retorna 403 cuando corresponde (usa 404 para todo)
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List
 
 app = FastAPI()
 
@@ -99,7 +99,7 @@ def eliminar_tarea(tarea_id: int, usuario_actual: int = Depends(obtener_usuario_
 
 
 # VULNERABLE: Expone todas las tareas de todos los usuarios
-@app.get("/tareas", response_model=List[Tarea])
+@app.get("/tareas", response_model=list[Tarea])
 def listar_tareas(usuario_actual: int = Depends(obtener_usuario_actual)):
     """
     VULNERABILIDAD: Retorna tareas de todos los usuarios.

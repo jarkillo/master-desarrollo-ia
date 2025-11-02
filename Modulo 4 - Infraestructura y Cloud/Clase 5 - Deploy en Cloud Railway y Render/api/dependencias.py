@@ -6,8 +6,10 @@ Proporciona instancias de servicio y repositorio
 a los endpoints de la API.
 """
 from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
+
 from api.database import get_db
 from api.repositorio_db import RepositorioDB
 from api.servicio_tareas import ServicioTareas

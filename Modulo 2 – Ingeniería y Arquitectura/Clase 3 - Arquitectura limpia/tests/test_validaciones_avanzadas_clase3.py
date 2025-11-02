@@ -1,8 +1,8 @@
-import pytest
-from pydantic import ValidationError
 from datetime import date, timedelta
-from api.api import CrearTareaRequest
 
+import pytest
+from api.api import CrearTareaRequest
+from pydantic import ValidationError
 
 # === Tests de campo 'nombre' ===
 

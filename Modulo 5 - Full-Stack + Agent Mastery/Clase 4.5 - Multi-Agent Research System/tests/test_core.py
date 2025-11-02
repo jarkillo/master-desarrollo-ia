@@ -4,14 +4,12 @@ Tests para el módulo core del sistema multi-agente.
 
 import pytest
 from multi_agent_system import (
-    AgentRole,
-    Task,
     AgentResult,
-    MessageBus,
-    SharedMemory,
+    AgentRole,
     LeadAgent,
-    SubAgent,
     MultiAgentResearchSystem,
+    SubAgent,
+    Task,
 )
 
 

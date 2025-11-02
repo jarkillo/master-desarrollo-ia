@@ -1,6 +1,7 @@
 # api/servicio_tareas.py
-from typing import List, Optional
+
 from pydantic import BaseModel, Field
+
 from api.repositorio_base import RepositorioTareas
 
 
@@ -39,15 +40,15 @@ class ServicioTareas:
         self._repo.guardar(nueva)
         return nueva
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         """Lista todas las tareas."""
         return self._repo.listar()
 
-    def obtener(self, id: int) -> Optional[Tarea]:
+    def obtener(self, id: int) -> Tarea | None:
         """Obtiene una tarea por ID."""
         return self._repo.obtener(id)
 
-    def marcar_completada(self, id: int, completada: bool) -> Optional[Tarea]:
+    def marcar_completada(self, id: int, completada: bool) -> Tarea | None:
         """Marca una tarea como completada o no completada."""
         tarea = self._repo.obtener(id)
         if tarea is None:

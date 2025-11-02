@@ -11,7 +11,7 @@ from pathlib import Path
 # Agregar parent directory al path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from multi_agent_system import MultiAgentResearchSystem, PersistentMemory, AgentLogger
+from multi_agent_system import AgentLogger, MultiAgentResearchSystem, PersistentMemory
 
 
 class MockLLMClient:
@@ -114,7 +114,7 @@ async def example_with_persistent_memory():
 
     # Verificar que el estado se restauró
     print(f"Status después de restore: {memory.retrieve('status', 'not found')}")
-    print(f"(Debería ser 'not found' porque el checkpoint es anterior)")
+    print("(Debería ser 'not found' porque el checkpoint es anterior)")
     print()
 
 

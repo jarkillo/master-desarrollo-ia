@@ -1,3 +1,109 @@
+/* Home Page */
+.home {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.home-container {
+  text-align: center;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.home-title {
+  color: white;
+  font-size: 4rem;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.home-icon {
+  font-size: 5rem;
+}
+
+.home-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.5rem;
+  margin: 0 0 3rem 0;
+}
+
+.game-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.game-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.game-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}
+
+.game-card h2 {
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-size: 2rem;
+}
+
+.game-card p {
+  margin: 0 0 1.5rem 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.game-btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.main-game .game-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.main-game .game-btn:hover {
+  transform: scale(1.05);
+}
+
+.bug-hunt .game-btn {
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  color: white;
+}
+
+.bug-hunt .game-btn:hover {
+  transform: scale(1.05);
+}
+
+/* BugHuntApp & GameApp */
 .app {
   width: 100%;
   min-height: 100vh;
@@ -40,4 +146,24 @@
 
 .error-banner button:hover {
   opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-title {
+    font-size: 2.5rem;
+    flex-direction: column;
+  }
+
+  .home-icon {
+    font-size: 3.5rem;
+  }
+
+  .home-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .game-selection {
+    grid-template-columns: 1fr;
+  }
 }

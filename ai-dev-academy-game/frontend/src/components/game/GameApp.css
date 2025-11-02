@@ -1,0 +1,104 @@
+/**
+ * GameApp Styles
+ */
+
+.game-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+}
+
+/* Header */
+.game-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.game-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.logo-icon {
+  font-size: 2rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+}
+
+.game-nav {
+  /* Navigation items will go here */
+}
+
+/* Main Content */
+.game-main {
+  flex: 1;
+  padding: 2rem 0;
+}
+
+/* Footer */
+.game-footer {
+  background: #333;
+  color: #ccc;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.game-footer p {
+  margin: 0;
+}
+
+/* Placeholder Styles */
+.placeholder {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.placeholder h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.placeholder p {
+  color: #666;
+  margin-bottom: 0.75rem;
+}
+
+.placeholder .back-btn {
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .game-header {
+    padding: 1rem;
+  }
+
+  .logo-text {
+    font-size: 1.2rem;
+  }
+
+  .logo-icon {
+    font-size: 1.5rem;
+  }
+
+  .game-main {
+    padding: 1rem 0;
+  }
+}

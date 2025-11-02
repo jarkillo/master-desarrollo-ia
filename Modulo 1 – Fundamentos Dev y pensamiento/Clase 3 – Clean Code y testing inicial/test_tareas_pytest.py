@@ -4,8 +4,15 @@
 
 import os
 import tempfile
+
 import pytest
-from tareas import guardar_tareas, cargar_tareas, agregar_tarea, completar_tarea, listar_tareas
+from tareas import (
+    agregar_tarea,
+    cargar_tareas,
+    completar_tarea,
+    guardar_tareas,
+    listar_tareas,
+)
 
 
 @pytest.fixture

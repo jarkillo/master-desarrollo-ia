@@ -1,0 +1,14 @@
+# Dependencias para Clase 6.5 - Claude Agent SDK
+
+# Core
+anthropic>=0.18.0  # Claude Agent SDK
+
+# Testing (opcional, si quieres ejecutar los tests)
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Quality tools (usadas por los agentes)
+ruff>=0.1.0  # Linting moderno
+
+# Utilities
+python-dotenv>=1.0.0  # Para cargar .env

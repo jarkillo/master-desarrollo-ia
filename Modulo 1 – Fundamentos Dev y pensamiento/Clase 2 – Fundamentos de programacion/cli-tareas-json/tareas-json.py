@@ -14,20 +14,19 @@
 import argparse  # argparse: parsing de argumentos moderno y robusto
 import json  # json: guardar/cargar las tareas
 import os  # os: comprobar existencia de archivo
-from typing import List, Dict, Any
-
+from typing import Any
 
 # ================================
 # 1. Constantes y tipos
 # ================================
 NOMBRE_ARCHIVO_POR_DEFECTO = "tareas.json"
-Tarea = Dict[str, Any]  # Estructura: {"id": int, "nombre": str, "completada": bool}
+Tarea = dict[str, Any]  # Estructura: {"id": int, "nombre": str, "completada": bool}
 
 
 # ================================
 # 2. Capa de acceso a datos (I/O)
 # ================================
-def cargar_tareas(ruta_archivo: str) -> List[Tarea]:
+def cargar_tareas(ruta_archivo: str) -> list[Tarea]:
     """Carga y devuelve la lista de tareas desde un archivo JSON.
     Si el archivo no existe o está vacío, devuelve una lista vacía.
     """
@@ -35,7 +34,7 @@ def cargar_tareas(ruta_archivo: str) -> List[Tarea]:
         return []
     # Manejo de archivo corrupto o vacío: devolvemos lista vacía con fallback seguro
     try:
-        with open(ruta_archivo, "r", encoding="utf-8") as f:
+        with open(ruta_archivo, encoding="utf-8") as f:
             contenido = f.read().strip()
             return json.loads(contenido) if contenido else []
     except json.JSONDecodeError:
@@ -44,7 +43,7 @@ def cargar_tareas(ruta_archivo: str) -> List[Tarea]:
         return []
 
 
-def guardar_tareas(ruta_archivo: str, tareas: List[Tarea]) -> None:
+def guardar_tareas(ruta_archivo: str, tareas: list[Tarea]) -> None:
     """Guarda la lista de tareas en el archivo JSON con indentación legible."""
     with open(ruta_archivo, "w", encoding="utf-8") as f:
         json.dump(tareas, f, ensure_ascii=False, indent=2)
@@ -53,7 +52,7 @@ def guardar_tareas(ruta_archivo: str, tareas: List[Tarea]) -> None:
 # ================================
 # 3. Lógica de negocio (operaciones)
 # ================================
-def generar_nuevo_id(tareas: List[Tarea]) -> int:
+def generar_nuevo_id(tareas: list[Tarea]) -> int:
     """Genera un ID incremental robusto.
     - Usa (max(id) + 1) para evitar colisiones si algún día implementas 'borrar'.
     """

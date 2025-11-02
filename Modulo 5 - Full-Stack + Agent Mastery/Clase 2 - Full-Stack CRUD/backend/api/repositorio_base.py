@@ -3,6 +3,7 @@ Protocol (interfaz) para repositorios de tareas.
 Define el contrato que deben cumplir todas las implementaciones.
 """
 from typing import Protocol
+
 from pydantic import BaseModel
 
 

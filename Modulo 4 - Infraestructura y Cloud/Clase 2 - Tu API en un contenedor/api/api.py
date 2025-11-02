@@ -1,13 +1,13 @@
 # api/api.py
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel, constr
-
-from api.servicio_tareas import ServicioTareas
-from api.repositorio_memoria import RepositorioMemoria
-from api.seguridad_jwt import crear_token, verificar_jwt
+import os
 
 import sentry_sdk
-import os
+from fastapi import Depends, FastAPI, HTTPException
+from pydantic import BaseModel, constr
+
+from api.repositorio_memoria import RepositorioMemoria
+from api.seguridad_jwt import crear_token, verificar_jwt
+from api.servicio_tareas import ServicioTareas
 
 sentry_sdk.init(
     dsn=os.getenv("SENTRY_DSN"),

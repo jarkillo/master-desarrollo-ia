@@ -1,8 +1,9 @@
-from fastapi.testclient import TestClient
-from api import api as api_mod  # accedemos al módulo, no solo al app
-from api.servicio_tareas import ServicioTareas
-from api.repositorio_memoria import RepositorioMemoria
 import os
+
+from api import api as api_mod  # accedemos al módulo, no solo al app
+from api.repositorio_memoria import RepositorioMemoria
+from api.servicio_tareas import ServicioTareas
+from fastapi.testclient import TestClient
 
 
 def test_crear_tarea_minima_devuelve_201_y_cuerpo_esperado():

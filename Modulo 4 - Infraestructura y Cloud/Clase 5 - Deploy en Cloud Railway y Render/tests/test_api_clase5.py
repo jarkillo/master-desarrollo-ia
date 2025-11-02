@@ -9,13 +9,12 @@ Tests específicos de Clase 5:
 - Status codes correctos
 """
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from api.api import app
 from api.database import get_db
 from api.models import Base
-
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 # Database de pruebas (en memoria)
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"

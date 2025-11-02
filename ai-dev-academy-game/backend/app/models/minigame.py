@@ -1,10 +1,9 @@
 """Minigame models - tracks minigame sessions and scores."""
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, JSON
+from app.database import Base
+from sqlalchemy import JSON, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
-from app.database import Base
 
 
 class BugHuntGame(Base):

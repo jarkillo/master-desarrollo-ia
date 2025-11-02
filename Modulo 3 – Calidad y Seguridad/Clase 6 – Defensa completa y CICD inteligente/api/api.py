@@ -1,10 +1,10 @@
 # api/api.py
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, constr
 
-from api.servicio_tareas import ServicioTareas
 from api.repositorio_memoria import RepositorioMemoria
 from api.seguridad_jwt import crear_token, verificar_jwt  # <- NUEVO
+from api.servicio_tareas import ServicioTareas
 
 app = FastAPI()
 servicio = ServicioTareas(RepositorioMemoria())
@@ -37,12 +37,12 @@ class CrearTareaRequest(BaseModel):
     # prioridad: str = Field(default="media", pattern="^(alta|media|baja)$")
 
 
-@app.post("/tareas", status_code=201, dependencies=[Depends(verificar_jwt)])
-def crear_tarea(cuerpo: CrearTareaRequest):
+@app.post("/tareas", status_code=201)
+def crear_tarea(cuerpo: CrearTareaRequest, _: dict = Depends(verificar_jwt)):
     tarea = servicio.crear(cuerpo.nombre)
     return tarea.model_dump()
 
 
-@app.get("/tareas", dependencies=[Depends(verificar_jwt)])
-def listar_tareas():
+@app.get("/tareas")
+def listar_tareas(_: dict = Depends(verificar_jwt)):
     return [t.model_dump() for t in servicio.listar()]

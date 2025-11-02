@@ -4,9 +4,9 @@ Mini API de Tareas - Clase 1 Módulo 2
 API REST simple para gestión de tareas con FastAPI
 """
 
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from typing import Optional
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -19,7 +19,7 @@ app = FastAPI(
 class CrearTareaRequest(BaseModel):
     nombre: str = Field(..., min_length=1, max_length=200,
                         description="Nombre de la tarea")
-    descripcion: Optional[str] = Field(None, max_length=500,
+    descripcion: str | None = Field(None, max_length=500,
                                        description="Descripción opcional de la tarea")
 
     class Config:
@@ -35,7 +35,7 @@ class CrearTareaRequest(BaseModel):
 class TareaResponse(BaseModel):
     id: int = Field(..., description="ID único de la tarea")
     nombre: str = Field(..., description="Nombre de la tarea")
-    descripcion: Optional[str] = Field(None, description="Descripción de la tarea")
+    descripcion: str | None = Field(None, description="Descripción de la tarea")
     completada: bool = Field(False, description="Estado de la tarea")
 
     class Config:

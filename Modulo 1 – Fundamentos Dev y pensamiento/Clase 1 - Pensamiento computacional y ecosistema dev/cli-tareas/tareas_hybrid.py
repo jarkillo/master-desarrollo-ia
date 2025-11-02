@@ -1,4 +1,3 @@
-import sys
 
 # Versión HÍBRIDA: Manual + IA
 # Este archivo debe ser completado por el estudiante combinando:

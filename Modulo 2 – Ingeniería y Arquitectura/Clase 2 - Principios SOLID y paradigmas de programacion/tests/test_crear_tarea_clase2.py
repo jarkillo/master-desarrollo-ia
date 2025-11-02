@@ -2,8 +2,8 @@
 Tests para la API de Tareas - Clase 2
 Cubre todos los endpoints CRUD: POST, GET, PUT, DELETE
 """
-from fastapi.testclient import TestClient
 from api import api as api_mod
+from fastapi.testclient import TestClient
 
 
 def test_crear_tarea_minima_devuelve_201_y_cuerpo_esperado():

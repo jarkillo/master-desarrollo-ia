@@ -1,8 +1,8 @@
 # tests/test_obtener_tarea.py
 """Tests para el endpoint de obtener tarea por ID"""
 
-from fastapi.testclient import TestClient
 from api.api import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

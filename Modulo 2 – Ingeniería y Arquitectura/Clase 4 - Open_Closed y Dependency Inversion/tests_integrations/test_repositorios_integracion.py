@@ -6,11 +6,11 @@ exactamente el mismo contrato (RepositorioTareas Protocol).
 Si algún test falla solo para un repositorio, significa que NO son
 intercambiables → violación de Liskov Substitution Principle.
 """
+
 import pytest
-from pathlib import Path
-from api.servicio_tareas import Tarea
-from api.repositorio_memoria import RepositorioMemoria
 from api.repositorio_json import RepositorioJSON
+from api.repositorio_memoria import RepositorioMemoria
+from api.servicio_tareas import Tarea
 
 
 @pytest.fixture(params=["memoria", "json"])

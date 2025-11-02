@@ -1,15 +1,28 @@
-# Bug Hunt - Frontend
+# AI Dev Academy - Frontend
 
-React + TypeScript frontend for the Bug Hunt mini-game.
+React + TypeScript frontend for AI Dev Academy Game.
+
+Includes both the **Main Game** (progress tracking, achievements, modules) and the **Bug Hunt mini-game**.
 
 ## Features
 
-- **Difficulty Selection**: Choose between Easy, Medium, Hard, or Random
-- **Interactive Code Display**: Click on lines to mark bugs
-- **Real-time Timer**: Track your progress with a live timer
-- **Detailed Results**: See your score, XP earned, accuracy, and performance breakdown
-- **Leaderboard**: Compete with other players globally or by difficulty
-- **Responsive Design**: Works on desktop and mobile devices
+### Main Game
+- **Dashboard**: Player stats, XP bar, modules grid, achievements
+- **Module Viewer**: Browse classes with prerequisites and learning objectives
+- **Progress Tracking**: Sequential unlocking with status tracking
+- **Achievement System**: 27 achievements with auto-unlock
+- **Notifications**: Toast notifications for achievements and events
+- **Responsive UI**: Modern design with gradients and animations
+- **State Management**: Zustand with localStorage persistence
+- **Routing**: React Router (/, /game, /bug-hunt)
+
+### Bug Hunt Mini-Game
+- **Difficulty Selection**: Easy, Medium, Hard, or Random
+- **Interactive Code Display**: Click lines to mark bugs
+- **Real-time Timer**: Live progress tracking
+- **Detailed Results**: Score, XP, accuracy, performance
+- **Leaderboard**: Global and difficulty-based rankings
+- **Achievement Integration**: Unlocks game achievements
 
 ## Prerequisites
 
@@ -50,37 +63,59 @@ React + TypeScript frontend for the Bug Hunt mini-game.
 
 ```
 src/
-├── components/         # React components
-│   ├── BugHuntStart.tsx          # Difficulty selection screen
-│   ├── BugHuntGame.tsx           # Main game with code display
-│   ├── BugHuntResults.tsx        # Results and statistics
-│   └── BugHuntLeaderboard.tsx    # Global leaderboard
-├── services/           # API clients
-│   ├── api.ts                    # Axios configuration
-│   └── bugHuntApi.ts             # Bug Hunt API methods
-├── types/              # TypeScript types
-│   └── bugHunt.ts                # Game types (from backend schemas)
-├── hooks/              # Custom React hooks
-│   └── useTimer.ts               # Timer hook
-├── App.tsx             # Main app component
-├── main.tsx            # Entry point
-└── index.css           # Global styles
+├── components/
+│   ├── game/                         # Main Game components
+│   │   ├── GameApp.tsx + .css        # Main container
+│   │   ├── Dashboard.tsx + .css      # Dashboard with stats
+│   │   ├── ModuleViewer.tsx + .css   # Module class list
+│   │   └── Notifications.tsx + .css  # Toast notifications
+│   ├── BugHuntApp.tsx                # Bug Hunt game
+│   ├── BugHuntStart.tsx              # Difficulty selection
+│   ├── BugHuntGame.tsx               # Main game logic
+│   ├── BugHuntResults.tsx            # Results screen
+│   └── BugHuntLeaderboard.tsx        # Leaderboard
+├── services/
+│   ├── api.ts                        # Axios config
+│   ├── gameApi.ts                    # Main game API client
+│   └── bugHuntApi.ts                 # Bug Hunt API client
+├── stores/
+│   └── gameStore.ts                  # Zustand state management
+├── types/
+│   ├── game.ts                       # Main game types (40+ interfaces)
+│   └── bugHunt.ts                    # Bug Hunt types
+├── hooks/
+│   └── useTimer.ts                   # Timer hook
+├── App.tsx                           # Router & home page
+├── main.tsx                          # Entry point
+└── index.css                         # Global styles
 ```
 
 ## Backend API
 
-This frontend connects to the Bug Hunt API backend. Make sure the backend is running:
+This frontend connects to the FastAPI backend. Make sure it's running:
 
 ```bash
 cd ../backend
 uvicorn app.main:app --reload
 ```
 
-API endpoints used:
-- `POST /api/minigames/bug-hunt/start` - Start a new game
+### Main Game API Endpoints
+- `POST /api/player/` - Create player
+- `GET /api/player/{id}` - Get player info
+- `GET /api/player/{id}/stats` - Get player stats
+- `GET /api/progress/player/{id}` - Get full progress
+- `GET /api/progress/modules` - Get all modules
+- `POST /api/progress/` - Create/unlock class
+- `PATCH /api/progress/{id}` - Update progress
+- `GET /api/achievements/` - Get all achievements
+- `GET /api/achievements/player/{id}` - Get player achievements
+- `POST /api/achievements/check` - Auto-check achievements
+
+### Bug Hunt API Endpoints
+- `POST /api/minigames/bug-hunt/start` - Start game
 - `POST /api/minigames/bug-hunt/submit` - Submit answers
 - `GET /api/minigames/bug-hunt/leaderboard` - Get rankings
-- `GET /api/minigames/bug-hunt/stats/{player_id}` - Get player stats
+- `GET /api/minigames/bug-hunt/stats/{player_id}` - Get stats
 
 ## Environment Variables
 

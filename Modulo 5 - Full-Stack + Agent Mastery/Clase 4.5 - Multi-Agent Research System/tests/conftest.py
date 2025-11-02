@@ -11,10 +11,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import pytest
 from multi_agent_system import (
     AgentRole,
-    Task,
     MessageBus,
-    SharedMemory,
     PersistentMemory,
+    SharedMemory,
+    Task,
 )
 
 

@@ -8,12 +8,13 @@ Endpoints:
 - GET /auth/me: Obtener datos del usuario autenticado (protegido)
 - GET /: Health check
 """
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from api.modelos import RegisterRequest, LoginRequest, AuthResponse, UserResponse
-from api.servicio_usuarios import ServicioUsuarios
+
 from api.dependencias import obtener_servicio_usuarios
+from api.modelos import AuthResponse, LoginRequest, RegisterRequest, UserResponse
 from api.seguridad_jwt import verificar_jwt
+from api.servicio_usuarios import ServicioUsuarios
 
 app = FastAPI(
     title="API con Autenticación JWT",

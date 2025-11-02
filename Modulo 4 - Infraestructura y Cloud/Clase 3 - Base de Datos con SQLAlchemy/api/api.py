@@ -9,11 +9,12 @@ Demuestra:
 - Manejo de errores HTTP apropiados
 """
 from contextlib import asynccontextmanager
-from typing import List
+
 from fastapi import FastAPI, HTTPException, status
+
 from api.database import crear_tablas
-from api.servicio_tareas import Tarea, TareaCreate, TareaUpdate
 from api.dependencias import ServicioTareasDepende
+from api.servicio_tareas import Tarea, TareaCreate, TareaUpdate
 
 
 @asynccontextmanager
@@ -80,10 +81,10 @@ def crear_tarea(
 
 @app.get(
     "/tareas",
-    response_model=List[Tarea],
+    response_model=list[Tarea],
     tags=["Tareas"]
 )
-def listar_tareas(servicio: ServicioTareasDepende) -> List[Tarea]:
+def listar_tareas(servicio: ServicioTareasDepende) -> list[Tarea]:
     """
     Lista todas las tareas.
 

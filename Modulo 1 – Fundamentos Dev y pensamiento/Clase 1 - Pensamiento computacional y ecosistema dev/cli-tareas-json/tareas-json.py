@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 CLI simple de tareas con persistencia en un archivo JSON.
@@ -16,12 +15,13 @@ Uso rápido:
 """
 
 from __future__ import annotations
+
 import argparse
 import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Ruta por defecto del "repositorio" de tareas (junto al script)
 DEFAULT_DB_PATH = Path(__file__).with_name("tareas.json")
@@ -35,7 +35,7 @@ def _ahora_iso() -> str:
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def cargar_tareas(db_path: Path = DEFAULT_DB_PATH) -> List[Dict[str, Any]]:
+def cargar_tareas(db_path: Path = DEFAULT_DB_PATH) -> list[dict[str, Any]]:
     """
     Carga la lista de tareas desde el JSON.
     Si el archivo no existe, devuelve una lista vacía.
@@ -64,7 +64,7 @@ def cargar_tareas(db_path: Path = DEFAULT_DB_PATH) -> List[Dict[str, Any]]:
 
 
 def guardar_tareas(
-    tareas: List[Dict[str, Any]], db_path: Path = DEFAULT_DB_PATH
+    tareas: list[dict[str, Any]], db_path: Path = DEFAULT_DB_PATH
 ) -> None:
     """
     Guarda la lista de tareas en el JSON con indentación.
@@ -77,7 +77,7 @@ def guardar_tareas(
     tmp_path.replace(db_path)  # Operación atómica en la mayoría de FS
 
 
-def siguiente_id(tareas: List[Dict[str, Any]]) -> int:
+def siguiente_id(tareas: list[dict[str, Any]]) -> int:
     """Calcula el siguiente id autoincremental (max + 1) sobre las tareas existentes."""
     return max((t["id"] for t in tareas), default=0) + 1
 
@@ -85,7 +85,7 @@ def siguiente_id(tareas: List[Dict[str, Any]]) -> int:
 # ---------- Operaciones de dominio ----------
 
 
-def op_agregar(texto: str, db_path: Path = DEFAULT_DB_PATH) -> Dict[str, Any]:
+def op_agregar(texto: str, db_path: Path = DEFAULT_DB_PATH) -> dict[str, Any]:
     """
     Agrega una tarea nueva con 'texto' y la marca como pendiente.
     Devuelve la tarea creada.
@@ -105,8 +105,8 @@ def op_agregar(texto: str, db_path: Path = DEFAULT_DB_PATH) -> Dict[str, Any]:
 
 def op_listar(
     db_path: Path = DEFAULT_DB_PATH,
-    filtro: Optional[str] = None,  # "todas" | "hechas" | "pendientes" | None
-) -> List[Dict[str, Any]]:
+    filtro: str | None = None,  # "todas" | "hechas" | "pendientes" | None
+) -> list[dict[str, Any]]:
     """
     Lista tareas aplicando un filtro opcional:
       - None o "pendientes": solo pendientes (por defecto)
@@ -125,7 +125,7 @@ def op_listar(
     return [t for t in tareas if not t.get("hecha")]
 
 
-def op_completar(task_id: int, db_path: Path = DEFAULT_DB_PATH) -> Dict[str, Any]:
+def op_completar(task_id: int, db_path: Path = DEFAULT_DB_PATH) -> dict[str, Any]:
     """
     Marca como completada la tarea con id = task_id.
     Devuelve la tarea actualizada.
@@ -145,7 +145,7 @@ def op_completar(task_id: int, db_path: Path = DEFAULT_DB_PATH) -> Dict[str, Any
 # ---------- Formato de salida ----------
 
 
-def imprimir_tareas_humano(tareas: List[Dict[str, Any]]) -> None:
+def imprimir_tareas_humano(tareas: list[dict[str, Any]]) -> None:
     """
     Muestra las tareas de forma legible en consola:
       [ ] id  texto
@@ -203,7 +203,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 

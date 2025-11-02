@@ -9,9 +9,9 @@ Casos cubiertos:
 - Validación de tokens JWT
 """
 import pytest
-from fastapi.testclient import TestClient
 from api.api import app
 from api.dependencias import _repositorio_usuarios
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(autouse=True)

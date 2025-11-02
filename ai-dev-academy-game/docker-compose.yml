@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Backend API (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ai-dev-academy-backend
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite:///./data/ai_dev_academy.db
+      - ALLOWED_ORIGINS=${FRONTEND_URL:-http://localhost}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - API_TITLE=AI Dev Academy API
+      - API_VERSION=1.0.0
+    volumes:
+      - backend-data:/app/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Frontend (React + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${BACKEND_URL:-http://localhost:8000}
+        - VITE_DEFAULT_PLAYER_ID=1
+        - VITE_ENVIRONMENT=production
+    container_name: ai-dev-academy-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  backend-data:
+    driver: local
+
+networks:
+  default:
+    name: ai-dev-academy-network

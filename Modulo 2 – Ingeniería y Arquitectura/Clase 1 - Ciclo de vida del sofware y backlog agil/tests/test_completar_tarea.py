@@ -1,8 +1,8 @@
 # tests/test_completar_tarea.py
 """Tests para el endpoint de completar tareas"""
 
-from fastapi.testclient import TestClient
 from api.api import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

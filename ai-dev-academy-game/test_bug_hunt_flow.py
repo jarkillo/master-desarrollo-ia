@@ -1,6 +1,8 @@
 """Test Bug Hunt complete flow end-to-end."""
-import requests
 import sys
+
+import requests
+
 
 def test_bug_hunt_flow():
     """Test complete Bug Hunt game flow."""

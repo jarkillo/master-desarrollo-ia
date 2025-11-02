@@ -8,13 +8,12 @@ Estos tests verifican:
 - Protección de PII y datos sensibles
 """
 import os
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
 from api.sentry_config import (
-    scrub_sensitive_data,
     before_send,
     configurar_sentry,
-    SENSITIVE_FIELDS
+    scrub_sensitive_data,
 )
 
 

@@ -12,8 +12,9 @@ VULNERABILIDADES:
 4. Mass assignment (permite modificar cualquier campo)
 """
 
+from typing import Any
+
 from fastapi import FastAPI, HTTPException
-from typing import Dict, Any
 
 app = FastAPI()
 
@@ -85,7 +86,7 @@ def buscar_tareas(nombre: str):
 
 # VULNERABLE 4: Mass Assignment
 @app.put("/tareas/{tarea_id}")
-def actualizar_tarea(tarea_id: int, datos: Dict[str, Any]):
+def actualizar_tarea(tarea_id: int, datos: dict[str, Any]):
     """
     VULNERABILIDAD: Mass assignment - permite modificar cualquier campo.
 

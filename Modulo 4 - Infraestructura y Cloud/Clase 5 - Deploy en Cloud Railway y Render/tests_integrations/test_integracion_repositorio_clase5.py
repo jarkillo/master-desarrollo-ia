@@ -6,12 +6,11 @@ Verifican que el repositorio funciona correctamente con
 SQLAlchemy y base de datos real (SQLite en tests).
 """
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from api.models import Base, TareaModel
 from api.repositorio_db import RepositorioDB
 from api.servicio_tareas import Tarea
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 # Database de pruebas (en memoria)
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"

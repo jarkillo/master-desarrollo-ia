@@ -5,16 +5,14 @@ Tests de la API usando SQLAlchemy.
 Tests unitarios que usan TestClient de FastAPI.
 """
 import pytest
+from api.api import app
+from api.dependencias import get_servicio
+from api.models import Base
+from api.repositorio_db import RepositorioDB
+from api.servicio_tareas import ServicioTareas
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from api.api import app
-from api.models import Base
-from api.database import get_db
-from api.repositorio_db import RepositorioDB
-from api.servicio_tareas import ServicioTareas
-from api.dependencias import get_servicio
-
 
 # Base de datos en memoria para tests (SQLite)
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
