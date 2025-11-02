@@ -10,7 +10,12 @@
       "mcp__linear__create_issue_label",
       "mcp__linear__create_issue",
       "mcp__linear__list_issue_labels",
-      "mcp__linear__get_issue"
+      "mcp__linear__get_issue",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh run view:*)",
+      "mcp__linear__list_issues",
+      "mcp__linear__update_issue"
     ],
     "deny": [],
     "ask": []
