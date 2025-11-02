@@ -1,0 +1,24 @@
+# Ignore node_modules - will be installed fresh in container
+node_modules
+
+# Ignore build output
+dist
+.vite
+
+# Ignore local env
+.env
+.env.local
+.env.*.local
+
+# Ignore IDE
+.vscode
+.idea
+
+# Ignore git
+.git
+.gitignore
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

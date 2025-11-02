@@ -2,6 +2,7 @@
  * BugHuntLeaderboard - Display leaderboard rankings
  */
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { bugHuntApi } from '../services/bugHuntApi';
 import type { LeaderboardResponse, Difficulty } from '../types/bugHunt';
 import './BugHuntLeaderboard.css';
@@ -13,6 +14,7 @@ interface BugHuntLeaderboardProps {
 export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
   onBack,
 }) => {
+  const { t, i18n } = useTranslation();
   const [leaderboard, setLeaderboard] = useState<LeaderboardResponse | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | undefined>(
     undefined
@@ -32,7 +34,7 @@ export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
       setLeaderboard(data);
     } catch (err) {
       console.error('Failed to load leaderboard:', err);
-      setError('Failed to load leaderboard. Please try again.');
+      setError(t('bugHunt.leaderboard.loadingError'));
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +48,7 @@ export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(i18n.language, {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -85,9 +87,9 @@ export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
       <div className="leaderboard-container">
         <div className="leaderboard-header">
           <button className="back-button" onClick={onBack}>
-            ← Back
+            ← {t('common.back')}
           </button>
-          <h1>🏆 Leaderboard</h1>
+          <h1>🏆 {t('bugHunt.leaderboard.title')}</h1>
         </div>
 
         <div className="difficulty-filter">
@@ -95,39 +97,39 @@ export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
             className={`filter-button ${selectedDifficulty === undefined ? 'active' : ''}`}
             onClick={() => setSelectedDifficulty(undefined)}
           >
-            All
+            {t('bugHunt.leaderboard.allDifficulties')}
           </button>
           <button
             className={`filter-button ${selectedDifficulty === 'easy' ? 'active' : ''}`}
             onClick={() => setSelectedDifficulty('easy')}
           >
-            🟢 Easy
+            🟢 {t('bugHunt.start.easy')}
           </button>
           <button
             className={`filter-button ${selectedDifficulty === 'medium' ? 'active' : ''}`}
             onClick={() => setSelectedDifficulty('medium')}
           >
-            🟡 Medium
+            🟡 {t('bugHunt.start.medium')}
           </button>
           <button
             className={`filter-button ${selectedDifficulty === 'hard' ? 'active' : ''}`}
             onClick={() => setSelectedDifficulty('hard')}
           >
-            🔴 Hard
+            🔴 {t('bugHunt.start.hard')}
           </button>
         </div>
 
         {isLoading && (
           <div className="loading-state">
             <div className="spinner"></div>
-            <p>Loading leaderboard...</p>
+            <p>{t('bugHunt.leaderboard.loadingLeaderboard')}</p>
           </div>
         )}
 
         {error && (
           <div className="error-state">
             <p>{error}</p>
-            <button onClick={loadLeaderboard}>Retry</button>
+            <button onClick={loadLeaderboard}>{t('common.retry')}</button>
           </div>
         )}
 
@@ -135,21 +137,21 @@ export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
           <>
             {leaderboard.entries.length === 0 ? (
               <div className="empty-state">
-                <p>No games played yet. Be the first!</p>
+                <p>{t('bugHunt.leaderboard.noEntries')}</p>
               </div>
             ) : (
               <div className="leaderboard-table-container">
                 <table className="leaderboard-table">
                   <thead>
                     <tr>
-                      <th>Rank</th>
-                      <th>Player</th>
-                      <th>Score</th>
-                      <th>Bugs</th>
-                      <th>Accuracy</th>
-                      <th>Time</th>
-                      <th>Difficulty</th>
-                      <th>Date</th>
+                      <th>{t('bugHunt.leaderboard.rank')}</th>
+                      <th>{t('bugHunt.leaderboard.player')}</th>
+                      <th>{t('bugHunt.leaderboard.score')}</th>
+                      <th>{t('bugHunt.leaderboard.bugs')}</th>
+                      <th>{t('bugHunt.leaderboard.accuracy')}</th>
+                      <th>{t('bugHunt.leaderboard.time')}</th>
+                      <th>{t('bugHunt.leaderboard.difficulty')}</th>
+                      <th>{t('bugHunt.leaderboard.date')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -191,8 +193,10 @@ export const BugHuntLeaderboard: React.FC<BugHuntLeaderboardProps> = ({
 
             {leaderboard.total_entries > leaderboard.entries.length && (
               <p className="more-entries-hint">
-                Showing top {leaderboard.entries.length} of {leaderboard.total_entries}{' '}
-                entries
+                {t('bugHunt.leaderboard.showingEntries', {
+                  showing: leaderboard.entries.length,
+                  total: leaderboard.total_entries,
+                })}
               </p>
             )}
           </>

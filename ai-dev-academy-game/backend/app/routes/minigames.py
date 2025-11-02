@@ -1,6 +1,10 @@
 """Minigames API routes - Bug Hunt and other mini-games."""
 
 from datetime import datetime
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, Header
+from sqlalchemy.orm import Session
+from sqlalchemy import desc, func
 
 from app.content.bug_templates import (
     BugTemplate,
@@ -8,6 +12,7 @@ from app.content.bug_templates import (
     get_template_by_id,
 )
 from app.database import get_db
+from app.i18n import get_bug_template_i18n
 from app.models import BugHuntGame, Player, PlayerStats
 from app.schemas.minigame import (
     BugHuntStartRequest,
@@ -19,9 +24,6 @@ from app.schemas.minigame import (
     LeaderboardResponse,
     PlayerBugHuntStatsResponse,
 )
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import desc, func
-from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -31,7 +33,8 @@ router = APIRouter()
 @router.post("/bug-hunt/start", response_model=BugHuntStartResponse)
 async def start_bug_hunt(
     request: BugHuntStartRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    accept_language: str = Header(default="es", alias="Accept-Language")
 ):
     """
     Start a new Bug Hunt game session.
@@ -40,7 +43,13 @@ async def start_bug_hunt(
     - **difficulty**: Optional difficulty level (easy, medium, hard)
 
     Returns a code snippet with bugs and a session ID for submission.
+    Supports i18n via Accept-Language header (es, en).
     """
+    # Extract language code (handle "es-ES" -> "es", "en-US" -> "en")
+    language = accept_language.split("-")[0].lower() if accept_language else "es"
+    if language not in ["es", "en"]:
+        language = "es"  # Default to Spanish
+
     # Verify player exists
     player = db.query(Player).filter(Player.id == request.player_id).first()
     if not player:
@@ -51,6 +60,16 @@ async def start_bug_hunt(
         template: BugTemplate = get_random_template(difficulty=request.difficulty)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+    # Get translated metadata
+    try:
+        i18n_data = get_bug_template_i18n(template.id, language)
+    except ValueError:
+        # Fallback to template defaults if translation not found
+        i18n_data = {
+            "title": template.title,
+            "description": template.description
+        }
 
     # Create game session
     started_at = datetime.utcnow()
@@ -73,8 +92,8 @@ async def start_bug_hunt(
     return BugHuntStartResponse(
         session_id=game_session.id,
         template_id=template.id,
-        title=template.title,
-        description=template.description,
+        title=i18n_data["title"],
+        description=i18n_data["description"],
         difficulty=template.difficulty,
         code=template.code,
         bugs_count=len(template.bugs),
@@ -139,7 +158,8 @@ def calculate_bug_hunt_score(
 @router.post("/bug-hunt/submit", response_model=BugHuntSubmitResponse)
 async def submit_bug_hunt(
     request: BugHuntSubmitRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    accept_language: str = Header(default="es", alias="Accept-Language")
 ):
     """
     Submit Bug Hunt answers and get results.
@@ -150,7 +170,13 @@ async def submit_bug_hunt(
     - **time_seconds**: Time taken to complete
 
     Returns score, XP earned, and detailed results.
+    Supports i18n via Accept-Language header (es, en).
     """
+    # Extract language code (handle "es-ES" -> "es", "en-US" -> "en")
+    language = accept_language.split("-")[0].lower() if accept_language else "es"
+    if language not in ["es", "en"]:
+        language = "es"  # Default to Spanish
+
     # Get game session
     game_session = db.query(BugHuntGame).filter(BugHuntGame.id == request.session_id).first()
     if not game_session:
@@ -165,6 +191,13 @@ async def submit_bug_hunt(
         template = get_template_by_id(game_session.template_id)
     except ValueError:
         raise HTTPException(status_code=500, detail="Template not found")
+
+    # Get translated bug descriptions
+    try:
+        i18n_data = get_bug_template_i18n(template.id, language)
+        i18n_bugs = {i: bug for i, bug in enumerate(i18n_data.get("bugs", []))}
+    except ValueError:
+        i18n_bugs = {}
 
     # Extract correct bug lines from template
     correct_bug_lines = {bug["line"] for bug in template.bugs}
@@ -188,27 +221,33 @@ async def submit_bug_hunt(
         difficulty=template.difficulty
     )
 
-    # Build detailed results
+    # Build detailed results with translations
     results = []
-    for bug in template.bugs:
+    for idx, bug in enumerate(template.bugs):
         line = bug["line"]
         was_found = line in submitted_lines
+
+        # Get translated description or fallback to original
+        translated_bug = i18n_bugs.get(idx, {})
+        description = translated_bug.get("description", bug["description"])
+
         results.append(BugResult(
             line=line,
             found=was_found,
             is_correct=True,
             bug_type=bug["type"],
-            description=bug["description"]
+            description=description
         ))
 
-    # Add false positives to results
+    # Add false positives to results (with translation)
+    no_bug_message = "No hay bug en esta línea" if language == "es" else "No bug on this line"
     for line in false_positives_set:
         results.append(BugResult(
             line=line,
             found=True,
             is_correct=False,
             bug_type=None,
-            description="No bug on this line"
+            description=no_bug_message
         ))
 
     # Calculate accuracy
