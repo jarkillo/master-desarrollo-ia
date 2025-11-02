@@ -4,28 +4,67 @@
 
 Un juego de simulación donde progresas de Junior Developer a CTO mientras aprendes el contenido del Master en IA Development.
 
-## Características
+## 🎮 Dos Juegos en Uno
+
+### 1. **Main Game** (React Frontend + FastAPI Backend)
+Juego completo con progresión, módulos, clases y achievements.
+
+**Features**:
+- 🎯 Sistema de progreso con XP y niveles (1-30+)
+- 🏆 27 achievements desbloqueables
+- 📚 6 módulos con 45+ clases
+- 📊 Dashboard con estadísticas completas
+- 🔓 Sistema de prerequisitos y unlocking
+- 💫 Notificaciones de achievements animadas
+- 📱 UI responsive (desktop + mobile)
+
+### 2. **Bug Hunt Mini-Game** (React Standalone)
+Encuentra bugs en snippets de código y compite en el leaderboard.
+
+**Features**:
+- 🐛 3 niveles de dificultad
+- ⏱️ Timer con scoring
+- 🏅 Leaderboard global
+- 📈 Accuracy tracking
+- 🎯 Achievement integration
+
+## Características Generales
 
 - 🎯 **Sistema de Progreso**: XP, niveles, skills desbloqueables
-- 🏆 **Achievements**: Desbloquea logros completando objetivos
-- 🤖 **Equipo de Agentes**: Contrata agentes IA especializados
-- 🎨 **Workspace Visual**: Tu oficina mejora conforme avanzas
-- 💾 **Save/Load**: Guarda tu progreso automáticamente
-- 🎮 **Mini-Games**: Bug Hunt, Prompt Duel, Architecture Builder
-- 📊 **Estadísticas**: Trackea tu progreso y racha diaria
+- 🏆 **Achievements**: 27 logros con rarities (common/rare/epic/legendary)
+- 🤖 **Backend Completo**: FastAPI con Player, Progress, Achievement APIs
+- 🎨 **UI Moderna**: React + TypeScript con Zustand state management
+- 💾 **Persistencia**: Auto-save en localStorage + backend database
+- 🎮 **Mini-Games**: Bug Hunt completamente funcional
+- 📊 **Estadísticas**: Tracking completo de progreso y racha
 
-## Instalación
+## 🚀 Quick Start
+
+### Backend (FastAPI)
 
 ```bash
-# Navega a la carpeta del juego
-cd ai-dev-academy-game
-
-# Instala dependencias
+cd ai-dev-academy-game/backend
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-
-# Ejecuta el juego
-python main.py
+uvicorn app.main:app --reload
 ```
+
+Backend runs at: `http://localhost:8000`
+
+### Frontend (React)
+
+```bash
+cd ai-dev-academy-game/frontend
+npm install
+npm run dev
+```
+
+Frontend runs at: `http://localhost:3000`
+
+### Full Setup Guide
+
+Ver [SETUP.md](./SETUP.md) para instrucciones completas de instalación y configuración.
 
 ## Cómo Jugar
 
@@ -55,11 +94,30 @@ Nivel 26-30: CTO (Módulo 5)
 - Racha diaria: +10% bonus
 - Mini-game ganado: +100 XP
 
-## Tecnologías
+## 🛠️ Stack Tecnológico
 
-- Python 3.12
-- Rich (Terminal UI)
-- JSON (Save system)
+### Backend
+- **FastAPI** 0.115.5 - Web framework
+- **SQLAlchemy** 2.0.36 - ORM
+- **Pydantic** 2.10.3 - Data validation
+- **Uvicorn** 0.32.1 - ASGI server
+- **Python** 3.12+
+
+### Frontend
+- **React** 18.2.0 - UI framework
+- **TypeScript** 5.2.2 - Type safety
+- **Vite** 7.1.12 - Build tool
+- **Zustand** 4.x - State management
+- **React Router** 6.x - Routing
+- **Axios** 1.6.0 - HTTP client
+
+### Database
+- **SQLite** (development)
+- **PostgreSQL** (production ready)
+
+### Testing
+- **Pytest** - Backend tests (106+ tests, 87%+ coverage)
+- **React Testing Library** - Frontend tests (pending)
 
 ## Licencia
 
