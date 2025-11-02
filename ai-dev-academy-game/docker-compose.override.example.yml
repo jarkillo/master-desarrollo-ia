@@ -1,0 +1,48 @@
+# Docker Compose Override for Easypanel Deployment
+#
+# USAGE:
+#   On your VPS, copy this file to docker-compose.override.yml:
+#   cp docker-compose.override.example.yml docker-compose.override.yml
+#
+# PURPOSE:
+#   Easypanel handles port mapping through its own proxy (Traefik/Nginx).
+#   This override file removes direct port mappings and lets Easypanel's
+#   proxy handle routing via the Domains UI.
+#
+# DO NOT:
+#   - Commit docker-compose.override.yml to git (it's in .gitignore)
+#   - Expose ports directly when using Easypanel
+#   - Use this file for local development (it will break port access)
+
+version: '3.8'
+
+services:
+  backend:
+    # Remove container_name - Easypanel manages container names
+    container_name: null
+    # Remove port mapping - Easypanel proxy handles this
+    ports: []
+    # Expose internal port for Easypanel proxy to reach
+    expose:
+      - "8000"
+    # Override network - use Easypanel's network
+    networks:
+      - default
+
+  frontend:
+    # Remove container_name - Easypanel manages container names
+    container_name: null
+    # Remove port mapping - Easypanel proxy handles this
+    ports: []
+    # Expose internal port for Easypanel proxy to reach
+    expose:
+      - "80"
+    # Override network - use Easypanel's network
+    networks:
+      - default
+
+# Use Easypanel's default network instead of custom network
+networks:
+  default:
+    external: true
+    name: easypanel

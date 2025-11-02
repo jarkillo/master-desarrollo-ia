@@ -1,0 +1,30 @@
+# Docker Compose override file (VPS-specific configuration)
+# Copy docker-compose.override.example.yml to docker-compose.override.yml on VPS
+docker-compose.override.yml
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Data directory
+backend/data/
+data/
+
+# Docker volumes
+volumes/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

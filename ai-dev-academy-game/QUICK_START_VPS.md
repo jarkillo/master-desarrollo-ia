@@ -43,7 +43,18 @@ SECRET_KEY=resultado-del-comando-openssl-arriba
 
 Guarda con `Ctrl+O`, `Enter`, `Ctrl+X`.
 
-### 4. Deploy con Docker Compose
+### 4. Configurar Docker Compose Override (CRÍTICO para Easypanel/VPS)
+
+```bash
+# Copiar override para Easypanel (evita conflicto de puerto 80)
+cp docker-compose.override.example.yml docker-compose.override.yml
+```
+
+**¿Por qué?** Easypanel/Traefik ya usa el puerto 80. Este override deja que el proxy maneje el routing.
+
+**⚠️ IMPORTANTE**: Si usas deployment manual (NO Easypanel), SALTA este paso.
+
+### 5. Deploy con Docker Compose
 
 ```bash
 # Build y levantar containers
@@ -55,7 +66,7 @@ docker-compose logs -f
 
 **Espera 5-8 minutos** mientras buildea (primera vez).
 
-### 5. Abrir Puertos en Firewall
+### 6. Abrir Puertos en Firewall
 
 ```bash
 # Ubuntu/Debian
@@ -68,7 +79,7 @@ sudo firewall-cmd --permanent --add-port=8000/tcp
 sudo firewall-cmd --reload
 ```
 
-### 6. Verificar
+### 7. Verificar
 
 ```bash
 # Health checks
@@ -79,7 +90,7 @@ curl http://localhost/health
 docker-compose ps
 ```
 
-### 7. Abrir en Navegador
+### 8. Abrir en Navegador
 
 ```
 Frontend: http://TU-VPS-IP
