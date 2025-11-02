@@ -2,6 +2,7 @@
  * API client configuration
  */
 import axios from 'axios';
+import i18n from '../i18n/config';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -12,10 +13,14 @@ export const apiClient = axios.create({
   },
 });
 
-// Add request interceptor for logging (optional)
+// Add request interceptor for logging and i18n headers
 apiClient.interceptors.request.use(
   (config) => {
-    console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`);
+    // Add Accept-Language header based on current i18n language
+    const currentLanguage = i18n.language || 'es';
+    config.headers['Accept-Language'] = currentLanguage;
+
+    console.log(`[API] ${config.method?.toUpperCase()} ${config.url} (lang: ${currentLanguage})`);
     return config;
   },
   (error) => {
