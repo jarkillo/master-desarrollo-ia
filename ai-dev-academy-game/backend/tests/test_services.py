@@ -1,13 +1,11 @@
 """Tests for backend services (content_service, xp_service)."""
 
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 from app.database import Base
 from app.models.player import Player
 from app.services import content_service, xp_service
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 # Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_services.db"

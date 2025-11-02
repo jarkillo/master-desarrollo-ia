@@ -1,9 +1,9 @@
 """Progress schemas - Pydantic models for player progress."""
 
-from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional, List
 from enum import Enum
+
+from pydantic import BaseModel, Field
 
 
 class ProgressStatus(str, Enum):
@@ -27,11 +27,11 @@ class ProgressCreate(BaseModel):
 
 class ProgressUpdate(BaseModel):
     """Schema for updating progress (mark as completed, add exercises)."""
-    status: Optional[ProgressStatus] = Field(
+    status: ProgressStatus | None = Field(
         None,
         description="New status (e.g., 'in_progress', 'completed')"
     )
-    exercises_completed: Optional[int] = Field(
+    exercises_completed: int | None = Field(
         None,
         ge=0,
         description="Number of exercises completed"
@@ -46,8 +46,8 @@ class ProgressResponse(BaseModel):
     class_number: int
     status: ProgressStatus
     exercises_completed: int
-    started_at: Optional[datetime]
-    completed_at: Optional[datetime]
+    started_at: datetime | None
+    completed_at: datetime | None
 
     class Config:
         from_attributes = True
@@ -58,7 +58,7 @@ class ClassProgress(BaseModel):
     class_number: int
     status: ProgressStatus
     exercises_completed: int = 0
-    completed_at: Optional[datetime] = None
+    completed_at: datetime | None = None
 
 
 class ModuleProgressResponse(BaseModel):
@@ -68,7 +68,7 @@ class ModuleProgressResponse(BaseModel):
     total_classes: int
     completed_classes: int
     progress_percentage: float
-    classes: List[ClassProgress]
+    classes: list[ClassProgress]
 
 
 class FullProgressResponse(BaseModel):
@@ -77,4 +77,4 @@ class FullProgressResponse(BaseModel):
     total_classes_completed: int
     total_exercises_completed: int
     overall_progress_percentage: float
-    modules: List[ModuleProgressResponse]
+    modules: list[ModuleProgressResponse]

@@ -4,9 +4,9 @@ Este módulo implementa la capa de servicio que orquesta
 la lógica de negocio para la gestión de tareas.
 """
 
-from pydantic import BaseModel, Field
 from datetime import date
 
+from pydantic import BaseModel, Field
 
 __all__ = ['Tarea', 'ServicioTareas']
 

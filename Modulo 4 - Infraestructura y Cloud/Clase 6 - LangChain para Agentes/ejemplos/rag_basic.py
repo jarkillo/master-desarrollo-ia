@@ -10,19 +10,20 @@ Demuestra:
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from langchain.document_loaders import DirectoryLoader, TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
+from langchain.document_loaders import DirectoryLoader, TextLoader
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import FAISS
 from langchain_anthropic import ChatAnthropic
 from rich.console import Console
-from rich.panel import Panel
 from rich.markdown import Markdown
+from rich.panel import Panel
 
 console = Console()
 
@@ -180,7 +181,7 @@ Usa ambos de forma híbrida: LangChain como orchestrator + Agent Skills para wor
 
         # Fuentes
         sources = [doc.metadata.get("source", "Unknown") for doc in result["source_documents"]]
-        console.print(f"\n[dim]📚 Fuentes consultadas:[/dim]")
+        console.print("\n[dim]📚 Fuentes consultadas:[/dim]")
         for src in set(sources):
             console.print(f"  - {Path(src).name}")
 

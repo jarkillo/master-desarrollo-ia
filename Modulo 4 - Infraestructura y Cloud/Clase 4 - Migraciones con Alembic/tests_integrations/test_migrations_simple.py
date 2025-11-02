@@ -9,9 +9,9 @@ Para ejecutar:
     3. pytest tests_integrations/test_migrations_simple.py
 """
 import pytest
+from api.models import TareaModel
 from sqlalchemy import create_engine, inspect, text
-from sqlalchemy.orm import Session, sessionmaker
-from api.models import Base, TareaModel
+from sqlalchemy.orm import sessionmaker
 
 
 @pytest.fixture(scope="module")

@@ -1,6 +1,7 @@
 # api/servicio_tareas.py
-from typing import List
+
 from pydantic import BaseModel
+
 from api.repositorio_base import RepositorioTareas
 
 
@@ -19,5 +20,5 @@ class ServicioTareas:
         self._repo.guardar(nueva)
         return nueva
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         return self._repo.listar()

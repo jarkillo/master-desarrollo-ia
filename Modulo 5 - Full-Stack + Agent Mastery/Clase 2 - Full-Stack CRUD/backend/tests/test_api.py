@@ -2,8 +2,8 @@
 Tests de integración para la API de tareas.
 """
 import pytest
-from fastapi.testclient import TestClient
 from api.api import app, repositorio
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(autouse=True)

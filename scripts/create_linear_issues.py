@@ -12,9 +12,9 @@ Usage:
 import os
 import re
 import time
-from typing import Dict, List, Optional
 from dataclasses import dataclass
 from pathlib import Path
+
 import requests
 from dotenv import load_dotenv
 
@@ -33,7 +33,7 @@ class Issue:
     """Represents a Linear issue to create."""
     title: str
     description: str
-    labels: List[str]
+    labels: list[str]
     priority: str  # P0, P1, P2, P3
     estimate: str  # 1-2h, 3-4h, etc.
     module: str
@@ -49,7 +49,7 @@ class LinearAPI:
             "Content-Type": "application/json"
         }
 
-    def execute_query(self, query: str, variables: Optional[Dict] = None) -> Dict:
+    def execute_query(self, query: str, variables: dict | None = None) -> dict:
         """Execute a GraphQL query against Linear API."""
         payload = {"query": query}
         if variables:
@@ -164,7 +164,7 @@ class LinearAPI:
         project_id: str,
         title: str,
         description: str,
-        label_ids: List[str],
+        label_ids: list[str],
         priority: int
     ) -> str:
         """Create a new issue in Linear."""
@@ -207,9 +207,9 @@ class LinearAPI:
         return issue["id"], issue["identifier"]
 
 
-def parse_master_plan(file_path: str) -> List[Issue]:
+def parse_master_plan(file_path: str) -> list[Issue]:
     """Parse LINEAR_ISSUES_MASTER_PLAN.md and extract issues."""
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, encoding='utf-8') as f:
         content = f.read()
 
     issues = []
@@ -260,7 +260,7 @@ def parse_master_plan(file_path: str) -> List[Issue]:
     return issues
 
 
-def determine_agent_workflow(title: str, labels: List[str], description: str) -> str:
+def determine_agent_workflow(title: str, labels: list[str], description: str) -> str:
     """Determine recommended agent workflow based on issue type and content."""
 
     agents = []
@@ -400,7 +400,7 @@ def priority_to_number(priority_str: str) -> int:
     return mapping.get(priority_str, 3)
 
 
-def setup_labels(api: LinearAPI, team_id: str) -> Dict[str, str]:
+def setup_labels(api: LinearAPI, team_id: str) -> dict[str, str]:
     """Create all necessary labels and return mapping of name -> ID."""
     print("\n📋 Setting up labels...")
 

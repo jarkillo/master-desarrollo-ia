@@ -5,8 +5,9 @@ Implementación del repositorio usando SQLAlchemy.
 Este repositorio implementa el Protocol RepositorioTareas,
 pero usando una base de datos real en lugar de memoria o JSON.
 """
-from typing import List, Optional
+
 from sqlalchemy.orm import Session
+
 from api.models import TareaModel
 from api.servicio_tareas import Tarea
 
@@ -56,7 +57,7 @@ class RepositorioDB:
                 db_tarea.completada = tarea.completada
                 self._session.commit()
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         """
         Lista todas las tareas de la base de datos.
 
@@ -76,7 +77,7 @@ class RepositorioDB:
             for t in db_tareas
         ]
 
-    def obtener_por_id(self, id: int) -> Optional[Tarea]:
+    def obtener_por_id(self, id: int) -> Tarea | None:
         """
         Obtiene una tarea por su ID.
 

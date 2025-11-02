@@ -1,5 +1,5 @@
-from fastapi.testclient import TestClient
 from api.api import app  # aún no existe, lo haremos después
+from fastapi.testclient import TestClient
 
 cliente_http = TestClient(app)
 

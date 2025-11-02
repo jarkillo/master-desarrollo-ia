@@ -1,8 +1,8 @@
 # tests/test_crear_tarea_clase1.py
 """Tests para el endpoint de crear tareas"""
 
-from fastapi.testclient import TestClient
 from api.api import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

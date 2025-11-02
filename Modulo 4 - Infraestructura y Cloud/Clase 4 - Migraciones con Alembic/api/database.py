@@ -7,11 +7,12 @@ Este módulo gestiona:
 - Session factory (fábrica de sesiones)
 - Dependency injection para FastAPI
 """
-from typing import Generator
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from api.models import Base
+from collections.abc import Generator
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
+
+from api.models import Base
 
 # URL de conexión a la base de datos
 # SQLite para desarrollo (archivo local)

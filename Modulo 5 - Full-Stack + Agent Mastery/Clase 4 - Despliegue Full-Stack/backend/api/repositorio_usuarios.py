@@ -5,9 +5,9 @@ Repositorio en memoria para almacenar usuarios.
 En producción esto debería usar una base de datos (PostgreSQL, MongoDB, etc.),
 pero para propósitos educativos usamos un diccionario en memoria.
 """
-from typing import Optional, Dict
+from datetime import UTC, datetime
+
 from api.modelos import User
-from datetime import datetime, timezone
 
 
 class RepositorioUsuarios:
@@ -15,7 +15,7 @@ class RepositorioUsuarios:
 
     def __init__(self):
         # Almacena usuarios: {email: User}
-        self._usuarios: Dict[str, User] = {}
+        self._usuarios: dict[str, User] = {}
         self._id_counter = 1
 
     def crear_usuario(self, email: str, nombre: str, hashed_password: str) -> User:
@@ -44,13 +44,13 @@ class RepositorioUsuarios:
             email=email,
             nombre=nombre,
             hashed_password=hashed_password,
-            created_at=datetime.now(tz=timezone.utc),
+            created_at=datetime.now(tz=UTC),
         )
 
         self._usuarios[email] = usuario
         return usuario
 
-    def obtener_por_email(self, email: str) -> Optional[User]:
+    def obtener_por_email(self, email: str) -> User | None:
         """
         Obtiene un usuario por email.
 
@@ -62,7 +62,7 @@ class RepositorioUsuarios:
         """
         return self._usuarios.get(email)
 
-    def obtener_por_id(self, user_id: str) -> Optional[User]:
+    def obtener_por_id(self, user_id: str) -> User | None:
         """
         Obtiene un usuario por ID.
 

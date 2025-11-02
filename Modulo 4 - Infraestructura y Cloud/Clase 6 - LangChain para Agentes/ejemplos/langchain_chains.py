@@ -9,23 +9,24 @@ Demuestra:
 """
 
 import os
+
 from dotenv import load_dotenv
 
 # Cargar variables de entorno
 load_dotenv()
 
 # Importaciones de LangChain
-from langchain_anthropic import ChatAnthropic
-from langchain.prompts import ChatPromptTemplate, PromptTemplate
-from langchain.schema.output_parser import StrOutputParser
 from langchain.chains import LLMChain, SequentialChain
 from langchain.output_parsers import PydanticOutputParser
+from langchain.prompts import ChatPromptTemplate, PromptTemplate
+from langchain.schema.output_parser import StrOutputParser
+from langchain_anthropic import ChatAnthropic
 from pydantic import BaseModel, Field
 
 # Rich para output bonito
 from rich.console import Console
-from rich.panel import Panel
 from rich.markdown import Markdown
+from rich.panel import Panel
 
 console = Console()
 

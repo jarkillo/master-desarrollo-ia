@@ -8,8 +8,8 @@ SQLAlchemy 2.0 introduce cambios importantes:
 - Mejor integración con mypy y type checkers
 """
 from datetime import datetime
-from typing import Optional
-from sqlalchemy import String, DateTime, func
+
+from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -48,7 +48,7 @@ class TareaModel(Base):
         nullable=False
     )
 
-    actualizado_en: Mapped[Optional[datetime]] = mapped_column(
+    actualizado_en: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         onupdate=func.now(),  # Se actualiza automáticamente
         nullable=True

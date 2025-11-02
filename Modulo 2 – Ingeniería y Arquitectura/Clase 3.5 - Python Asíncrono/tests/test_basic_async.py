@@ -4,15 +4,16 @@ Requiere: pytest pytest-asyncio
 Ejecutar: pytest tests/test_basic_async.py -v
 """
 
-import pytest
 import asyncio
 import time
+
+import pytest
 from examples.basic_async import (
-    preparar_cafe,
-    preparar_tostada,
-    preparar_jugo,
+    ejemplo_paralelo,
     ejemplo_secuencial,
-    ejemplo_paralelo
+    preparar_cafe,
+    preparar_jugo,
+    preparar_tostada,
 )
 
 

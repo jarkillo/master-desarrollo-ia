@@ -1,11 +1,10 @@
 """FastAPI main application for AI Dev Academy game."""
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
 from app.config import get_settings
 from app.database import init_db
-from app.routes import minigames, player, progress, achievements
+from app.routes import achievements, minigames, player, progress
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load settings
 settings = get_settings()

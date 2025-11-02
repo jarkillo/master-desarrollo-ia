@@ -1,10 +1,10 @@
 # api/api.py
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, constr
 
-from api.servicio_tareas import ServicioTareas
 from api.repositorio_memoria import RepositorioMemoria
 from api.seguridad_jwt import crear_token, verificar_jwt  # <- NUEVO
+from api.servicio_tareas import ServicioTareas
 
 app = FastAPI()
 servicio = ServicioTareas(RepositorioMemoria())

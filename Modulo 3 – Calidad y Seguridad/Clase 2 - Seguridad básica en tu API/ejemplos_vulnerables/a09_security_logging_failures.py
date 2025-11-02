@@ -13,7 +13,7 @@ VULNERABILIDADES:
 5. Sin alertas automáticas ante actividad sospechosa
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()

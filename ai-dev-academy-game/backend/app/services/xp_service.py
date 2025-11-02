@@ -1,7 +1,7 @@
 """XP service - Centralized XP and leveling logic."""
 
-from sqlalchemy.orm import Session
 from app.models.player import Player
+from sqlalchemy.orm import Session
 
 
 def calculate_level_from_xp(xp: int) -> int:

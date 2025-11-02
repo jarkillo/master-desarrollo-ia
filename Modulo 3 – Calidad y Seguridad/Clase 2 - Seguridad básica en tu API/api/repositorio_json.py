@@ -1,8 +1,9 @@
 # api/repositorio_json.py
 from __future__ import annotations
+
 import json
 import os
-from typing import List
+
 from api.servicio_tareas import Tarea  # usamos el mismo modelo Pydantic
 
 
@@ -16,8 +17,8 @@ class RepositorioJSON:
             with open(self._ruta, "w", encoding="utf-8") as f:
                 json.dump([], f, ensure_ascii=False, indent=2)
 
-    def listar(self) -> List[Tarea]:
-        with open(self._ruta, "r", encoding="utf-8") as f:
+    def listar(self) -> list[Tarea]:
+        with open(self._ruta, encoding="utf-8") as f:
             contenido = f.read().strip()
             datos = json.loads(contenido) if contenido else []
         # devolvemos objetos Tarea (Pydantic), no dicts

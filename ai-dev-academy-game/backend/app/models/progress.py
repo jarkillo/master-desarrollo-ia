@@ -1,9 +1,8 @@
 """Progress model - tracks player progress through modules and classes."""
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relationship
-
 from app.database import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy.orm import relationship
 
 
 class Progress(Base):

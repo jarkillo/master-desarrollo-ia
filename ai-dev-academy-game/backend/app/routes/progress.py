@@ -1,25 +1,23 @@
 """Progress routes - Track player progress through curriculum."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import func
-from typing import List
 from datetime import datetime
 
 from app.database import get_db
+from app.models.achievement import PlayerStats
 from app.models.player import Player
 from app.models.progress import Progress
-from app.models.achievement import PlayerStats
 from app.schemas.progress import (
+    ClassProgress,
+    FullProgressResponse,
+    ModuleProgressResponse,
     ProgressCreate,
-    ProgressUpdate,
     ProgressResponse,
     ProgressStatus,
-    ModuleProgressResponse,
-    ClassProgress,
-    FullProgressResponse
+    ProgressUpdate,
 )
 from app.services import content_service, xp_service
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

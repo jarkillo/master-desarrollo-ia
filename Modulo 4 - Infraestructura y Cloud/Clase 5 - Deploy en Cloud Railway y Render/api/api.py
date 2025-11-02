@@ -17,16 +17,15 @@ Deploy targets:
 """
 import logging
 from contextlib import asynccontextmanager
-from typing import List
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from api.config import settings
-from api.database import crear_tablas, check_database_health
-from api.servicio_tareas import Tarea, TareaCreate, TareaUpdate
+from api.database import check_database_health, crear_tablas
 from api.dependencias import ServicioTareasDepende
+from api.servicio_tareas import Tarea, TareaCreate, TareaUpdate
 
 # Configurar logging
 logging.basicConfig(
@@ -184,10 +183,10 @@ def crear_tarea(
 
 @app.get(
     "/tareas",
-    response_model=List[Tarea],
+    response_model=list[Tarea],
     tags=["Tareas"]
 )
-def listar_tareas(servicio: ServicioTareasDepende) -> List[Tarea]:
+def listar_tareas(servicio: ServicioTareasDepende) -> list[Tarea]:
     """
     Lista todas las tareas.
 

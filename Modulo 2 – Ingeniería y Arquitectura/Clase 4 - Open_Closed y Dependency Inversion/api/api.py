@@ -1,8 +1,9 @@
 # api/api.py
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
-from api.servicio_tareas import ServicioTareas
+
 from api.repositorio_memoria import RepositorioMemoria
+from api.servicio_tareas import ServicioTareas
 
 app = FastAPI()
 servicio = ServicioTareas(RepositorioMemoria())

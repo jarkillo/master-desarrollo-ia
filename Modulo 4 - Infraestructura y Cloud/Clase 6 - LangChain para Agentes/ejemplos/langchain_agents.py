@@ -9,23 +9,22 @@ Demuestra:
 """
 
 import os
-from dotenv import load_dotenv
 import subprocess
-from typing import Optional
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
 # LangChain imports
-from langchain_anthropic import ChatAnthropic
-from langchain.agents import create_react_agent, AgentExecutor, Tool
-from langchain.tools import BaseTool, StructuredTool
+from langchain.agents import AgentExecutor, Tool, create_react_agent
 from langchain.prompts import PromptTemplate
+from langchain.tools import BaseTool, StructuredTool
+from langchain_anthropic import ChatAnthropic
 from pydantic import BaseModel, Field
 
 # Rich para output
 from rich.console import Console
 from rich.panel import Panel
-from rich.syntax import Syntax
 
 console = Console()
 
@@ -285,7 +284,6 @@ def ejemplo_3_structured_tool():
         Returns:
             Resultado del análisis
         """
-        import os
         from pathlib import Path
 
         path = Path(file_path)
@@ -295,7 +293,7 @@ def ejemplo_3_structured_tool():
 
         if analysis_type == "lines":
             try:
-                with open(path, 'r') as f:
+                with open(path) as f:
                     lines = f.readlines()
                 return f"Archivo {file_path}: {len(lines)} líneas"
             except Exception as e:

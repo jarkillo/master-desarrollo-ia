@@ -32,9 +32,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any
-from anthropic import Anthropic
 
+from anthropic import Anthropic
 
 # Configurar logging
 logging.basicConfig(
@@ -563,11 +562,11 @@ def main() -> None:
 
     if result.success:
         print("✅ Issue resuelto exitosamente!")
-        print(f"\nArchivos modificados:")
+        print("\nArchivos modificados:")
         for f in result.files_modified:
             print(f"  - {f}")
 
-        print(f"\n📝 Pull Request:\n")
+        print("\n📝 Pull Request:\n")
         print(result.pr_description)
     else:
         print("❌ No se pudo resolver el issue")

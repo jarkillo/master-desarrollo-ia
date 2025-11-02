@@ -4,7 +4,7 @@
 Este módulo define el contrato que debe cumplir cualquier implementación
 de repositorio usando el patrón Protocol de Python (Dependency Inversion).
 """
-from typing import Protocol, TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
     # Solo importado para type checking, no en runtime (evita dependencias circulares)

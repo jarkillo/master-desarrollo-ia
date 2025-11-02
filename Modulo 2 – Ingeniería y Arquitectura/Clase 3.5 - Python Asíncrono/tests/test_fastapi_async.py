@@ -4,9 +4,8 @@ Requiere: pytest pytest-asyncio httpx
 Ejecutar: pytest tests/test_fastapi_async.py -v
 """
 
-import pytest
-from fastapi.testclient import TestClient
 from examples.fastapi_async import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

@@ -19,14 +19,17 @@ Production (PostgreSQL en Railway):
 Production (PostgreSQL en Render):
     DATABASE_URL=postgresql://user:pass@host:port/dbname
 """
-from typing import Generator
+import logging
+from collections.abc import Generator
+
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.pool import QueuePool, NullPool
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import NullPool, QueuePool
+
 from api.config import settings
 from api.models import Base
 
-import logging
+
 def get_engine_config():
     """
     Retorna la configuración del engine según el entorno.
@@ -138,7 +141,7 @@ def check_database_health() -> dict:
             "database": "connected",
             "url": settings.database_url.split("@")[-1] if "@" in settings.database_url else "local"
         }
-    except Exception as e:
+    except Exception:
         logging.exception("Database health check failed")
         return {
             "status": "error",

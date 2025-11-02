@@ -1,10 +1,10 @@
 # api/seguridad_jwt.py
-from datetime import datetime, timedelta, timezone
-from typing import Optional, Dict, Any
 import os
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from fastapi import Header, HTTPException
-from jose import jwt, JWTError
+from jose import JWTError, jwt
 
 
 def _config():
@@ -14,17 +14,17 @@ def _config():
     return secret, minutos
 
 
-def crear_token(claims: Dict[str, Any], minutos: Optional[int] = None) -> str:
+def crear_token(claims: dict[str, Any], minutos: int | None = None) -> str:
     secret, default_min = _config()
     exp_min = default_min if minutos is None else minutos
     to_encode = claims.copy()
-    to_encode["exp"] = datetime.now(tz=timezone.utc) + timedelta(minutes=exp_min)
+    to_encode["exp"] = datetime.now(tz=UTC) + timedelta(minutes=exp_min)
     return jwt.encode(to_encode, secret, algorithm="HS256")
 
 
 def verificar_jwt(
     authorization: str = Header(...)
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     # 401 si formato incorrecto
     if not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="Token formato inválido")

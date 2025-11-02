@@ -1,21 +1,19 @@
 """Achievement service - Manages achievement definitions and unlocking logic."""
 
-from typing import Dict, List, Optional
-from sqlalchemy.orm import Session
 
 from app.models.achievement import Achievement, PlayerStats
 from app.models.progress import Progress
 from app.schemas.achievement import (
-    AchievementDefinition,
     AchievementCategory,
+    AchievementDefinition,
     AchievementRarity,
-    AchievementWithDetails
+    AchievementWithDetails,
 )
 from app.services import xp_service
-
+from sqlalchemy.orm import Session
 
 # Achievement definitions - all available achievements in the game
-ACHIEVEMENT_DEFINITIONS: Dict[str, AchievementDefinition] = {
+ACHIEVEMENT_DEFINITIONS: dict[str, AchievementDefinition] = {
     # Learning Achievements
     "first_class": AchievementDefinition(
         achievement_id="first_class",
@@ -244,12 +242,12 @@ ACHIEVEMENT_DEFINITIONS: Dict[str, AchievementDefinition] = {
 }
 
 
-def get_all_achievement_definitions() -> List[AchievementDefinition]:
+def get_all_achievement_definitions() -> list[AchievementDefinition]:
     """Get all available achievement definitions."""
     return list(ACHIEVEMENT_DEFINITIONS.values())
 
 
-def get_achievement_definition(achievement_id: str) -> Optional[AchievementDefinition]:
+def get_achievement_definition(achievement_id: str) -> AchievementDefinition | None:
     """Get a specific achievement definition."""
     return ACHIEVEMENT_DEFINITIONS.get(achievement_id)
 
@@ -257,9 +255,9 @@ def get_achievement_definition(achievement_id: str) -> Optional[AchievementDefin
 def check_and_unlock_achievements(
     player_id: int,
     action_type: str,
-    action_data: Optional[dict],
+    action_data: dict | None,
     db: Session
-) -> List[AchievementWithDetails]:
+) -> list[AchievementWithDetails]:
     """
     Check if any achievements should be unlocked based on an action.
 
@@ -306,9 +304,9 @@ def _check_class_completion_achievements(
     player_id: int,
     stats: PlayerStats,
     existing_ids: set,
-    action_data: Optional[dict],
+    action_data: dict | None,
     db: Session
-) -> List[AchievementWithDetails]:
+) -> list[AchievementWithDetails]:
     """Check achievements related to class completion."""
     unlocked = []
 
@@ -348,9 +346,9 @@ def _check_bug_hunt_achievements(
     player_id: int,
     stats: PlayerStats,
     existing_ids: set,
-    action_data: Optional[dict],
+    action_data: dict | None,
     db: Session
-) -> List[AchievementWithDetails]:
+) -> list[AchievementWithDetails]:
     """Check achievements related to Bug Hunt mini-game."""
     unlocked = []
 
@@ -384,7 +382,7 @@ def _check_exercise_achievements(
     stats: PlayerStats,
     existing_ids: set,
     db: Session
-) -> List[AchievementWithDetails]:
+) -> list[AchievementWithDetails]:
     """Check achievements related to exercise completion."""
     unlocked = []
 
@@ -420,7 +418,7 @@ def _unlock_achievement(
     player_id: int,
     achievement_id: str,
     db: Session
-) -> Optional[AchievementWithDetails]:
+) -> AchievementWithDetails | None:
     """Unlock an achievement for a player."""
     # Check if already unlocked
     existing = db.query(Achievement).filter(

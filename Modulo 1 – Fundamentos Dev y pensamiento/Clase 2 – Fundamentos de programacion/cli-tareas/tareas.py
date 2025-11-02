@@ -4,9 +4,9 @@
 # 0. IMPORTAR LIBRERIAS
 # ================================
 
-import sys
 import json  # json nos permite guardar y cargar datos en un archivo
 import os  # os nos permite interactuar con el sistema operativo
+import sys
 
 # (Cuidado, esta librería puede ser peligrosa y a veces los antivirus la detectan como malware)
 
@@ -31,7 +31,7 @@ def cargar_tareas():
         return []
 
     # Si el archivo FILE existe lo abrimos en modo lectura
-    with open(NOMBRE_ARCHIVO, "r") as archivo_json:
+    with open(NOMBRE_ARCHIVO) as archivo_json:
 
         # cargamos el contenido con la librería json y lo devolvemos
         return json.load(archivo_json)

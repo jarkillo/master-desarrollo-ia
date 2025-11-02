@@ -1,6 +1,5 @@
 """Content service - Manages curriculum structure and content."""
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass
 
 
@@ -12,7 +11,7 @@ class ClassInfo:
     description: str
     exercises_count: int
     xp_reward: int
-    prerequisite: Optional[int] = None  # Previous class number (None for first class)
+    prerequisite: int | None = None  # Previous class number (None for first class)
 
 
 @dataclass
@@ -21,11 +20,11 @@ class ModuleInfo:
     module_number: int
     title: str
     description: str
-    classes: List[ClassInfo]
+    classes: list[ClassInfo]
 
 
 # Curriculum structure based on master-ia-manu repository
-CURRICULUM: Dict[int, ModuleInfo] = {
+CURRICULUM: dict[int, ModuleInfo] = {
     0: ModuleInfo(
         module_number=0,
         title="IA Development Foundations",
@@ -110,12 +109,12 @@ CURRICULUM: Dict[int, ModuleInfo] = {
 }
 
 
-def get_module_info(module_number: int) -> Optional[ModuleInfo]:
+def get_module_info(module_number: int) -> ModuleInfo | None:
     """Get information about a specific module."""
     return CURRICULUM.get(module_number)
 
 
-def get_class_info(module_number: int, class_number: int) -> Optional[ClassInfo]:
+def get_class_info(module_number: int, class_number: int) -> ClassInfo | None:
     """Get information about a specific class."""
     module = CURRICULUM.get(module_number)
     if not module:
@@ -128,7 +127,7 @@ def get_class_info(module_number: int, class_number: int) -> Optional[ClassInfo]
     return None
 
 
-def get_all_modules() -> List[ModuleInfo]:
+def get_all_modules() -> list[ModuleInfo]:
     """Get all modules in curriculum order."""
     return [CURRICULUM[i] for i in sorted(CURRICULUM.keys())]
 
@@ -150,7 +149,7 @@ def get_total_xp() -> int:
 def is_class_unlockable(
     module_number: int,
     class_number: int,
-    completed_classes: List[tuple]  # List of (module_number, class_number) tuples
+    completed_classes: list[tuple]  # List of (module_number, class_number) tuples
 ) -> bool:
     """
     Check if a class can be unlocked based on prerequisites.
@@ -191,8 +190,8 @@ def is_class_unlockable(
 
 
 def get_next_unlockable_class(
-    completed_classes: List[tuple]
-) -> Optional[tuple]:
+    completed_classes: list[tuple]
+) -> tuple | None:
     """
     Get the next class that can be unlocked.
 

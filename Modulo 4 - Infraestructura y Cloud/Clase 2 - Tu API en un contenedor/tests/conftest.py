@@ -1,8 +1,9 @@
 # conftest.py (colócalo DENTRO de la carpeta tests de cada clase)
+import os
 import sys
 from pathlib import Path
+
 import pytest
-import os
 
 # Raíz de la clase (la carpeta que contiene 'api/')
 CLASE_ROOT = Path(__file__).resolve().parents[1]

@@ -5,7 +5,7 @@ Esta implementación cumple el contrato RepositorioTareas usando
 almacenamiento en memoria (listas de Python). Los datos se pierden
 al reiniciar la aplicación.
 """
-from typing import List, Optional
+
 from api.servicio_tareas import Tarea
 
 
@@ -24,7 +24,7 @@ class RepositorioMemoria:
 
     def __init__(self):
         """Inicializa el repositorio con una lista vacía."""
-        self._tareas: List[Tarea] = []
+        self._tareas: list[Tarea] = []
         self._contador: int = 0
 
     def guardar(self, tarea: Tarea) -> None:
@@ -49,7 +49,7 @@ class RepositorioMemoria:
             # Si no existía, la agregamos
             self._tareas.append(tarea)
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         """Devuelve todas las tareas almacenadas.
 
         Returns:
@@ -57,7 +57,7 @@ class RepositorioMemoria:
         """
         return self._tareas.copy()
 
-    def obtener_por_id(self, id: int) -> Optional[Tarea]:
+    def obtener_por_id(self, id: int) -> Tarea | None:
         """Busca una tarea por su ID.
 
         Args:
@@ -87,7 +87,7 @@ class RepositorioMemoria:
                 return True
         return False
 
-    def completar(self, id: int) -> Optional[Tarea]:
+    def completar(self, id: int) -> Tarea | None:
         """Marca una tarea como completada.
 
         Args:

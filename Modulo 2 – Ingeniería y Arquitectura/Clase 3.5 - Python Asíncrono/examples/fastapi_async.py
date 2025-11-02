@@ -3,16 +3,16 @@ Ejemplo 2: FastAPI con Endpoints Async
 Demuestra async vs sync en FastAPI y uso de asyncio.gather()
 """
 
-from fastapi import FastAPI
 import asyncio
-from typing import List, Dict
 import time
+
+from fastapi import FastAPI
 
 app = FastAPI(title="Ejemplo Async FastAPI")
 
 
 # Simulación de servicios externos
-async def consultar_servicio_usuarios() -> List[Dict]:
+async def consultar_servicio_usuarios() -> list[dict]:
     """Simula consulta a servicio de usuarios (0.5s)"""
     await asyncio.sleep(0.5)
     return [
@@ -21,7 +21,7 @@ async def consultar_servicio_usuarios() -> List[Dict]:
     ]
 
 
-async def consultar_servicio_productos() -> List[Dict]:
+async def consultar_servicio_productos() -> list[dict]:
     """Simula consulta a servicio de productos (0.8s)"""
     await asyncio.sleep(0.8)
     return [
@@ -30,7 +30,7 @@ async def consultar_servicio_productos() -> List[Dict]:
     ]
 
 
-async def consultar_servicio_pedidos() -> List[Dict]:
+async def consultar_servicio_pedidos() -> list[dict]:
     """Simula consulta a servicio de pedidos (0.3s)"""
     await asyncio.sleep(0.3)
     return [
@@ -149,7 +149,7 @@ async def dashboard_con_timeout():
             timeout=1.0  # Máximo 1 segundo
         )
         return resultado
-    except asyncio.TimeoutError:
+    except TimeoutError:
         return {
             "error": "Timeout: Dashboard tardó más de 1 segundo",
             "status_code": 408

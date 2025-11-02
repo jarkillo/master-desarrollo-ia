@@ -1,9 +1,10 @@
 # al inicio del archivo
 import os
-from fastapi.testclient import TestClient
+
 from api import api as api_mod
-from api.servicio_tareas import ServicioTareas
 from api.repositorio_memoria import RepositorioMemoria
+from api.servicio_tareas import ServicioTareas
+from fastapi.testclient import TestClient
 
 
 def _cliente_y_headers():

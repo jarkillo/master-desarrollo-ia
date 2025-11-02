@@ -1,22 +1,20 @@
 """Achievement routes - Manage player achievements and unlocking."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from typing import List
 
 from app.database import get_db
-from app.models.player import Player
 from app.models.achievement import Achievement
+from app.models.player import Player
 from app.schemas.achievement import (
-    UnlockAchievementRequest,
-    AchievementResponse,
     AchievementWithDetails,
-    PlayerAchievementsResponse,
     AvailableAchievementsResponse,
     CheckAchievementsRequest,
-    CheckAchievementsResponse
+    CheckAchievementsResponse,
+    PlayerAchievementsResponse,
+    UnlockAchievementRequest,
 )
 from app.services import achievement_service, xp_service
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

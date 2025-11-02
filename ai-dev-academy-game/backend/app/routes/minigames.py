@@ -1,11 +1,12 @@
 """Minigames API routes - Bug Hunt and other mini-games."""
 
 from datetime import datetime
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from sqlalchemy import desc, func
 
+from app.content.bug_templates import (
+    BugTemplate,
+    get_random_template,
+    get_template_by_id,
+)
 from app.database import get_db
 from app.models import BugHuntGame, Player, PlayerStats
 from app.schemas.minigame import (
@@ -14,12 +15,13 @@ from app.schemas.minigame import (
     BugHuntSubmitRequest,
     BugHuntSubmitResponse,
     BugResult,
-    LeaderboardResponse,
     LeaderboardEntry,
-    PlayerBugHuntStatsResponse
+    LeaderboardResponse,
+    PlayerBugHuntStatsResponse,
 )
-from app.content.bug_templates import get_random_template, get_template_by_id, BugTemplate
-
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import desc, func
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -275,7 +277,7 @@ async def submit_bug_hunt(
 
 @router.get("/bug-hunt/leaderboard", response_model=LeaderboardResponse)
 async def get_bug_hunt_leaderboard(
-    difficulty: Optional[str] = Query(None, description="Filter by difficulty"),
+    difficulty: str | None = Query(None, description="Filter by difficulty"),
     limit: int = Query(10, ge=1, le=100, description="Number of entries to return"),
     db: Session = Depends(get_db)
 ):

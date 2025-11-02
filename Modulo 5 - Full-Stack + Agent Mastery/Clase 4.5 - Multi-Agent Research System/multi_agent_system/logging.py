@@ -9,11 +9,11 @@ Implementa:
 - Error tracking
 """
 
-import logging
 import json
+import logging
 from datetime import datetime
-from typing import Dict, Any
 from pathlib import Path
+from typing import Any
 
 
 class AgentLogger:
@@ -54,7 +54,7 @@ class AgentLogger:
         console.setFormatter(logging.Formatter("%(message)s"))
         self.logger.addHandler(console)
 
-    def log_decision(self, decision: str, context: Dict[str, Any]):
+    def log_decision(self, decision: str, context: dict[str, Any]):
         """
         Registra una decisión del agente.
 
@@ -71,7 +71,7 @@ class AgentLogger:
         }
         self.logger.info(json.dumps(log_entry, ensure_ascii=False))
 
-    def log_tool_call(self, tool: str, params: Dict[str, Any], result: Any):
+    def log_tool_call(self, tool: str, params: dict[str, Any], result: Any):
         """
         Registra uso de herramienta.
 
@@ -90,7 +90,7 @@ class AgentLogger:
         }
         self.logger.info(json.dumps(log_entry, ensure_ascii=False, default=str))
 
-    def log_error(self, error: Exception, context: Dict[str, Any]):
+    def log_error(self, error: Exception, context: dict[str, Any]):
         """
         Registra error.
 
@@ -236,7 +236,7 @@ class SystemLogger:
         }
         self.logger.info(json.dumps(log_entry, ensure_ascii=False))
 
-    def log_error(self, error: Exception, context: Dict[str, Any]):
+    def log_error(self, error: Exception, context: dict[str, Any]):
         """Registra error a nivel de sistema."""
         log_entry = {
             "timestamp": datetime.now().isoformat(),
@@ -248,7 +248,7 @@ class SystemLogger:
         self.logger.error(json.dumps(log_entry, ensure_ascii=False))
 
 
-def analyze_logs(log_file: Path) -> Dict[str, Any]:
+def analyze_logs(log_file: Path) -> dict[str, Any]:
     """
     Analiza archivo de logs y genera estadísticas.
 
@@ -262,7 +262,7 @@ def analyze_logs(log_file: Path) -> Dict[str, Any]:
         return {"error": f"Log file not found: {log_file}"}
 
     events = []
-    with open(log_file, "r", encoding="utf-8") as f:
+    with open(log_file, encoding="utf-8") as f:
         for line in f:
             try:
                 events.append(json.loads(line.strip()))

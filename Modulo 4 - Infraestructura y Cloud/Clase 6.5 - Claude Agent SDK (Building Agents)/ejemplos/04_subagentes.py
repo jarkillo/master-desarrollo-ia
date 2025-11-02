@@ -19,12 +19,12 @@ a subagentes especializados:
 - TestAgent: Ejecuta y valida tests
 """
 
-import asyncio
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
+
 from anthropic import Anthropic
 
 

@@ -1,9 +1,9 @@
 """Achievement schemas - Pydantic models for achievements."""
 
-from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List, Optional
 from enum import Enum
+
+from pydantic import BaseModel, Field
 
 
 class AchievementCategory(str, Enum):
@@ -69,20 +69,20 @@ class PlayerAchievementsResponse(BaseModel):
     """Response with all player achievements."""
     player_id: int
     total_achievements: int
-    achievements: List[AchievementWithDetails]
+    achievements: list[AchievementWithDetails]
 
 
 class AvailableAchievementsResponse(BaseModel):
     """Response with all available achievements."""
     total_achievements: int
-    achievements: List[AchievementDefinition]
+    achievements: list[AchievementDefinition]
 
 
 class CheckAchievementsRequest(BaseModel):
     """Request to check and unlock achievements after an action."""
     player_id: int = Field(..., gt=0, description="Player ID")
     action_type: str = Field(..., description="Type of action (e.g., 'complete_class', 'bug_hunt_win')")
-    action_data: Optional[dict] = Field(
+    action_data: dict | None = Field(
         None,
         description="Additional data for the action"
     )
@@ -90,5 +90,5 @@ class CheckAchievementsRequest(BaseModel):
 
 class CheckAchievementsResponse(BaseModel):
     """Response after checking achievements."""
-    achievements_unlocked: List[AchievementWithDetails]
+    achievements_unlocked: list[AchievementWithDetails]
     xp_earned: int

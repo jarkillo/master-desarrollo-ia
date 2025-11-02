@@ -1,5 +1,5 @@
 # api/repositorio_memoria.py
-from typing import List, Optional
+
 from api.servicio_tareas import Tarea
 
 
@@ -17,7 +17,7 @@ class RepositorioMemoria:
     """
 
     def __init__(self):
-        self._tareas: List[Tarea] = []
+        self._tareas: list[Tarea] = []
         self._contador = 0
 
     def guardar(self, tarea: Tarea) -> None:
@@ -34,11 +34,11 @@ class RepositorioMemoria:
                     self._tareas[i] = tarea
                     break
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         """Retorna una copia de la lista de tareas para evitar modificaciones externas."""
         return self._tareas.copy()
 
-    def obtener(self, id: int) -> Optional[Tarea]:
+    def obtener(self, id: int) -> Tarea | None:
         """Busca una tarea por ID."""
         for tarea in self._tareas:
             if tarea.id == id:

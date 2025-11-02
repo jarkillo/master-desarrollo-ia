@@ -6,8 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from api.repositorio_memoria import RepositorioMemoria
-from api.servicio_tareas import ServicioTareas, ErrorValidacion
-
+from api.servicio_tareas import ErrorValidacion, ServicioTareas
 
 # === Modelos de Request/Response ===
 

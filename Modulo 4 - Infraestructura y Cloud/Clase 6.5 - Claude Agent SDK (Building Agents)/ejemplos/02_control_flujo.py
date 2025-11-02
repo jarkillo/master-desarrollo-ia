@@ -20,6 +20,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
+
 from anthropic import Anthropic
 
 
@@ -140,9 +141,7 @@ Sé estricto pero justo."""
             task.attempts += 1
 
             # Transition to IN_PROGRESS
-            if task.state == TaskState.PENDING:
-                self.transition_state(task, TaskState.IN_PROGRESS)
-            elif task.state == TaskState.RETRYING:
+            if task.state == TaskState.PENDING or task.state == TaskState.RETRYING:
                 self.transition_state(task, TaskState.IN_PROGRESS)
 
             print(f"\n🔄 Ejecutando tarea {task.id} (intento {task.attempts}/{task.max_attempts})")

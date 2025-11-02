@@ -4,12 +4,13 @@ Este módulo implementa los endpoints REST para la gestión de tareas,
 usando Pydantic para validaciones robustas y FastAPI para la API.
 """
 
-from fastapi import FastAPI, Depends
-from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import date
 from typing import Annotated
-from api.servicio_tareas import ServicioTareas, Tarea
 
+from fastapi import Depends, FastAPI
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from api.servicio_tareas import ServicioTareas
 
 __all__ = ['app', 'CrearTareaRequest', 'TareaResponse', 'crear_tarea', 'listar_tareas', 'obtener_servicio']
 

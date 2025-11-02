@@ -4,13 +4,12 @@
 # 0. IMPORTAR LIBRERIAS
 # ================================
 
-from typing import (
-    TypedDict,
-    List,
-)  # Esta libreria nos permite crear tipos de datos (para hacer legible el codigo)
 import json
 import os
 import sys
+from typing import (
+    TypedDict,
+)  # Esta libreria nos permite crear tipos de datos (para hacer legible el codigo)
 
 # ================================
 # 1. VARIABLES GLOBALES
@@ -40,11 +39,11 @@ class Tarea(TypedDict):
 # Vamos a escribir mejor la funcion para cargar tareas
 
 
-def cargar_tareas(ruta: str) -> List[Tarea]:
+def cargar_tareas(ruta: str) -> list[Tarea]:
     if not os.path.exists(ruta):
         return []
     try:
-        with open(ruta, "r", encoding="utf-8") as archivo:
+        with open(ruta, encoding="utf-8") as archivo:
             contenido = archivo.read().strip()
             datos = json.loads(contenido) if contenido else []
     except json.JSONDecodeError:
@@ -58,13 +57,13 @@ def cargar_tareas(ruta: str) -> List[Tarea]:
 
 
 # Esta función guarda las tareas en el archivo JSON
-def guardar_tareas(ruta: str, tareas: List[Tarea]) -> None:
+def guardar_tareas(ruta: str, tareas: list[Tarea]) -> None:
     """Guarda la lista de tareas en el archivo JSON con indentación legible."""
     with open(ruta, "w", encoding="utf-8") as f:
         json.dump(tareas, f, ensure_ascii=False, indent=2)
 
 
-def nuevo_id(tareas: List[Tarea]) -> int:
+def nuevo_id(tareas: list[Tarea]) -> int:
     """Genera un ID incremental robusto."""
     return 1 if not tareas else max(t["id"] for t in tareas) + 1
 

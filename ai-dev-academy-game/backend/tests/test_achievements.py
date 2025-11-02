@@ -1,15 +1,13 @@
 """Tests for Achievement routes."""
 
 import pytest
+from app.database import Base, get_db
+from app.main import app
+from app.models.achievement import PlayerStats
+from app.models.player import Player
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-from app.main import app
-from app.database import Base, get_db
-from app.models.player import Player
-from app.models.achievement import PlayerStats
-
 
 # Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_achievements.db"

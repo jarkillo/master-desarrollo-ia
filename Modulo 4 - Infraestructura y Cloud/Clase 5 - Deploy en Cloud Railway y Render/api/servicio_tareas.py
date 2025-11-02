@@ -5,8 +5,9 @@ Capa de servicio con lógica de negocio.
 Esta capa NO conoce la base de datos directamente.
 Solo depende del Protocol RepositorioTareas (Dependency Inversion).
 """
-from typing import List, Optional
+
 from pydantic import BaseModel, Field
+
 from api.repositorio_base import RepositorioTareas
 
 
@@ -29,8 +30,8 @@ class TareaCreate(BaseModel):
 
 class TareaUpdate(BaseModel):
     """Request para actualizar una tarea"""
-    nombre: Optional[str] = Field(None, min_length=1, max_length=100)
-    completada: Optional[bool] = None
+    nombre: str | None = Field(None, min_length=1, max_length=100)
+    completada: bool | None = None
 
 
 class ServicioTareas:
@@ -64,7 +65,7 @@ class ServicioTareas:
         self._repo.guardar(nueva)
         return nueva
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         """
         Lista todas las tareas.
 
@@ -73,7 +74,7 @@ class ServicioTareas:
         """
         return self._repo.listar()
 
-    def obtener(self, id: int) -> Optional[Tarea]:
+    def obtener(self, id: int) -> Tarea | None:
         """
         Obtiene una tarea por ID.
 
@@ -85,7 +86,7 @@ class ServicioTareas:
         """
         return self._repo.obtener_por_id(id)
 
-    def actualizar(self, id: int, datos: TareaUpdate) -> Optional[Tarea]:
+    def actualizar(self, id: int, datos: TareaUpdate) -> Tarea | None:
         """
         Actualiza una tarea existente.
 

@@ -1,8 +1,8 @@
 # tests/test_health.py
 """Tests para el endpoint de health check"""
 
-from fastapi.testclient import TestClient
 from api.api import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

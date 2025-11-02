@@ -9,15 +9,17 @@ Esta API implementa:
 - Modelos Pydantic con validación completa
 """
 import os
-from typing import Dict, Any
-from fastapi import FastAPI, Depends, HTTPException, status
-from pydantic import BaseModel, Field, ConfigDict
-from sentry_sdk import set_user, set_context, capture_exception
+from typing import Any
+
+from fastapi import Depends, FastAPI, HTTPException, status
+from pydantic import BaseModel, ConfigDict, Field
+from sentry_sdk import capture_exception, set_context, set_user
+
+from api.dependencias import ServicioDependency
+from api.seguridad_jwt import crear_token, verificar_jwt
 
 # Configuración modular
 from api.sentry_config import configurar_sentry
-from api.dependencias import ServicioDependency
-from api.seguridad_jwt import crear_token, verificar_jwt
 
 # Inicializar Sentry ANTES de crear la app (así captura errores de inicialización)
 configurar_sentry()
@@ -181,7 +183,7 @@ def login(cuerpo: LoginRequest) -> LoginResponse:
 def crear_tarea(
     cuerpo: CrearTareaRequest,
     servicio: ServicioDependency,  # ✅ Inyección de dependencias
-    payload: Dict[str, Any] = Depends(verificar_jwt)
+    payload: dict[str, Any] = Depends(verificar_jwt)
 ) -> TareaResponse:
     """Crea una nueva tarea.
 
@@ -230,7 +232,7 @@ def crear_tarea(
 )
 def listar_tareas(
     servicio: ServicioDependency,  # ✅ Inyección de dependencias
-    payload: Dict[str, Any] = Depends(verificar_jwt)
+    payload: dict[str, Any] = Depends(verificar_jwt)
 ) -> list[TareaResponse]:
     """Lista todas las tareas del usuario.
 

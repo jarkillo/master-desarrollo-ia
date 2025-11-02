@@ -8,9 +8,10 @@ Implementa:
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
-from typing import Any, Dict
+from pathlib import Path
+from typing import Any
+
 from .core import SharedMemory
 
 
@@ -79,7 +80,7 @@ class PersistentMemory(SharedMemory):
         # Si no está en memoria, buscar en disco
         file_path = self.session_dir / f"{key}.json"
         if file_path.exists():
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 data = json.load(f)
                 # Cargar en memoria para próximas lecturas
                 super().store(key, data["value"])
@@ -122,7 +123,7 @@ class PersistentMemory(SharedMemory):
         if not checkpoint_path.exists():
             raise FileNotFoundError(f"Checkpoint no encontrado: {checkpoint_name}")
 
-        with open(checkpoint_path, "r", encoding="utf-8") as f:
+        with open(checkpoint_path, encoding="utf-8") as f:
             checkpoint_data = json.load(f)
 
         # Restaurar estado
@@ -149,7 +150,7 @@ class PersistentMemory(SharedMemory):
         print(f"   Session original: {checkpoint_data['session_id']}")
         print(f"   Timestamp: {checkpoint_data['timestamp']}")
 
-    def list_checkpoints(self) -> list[Dict[str, Any]]:
+    def list_checkpoints(self) -> list[dict[str, Any]]:
         """
         Lista todos los checkpoints disponibles.
 
@@ -158,7 +159,7 @@ class PersistentMemory(SharedMemory):
         """
         checkpoints = []
         for path in self.storage_dir.glob("checkpoint_*.json"):
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
                 checkpoints.append(
                     {
@@ -171,7 +172,7 @@ class PersistentMemory(SharedMemory):
 
         return sorted(checkpoints, key=lambda x: x["timestamp"], reverse=True)
 
-    def export_session(self) -> Dict[str, Any]:
+    def export_session(self) -> dict[str, Any]:
         """
         Exporta toda la sesión actual.
 

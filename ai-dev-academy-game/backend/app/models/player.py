@@ -1,10 +1,9 @@
 """Player model - represents a game player."""
 
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-
 from app.database import Base
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
 
 class Player(Base):

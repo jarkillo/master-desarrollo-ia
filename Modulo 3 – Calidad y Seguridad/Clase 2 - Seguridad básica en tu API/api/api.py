@@ -1,11 +1,10 @@
 # api/api.py
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from pydantic import BaseModel, Field, constr
-from api.servicio_tareas import ServicioTareas
-from api.repositorio_json import RepositorioJSON
-from fastapi import Depends
-from api.dependencias import verificar_api_key
 
+from api.dependencias import verificar_api_key
+from api.repositorio_json import RepositorioJSON
+from api.servicio_tareas import ServicioTareas
 
 app = FastAPI()
 

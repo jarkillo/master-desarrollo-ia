@@ -1,14 +1,12 @@
 """Tests for Bug Hunt mini-game."""
 
 import pytest
+from app.database import Base, get_db
+from app.main import app
+from app.models import Player
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-from app.main import app
-from app.database import Base, get_db
-from app.models import Player
-
 
 # Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_bug_hunt.db"

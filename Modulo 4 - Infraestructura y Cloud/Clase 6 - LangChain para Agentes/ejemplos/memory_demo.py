@@ -9,17 +9,18 @@ Demuestra diferentes tipos de memoria en LangChain:
 """
 
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from langchain_anthropic import ChatAnthropic
 from langchain.chains import ConversationChain
 from langchain.memory import (
     ConversationBufferMemory,
+    ConversationBufferWindowMemory,
     ConversationSummaryMemory,
-    ConversationBufferWindowMemory
 )
+from langchain_anthropic import ChatAnthropic
 from rich.console import Console
 from rich.panel import Panel
 

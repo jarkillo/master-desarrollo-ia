@@ -1,8 +1,8 @@
 """Pydantic schemas for Player endpoints."""
 
 from datetime import datetime
+
 from pydantic import BaseModel, Field
-from typing import Optional
 
 
 class PlayerCreate(BaseModel):
@@ -27,8 +27,8 @@ class PlayerResponse(BaseModel):
 
 class PlayerUpdate(BaseModel):
     """Schema for updating player info."""
-    username: Optional[str] = Field(default=None, min_length=3, max_length=50)
-    avatar: Optional[str] = Field(default=None)
+    username: str | None = Field(default=None, min_length=3, max_length=50)
+    avatar: str | None = Field(default=None)
 
 
 class PlayerStatsResponse(BaseModel):

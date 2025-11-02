@@ -8,18 +8,17 @@ Basado en: https://www.anthropic.com/engineering/multi-agent-research-system
 """
 
 from .core import (
-    AgentRole,
-    Task,
     AgentResult,
-    MessageBus,
-    SharedMemory,
+    AgentRole,
     LeadAgent,
-    SubAgent,
+    MessageBus,
     MultiAgentResearchSystem,
+    SharedMemory,
+    SubAgent,
+    Task,
 )
-
-from .memory import PersistentMemory
 from .logging import AgentLogger
+from .memory import PersistentMemory
 
 __all__ = [
     "AgentRole",

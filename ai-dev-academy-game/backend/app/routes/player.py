@@ -1,18 +1,17 @@
 """Player routes - CRUD operations for game players."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from typing import List
 
 from app.database import get_db
-from app.models.player import Player
 from app.models.achievement import PlayerStats
+from app.models.player import Player
 from app.schemas.player import (
     PlayerCreate,
     PlayerResponse,
+    PlayerStatsResponse,
     PlayerUpdate,
-    PlayerStatsResponse
 )
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -90,7 +89,7 @@ async def get_player(
     return player
 
 
-@router.get("/", response_model=List[PlayerResponse])
+@router.get("/", response_model=list[PlayerResponse])
 async def list_players(
     skip: int = 0,
     limit: int = 100,

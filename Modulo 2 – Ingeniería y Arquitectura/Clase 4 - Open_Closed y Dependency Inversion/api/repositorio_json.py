@@ -6,7 +6,7 @@ persistencia real en un archivo JSON con encoding UTF-8.
 """
 import json
 from pathlib import Path
-from typing import List, Optional
+
 from api.servicio_tareas import Tarea
 
 
@@ -36,7 +36,7 @@ class RepositorioJSON:
         if not self.ruta.exists():
             self._escribir([])
 
-    def _leer(self) -> List[Tarea]:
+    def _leer(self) -> list[Tarea]:
         """Lee todas las tareas del archivo JSON.
 
         Returns:
@@ -54,7 +54,7 @@ class RepositorioJSON:
             # Archivo corrupto, no existe, o formato incorrecto → lista vacía
             return []
 
-    def _escribir(self, tareas: List[Tarea]) -> None:
+    def _escribir(self, tareas: list[Tarea]) -> None:
         """Escribe todas las tareas al archivo JSON.
 
         Args:
@@ -105,7 +105,7 @@ class RepositorioJSON:
 
         self._escribir(tareas)
 
-    def listar(self) -> List[Tarea]:
+    def listar(self) -> list[Tarea]:
         """Devuelve todas las tareas persistidas.
 
         Returns:
@@ -113,7 +113,7 @@ class RepositorioJSON:
         """
         return self._leer()
 
-    def obtener_por_id(self, id: int) -> Optional[Tarea]:
+    def obtener_por_id(self, id: int) -> Tarea | None:
         """Busca una tarea por su ID.
 
         Args:
@@ -146,7 +146,7 @@ class RepositorioJSON:
                 return True
         return False
 
-    def completar(self, id: int) -> Optional[Tarea]:
+    def completar(self, id: int) -> Tarea | None:
         """Marca una tarea como completada.
 
         Args:

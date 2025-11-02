@@ -7,10 +7,11 @@ Maneja:
 - Login con verificación de credenciales
 - Creación de tokens JWT
 """
-from typing import Optional
+
 import bcrypt
+
+from api.modelos import AuthResponse, LoginRequest, RegisterRequest, UserResponse
 from api.repositorio_usuarios import RepositorioUsuarios
-from api.modelos import User, RegisterRequest, LoginRequest, AuthResponse, UserResponse
 from api.seguridad_jwt import crear_token
 
 
@@ -89,7 +90,7 @@ class ServicioUsuarios:
             ),
         )
 
-    def obtener_usuario_actual(self, user_id: str) -> Optional[UserResponse]:
+    def obtener_usuario_actual(self, user_id: str) -> UserResponse | None:
         """
         Obtiene los datos del usuario autenticado.
 

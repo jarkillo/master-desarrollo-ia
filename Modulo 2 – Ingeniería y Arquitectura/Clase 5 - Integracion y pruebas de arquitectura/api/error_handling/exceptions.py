@@ -3,8 +3,9 @@ Custom Exception Classes para FastAPI
 Ejemplo de implementación profesional
 """
 
+from typing import Any
+
 from fastapi import HTTPException
-from typing import Optional, Dict, Any
 
 
 class BaseAPIException(HTTPException):
@@ -15,7 +16,7 @@ class BaseAPIException(HTTPException):
         status_code: int,
         detail: str,
         error_code: str,
-        context: Optional[Dict[str, Any]] = None
+        context: dict[str, Any] | None = None
     ):
         super().__init__(status_code=status_code, detail=detail)
         self.error_code = error_code
@@ -68,7 +69,7 @@ class BusinessRuleViolationError(BaseAPIException):
 class DatabaseError(BaseAPIException):
     """Error de base de datos"""
 
-    def __init__(self, operation: str, original_error: Optional[Exception] = None):
+    def __init__(self, operation: str, original_error: Exception | None = None):
         super().__init__(
             status_code=500,
             detail=f"Error de base de datos durante: {operation}",

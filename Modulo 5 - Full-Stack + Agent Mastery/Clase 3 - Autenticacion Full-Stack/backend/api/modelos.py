@@ -8,9 +8,9 @@ Define las estructuras de datos para:
 - Requests de login (LoginRequest)
 - Responses de autenticación (AuthResponse, UserResponse)
 """
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
 from datetime import datetime
+
+from pydantic import BaseModel, EmailStr, Field
 
 
 class RegisterRequest(BaseModel):
