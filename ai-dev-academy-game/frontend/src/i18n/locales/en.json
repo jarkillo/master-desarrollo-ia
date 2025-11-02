@@ -150,11 +150,25 @@
     "modules": {
       "title": "Modules",
       "module": "Module {{number}}",
+      "moduleNotFound": "Module not found",
+      "backToDashboard": "Back to Dashboard",
+      "classesCompleted": "classes completed",
+      "classesTitle": "Classes",
       "class": "Class {{number}}",
       "locked": "Locked",
       "inProgress": "In Progress",
       "completed": "Completed",
-      "xpReward": "{{xp}} XP"
+      "xpReward": "{{xp}} XP",
+      "timeEstimate": "{{minutes}} min",
+      "youWillLearn": "You will learn:",
+      "exercisesCompleted": "{{count}} exercise completed",
+      "exercisesCompleted_plural": "{{count}} exercises completed",
+      "completedOn": "Completed on {{date}}",
+      "actions": {
+        "review": "Review",
+        "continue": "Continue",
+        "start": "Start"
+      }
     }
   },
   "navigation": {

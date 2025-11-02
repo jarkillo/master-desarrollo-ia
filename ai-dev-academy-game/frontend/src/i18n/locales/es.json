@@ -150,11 +150,25 @@
     "modules": {
       "title": "Módulos",
       "module": "Módulo {{number}}",
+      "moduleNotFound": "Módulo no encontrado",
+      "backToDashboard": "Volver al Dashboard",
+      "classesCompleted": "clases completadas",
+      "classesTitle": "Clases",
       "class": "Clase {{number}}",
       "locked": "Bloqueado",
       "inProgress": "En Progreso",
       "completed": "Completado",
-      "xpReward": "{{xp}} XP"
+      "xpReward": "{{xp}} XP",
+      "timeEstimate": "{{minutes}} min",
+      "youWillLearn": "Aprenderás:",
+      "exercisesCompleted": "{{count}} ejercicio completado",
+      "exercisesCompleted_plural": "{{count}} ejercicios completados",
+      "completedOn": "Completado el {{date}}",
+      "actions": {
+        "review": "Revisar",
+        "continue": "Continuar",
+        "start": "Comenzar"
+      }
     }
   },
   "navigation": {

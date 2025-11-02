@@ -1,11 +1,13 @@
 /**
  * ModuleViewer - Shows all classes in a module with their status
  */
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../stores/gameStore';
 import { LoadingSkeleton } from '../common/LoadingSkeleton';
 import './ModuleViewer.css';
 
 export const ModuleViewer = () => {
+  const { t } = useTranslation();
   const {
     currentModule,
     fullProgress,
@@ -23,7 +25,7 @@ export const ModuleViewer = () => {
   );
 
   if (!moduleProgress) {
-    return <div className="module-error">Module not found</div>;
+    return <div className="module-error">{t('game.modules.moduleNotFound')}</div>;
   }
 
   const classesWithStatus = currentModule.classes.map((classInfo) => {
@@ -37,13 +39,13 @@ export const ModuleViewer = () => {
     <div className="module-viewer">
       {/* Back Button */}
       <button className="back-btn" onClick={() => setCurrentView('dashboard')}>
-        ← Back to Dashboard
+        ← {t('game.modules.backToDashboard')}
       </button>
 
       {/* Module Header */}
       <div className="module-header-section">
         <h1 className="module-title">
-          Module {currentModule.module_number}: {currentModule.title}
+          {t('game.modules.module', { number: currentModule.module_number })}: {currentModule.title}
         </h1>
         <p className="module-description">{currentModule.description}</p>
 
@@ -52,7 +54,7 @@ export const ModuleViewer = () => {
           <div className="progress-stats">
             <span>
               {moduleProgress.classes_completed} / {moduleProgress.total_classes}{' '}
-              classes completed
+              {t('game.modules.classesCompleted')}
             </span>
             <span>{Math.round(moduleProgress.module_progress_percentage)}%</span>
           </div>
@@ -67,7 +69,7 @@ export const ModuleViewer = () => {
 
       {/* Classes List */}
       <div className="classes-list">
-        <h2>Classes</h2>
+        <h2>{t('game.modules.classesTitle')}</h2>
         {classesWithStatus.map(({ classInfo, progress }) => {
           const status = progress?.status || 'locked';
           const isClickable = status !== 'locked';
@@ -94,17 +96,17 @@ export const ModuleViewer = () => {
                 {/* Class Header */}
                 <div className="class-header">
                   <h3 className="class-title">
-                    Class {classInfo.class_number}: {classInfo.title}
+                    {t('game.modules.class', { number: classInfo.class_number })}: {classInfo.title}
                   </h3>
                   <div className="class-meta">
                     <span className={`difficulty ${classInfo.difficulty}`}>
                       {classInfo.difficulty}
                     </span>
                     <span className="time-estimate">
-                      ⏱️ {classInfo.estimated_time_minutes} min
+                      ⏱️ {t('game.modules.timeEstimate', { minutes: classInfo.estimated_time_minutes })}
                     </span>
                     <span className="xp-reward">
-                      ⭐ {classInfo.xp_reward} XP
+                      ⭐ {t('game.modules.xpReward', { xp: classInfo.xp_reward })}
                     </span>
                   </div>
                 </div>
@@ -115,7 +117,7 @@ export const ModuleViewer = () => {
                 {/* Learning Objectives */}
                 {classInfo.learning_objectives.length > 0 && (
                   <div className="learning-objectives">
-                    <strong>You will learn:</strong>
+                    <strong>{t('game.modules.youWillLearn')}</strong>
                     <ul>
                       {classInfo.learning_objectives.map((objective, idx) => (
                         <li key={idx}>{objective}</li>
@@ -129,13 +131,14 @@ export const ModuleViewer = () => {
                   <div className="class-progress-info">
                     {progress.exercises_completed > 0 && (
                       <span>
-                        📝 {progress.exercises_completed} exercises completed
+                        📝 {t('game.modules.exercisesCompleted', { count: progress.exercises_completed })}
                       </span>
                     )}
                     {progress.completed_at && (
                       <span className="completion-date">
-                        Completed on{' '}
-                        {new Date(progress.completed_at).toLocaleDateString()}
+                        {t('game.modules.completedOn', {
+                          date: new Date(progress.completed_at).toLocaleDateString()
+                        })}
                       </span>
                     )}
                   </div>
@@ -146,13 +149,13 @@ export const ModuleViewer = () => {
               {isClickable && (
                 <div className="class-action">
                   {status === 'completed' && (
-                    <button className="btn-review">Review</button>
+                    <button className="btn-review">{t('game.modules.actions.review')}</button>
                   )}
                   {status === 'in_progress' && (
-                    <button className="btn-continue">Continue</button>
+                    <button className="btn-continue">{t('game.modules.actions.continue')}</button>
                   )}
                   {status === 'unlocked' && (
-                    <button className="btn-start">Start</button>
+                    <button className="btn-start">{t('game.modules.actions.start')}</button>
                   )}
                 </div>
               )}
