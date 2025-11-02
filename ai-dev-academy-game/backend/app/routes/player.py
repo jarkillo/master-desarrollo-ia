@@ -6,7 +6,7 @@ from typing import List
 
 from app.database import get_db
 from app.models.player import Player
-from app.models.progress import PlayerStats
+from app.models.achievement import PlayerStats
 from app.schemas.player import (
     PlayerCreate,
     PlayerResponse,
@@ -57,7 +57,7 @@ async def create_player(
         player_id=new_player.id,
         classes_completed=0,
         exercises_completed=0,
-        minigames_played=0,
+        bug_hunt_games_played=0,
         current_streak=0,
         longest_streak=0
     )
@@ -185,7 +185,7 @@ async def get_player_stats(
             player_id=player_id,
             classes_completed=0,
             exercises_completed=0,
-            minigames_played=0,
+            bug_hunt_games_played=0,
             current_streak=0,
             longest_streak=0
         )

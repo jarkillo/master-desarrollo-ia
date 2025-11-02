@@ -238,12 +238,15 @@ async def submit_bug_hunt(
     if not stats:
         stats = PlayerStats(
             player_id=request.player_id,
-            total_minigames_played=1,
+            bug_hunt_games_played=1,
+            bug_hunt_wins=1 if is_perfect else 0,
             last_activity_date=datetime.utcnow()
         )
         db.add(stats)
     else:
-        stats.total_minigames_played += 1
+        stats.bug_hunt_games_played += 1
+        if is_perfect:
+            stats.bug_hunt_wins += 1
         stats.last_activity_date = datetime.utcnow()
 
     db.commit()
