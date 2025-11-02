@@ -169,6 +169,27 @@
         "continue": "Continuar",
         "start": "Comenzar"
       }
+    },
+    "class": {
+      "loadingContent": "Cargando contenido de la clase...",
+      "errorLoading": "Error al Cargar la Clase",
+      "contentNotFound": "Contenido de la clase no encontrado",
+      "backToModule": "Volver al Módulo",
+      "nextClass": "Siguiente Clase",
+      "completedBadge": "Completado",
+      "aboutThisClass": "Sobre Esta Clase",
+      "prerequisites": "Requisitos Previos",
+      "whatYouWillLearn": "Qué Aprenderás",
+      "exercises": "Ejercicios",
+      "exercisesCompleted": "completados",
+      "exercise": "Ejercicio",
+      "completing": "Completando...",
+      "completeClassButton": "Completar Clase y Ganar {{xp}} XP",
+      "completeAllExercises": "Completa todos los ejercicios para terminar esta clase",
+      "classCompletedTitle": "¡Clase Completada!",
+      "completedOnDate": "Completado el {{date}}",
+      "continueToNextClass": "Continuar a la Siguiente Clase",
+      "moduleCompleteMessage": "¡Has completado todas las clases de este módulo!"
     }
   },
   "navigation": {

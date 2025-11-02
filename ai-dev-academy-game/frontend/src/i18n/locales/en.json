@@ -169,6 +169,27 @@
         "continue": "Continue",
         "start": "Start"
       }
+    },
+    "class": {
+      "loadingContent": "Loading class content...",
+      "errorLoading": "Error Loading Class",
+      "contentNotFound": "Class content not found",
+      "backToModule": "Back to Module",
+      "nextClass": "Next Class",
+      "completedBadge": "Completed",
+      "aboutThisClass": "About This Class",
+      "prerequisites": "Prerequisites",
+      "whatYouWillLearn": "What You'll Learn",
+      "exercises": "Exercises",
+      "exercisesCompleted": "completed",
+      "exercise": "Exercise",
+      "completing": "Completing...",
+      "completeClassButton": "Complete Class & Earn {{xp}} XP",
+      "completeAllExercises": "Complete all exercises to finish this class",
+      "classCompletedTitle": "Class Completed!",
+      "completedOnDate": "Completed on {{date}}",
+      "continueToNextClass": "Continue to Next Class",
+      "moduleCompleteMessage": "You've completed all classes in this module!"
     }
   },
   "navigation": {

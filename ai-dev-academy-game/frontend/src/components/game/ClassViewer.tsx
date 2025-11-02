@@ -2,11 +2,13 @@
  * ClassViewer - Shows class content with exercises and completion tracking
  */
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../stores/gameStore';
 import type { ClassInfo } from '../../types/game';
 import './ClassViewer.css';
 
 export const ClassViewer = () => {
+  const { t, i18n } = useTranslation();
   const {
     selectedModuleNumber,
     selectedClassNumber,
@@ -86,7 +88,7 @@ export const ClassViewer = () => {
     return (
       <div className="class-viewer-loading">
         <div className="loading-spinner"></div>
-        <p>Loading class content...</p>
+        <p>{t('game.class.loadingContent')}</p>
       </div>
     );
   }
@@ -95,10 +97,10 @@ export const ClassViewer = () => {
     return (
       <div className="class-viewer-error">
         <div className="error-icon">⚠️</div>
-        <h2>Error Loading Class</h2>
+        <h2>{t('game.class.errorLoading')}</h2>
         <p>{error}</p>
         <button onClick={handleBack} className="btn-back">
-          Back to Module
+          {t('game.class.backToModule')}
         </button>
       </div>
     );
@@ -107,9 +109,9 @@ export const ClassViewer = () => {
   if (!classContent || selectedModuleNumber === null || selectedClassNumber === null) {
     return (
       <div className="class-viewer-error">
-        <p>Class content not found</p>
+        <p>{t('game.class.contentNotFound')}</p>
         <button onClick={handleBack} className="btn-back">
-          Back to Module
+          {t('game.class.backToModule')}
         </button>
       </div>
     );
@@ -126,7 +128,7 @@ export const ClassViewer = () => {
   // Generate exercise list (for demo purposes - in production, these would come from backend)
   const exercises = classContent.learning_objectives.map((objective, idx) => ({
     id: `exercise-${selectedModuleNumber}-${selectedClassNumber}-${idx}`,
-    title: `Exercise ${idx + 1}`,
+    title: `${t('game.class.exercise')} ${idx + 1}`,
     description: objective,
     completed: completedExercises.has(`exercise-${selectedModuleNumber}-${selectedClassNumber}-${idx}`),
   }));
@@ -157,11 +159,11 @@ export const ClassViewer = () => {
       {/* Navigation */}
       <div className="class-nav">
         <button onClick={handleBack} className="btn-back">
-          ← Back to Module
+          ← {t('game.class.backToModule')}
         </button>
         {nextClass && isCompleted && (
           <button onClick={handleNextClass} className="btn-next">
-            Next Class →
+            {t('game.class.nextClass')} →
           </button>
         )}
       </div>
@@ -171,9 +173,9 @@ export const ClassViewer = () => {
         <div className="class-header-content">
           <div className="class-title-section">
             <h1 className="class-title">
-              Class {selectedClassNumber}: {classContent.title}
+              {t('game.modules.class', { number: selectedClassNumber })}: {classContent.title}
             </h1>
-            {isCompleted && <span className="completion-badge">✅ Completed</span>}
+            {isCompleted && <span className="completion-badge">✅ {t('game.class.completedBadge')}</span>}
           </div>
 
           <div className="class-meta">
@@ -199,14 +201,14 @@ export const ClassViewer = () => {
       <div className="class-content">
         {/* Description */}
         <section className="content-section">
-          <h2>About This Class</h2>
+          <h2>{t('game.class.aboutThisClass')}</h2>
           <p className="class-description">{classContent.description}</p>
         </section>
 
         {/* Prerequisites */}
         {classContent.prerequisites.length > 0 && (
           <section className="content-section prerequisites">
-            <h2>Prerequisites</h2>
+            <h2>{t('game.class.prerequisites')}</h2>
             <ul className="prerequisites-list">
               {classContent.prerequisites.map((prereq, idx) => (
                 <li key={idx}>
@@ -221,7 +223,7 @@ export const ClassViewer = () => {
         {/* Learning Objectives */}
         {classContent.learning_objectives.length > 0 && (
           <section className="content-section learning-objectives">
-            <h2>What You'll Learn</h2>
+            <h2>{t('game.class.whatYouWillLearn')}</h2>
             <ul className="objectives-list">
               {classContent.learning_objectives.map((objective, idx) => (
                 <li key={idx}>
@@ -235,10 +237,10 @@ export const ClassViewer = () => {
 
         {/* Exercises */}
         <section className="content-section exercises">
-          <h2>Exercises</h2>
+          <h2>{t('game.class.exercises')}</h2>
           <div className="exercises-progress">
             <span>
-              {completedExercises.size} / {exercises.length} completed
+              {completedExercises.size} / {exercises.length} {t('game.class.exercisesCompleted')}
             </span>
             <div className="exercises-progress-bar">
               <div
@@ -288,18 +290,18 @@ export const ClassViewer = () => {
               {isLoading ? (
                 <>
                   <span className="btn-spinner"></span>
-                  Completing...
+                  {t('game.class.completing')}
                 </>
               ) : (
                 <>
                   <span className="btn-icon">🎉</span>
-                  Complete Class & Earn {classContent.xp_reward} XP
+                  {t('game.class.completeClassButton', { xp: classContent.xp_reward })}
                 </>
               )}
             </button>
             {!allExercisesCompleted && (
               <p className="complete-hint">
-                Complete all exercises to finish this class
+                {t('game.class.completeAllExercises')}
               </p>
             )}
           </div>
@@ -311,24 +313,25 @@ export const ClassViewer = () => {
             <div className="completion-message">
               <span className="completion-icon">🎉</span>
               <div>
-                <h3>Class Completed!</h3>
+                <h3>{t('game.class.classCompletedTitle')}</h3>
                 <p>
-                  Completed on{' '}
-                  {new Date(classProgress.completed_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
+                  {t('game.class.completedOnDate', {
+                    date: new Date(classProgress.completed_at).toLocaleDateString(i18n.language, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })
                   })}
                 </p>
               </div>
             </div>
             {nextClass ? (
               <button onClick={handleNextClass} className="btn-next-class">
-                Continue to Next Class →
+                {t('game.class.continueToNextClass')} →
               </button>
             ) : (
               <p className="module-complete-message">
-                🏆 You've completed all classes in this module!
+                🏆 {t('game.class.moduleCompleteMessage')}
               </p>
             )}
           </div>
