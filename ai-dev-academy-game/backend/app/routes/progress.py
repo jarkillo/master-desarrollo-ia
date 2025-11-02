@@ -8,7 +8,8 @@ from datetime import datetime
 
 from app.database import get_db
 from app.models.player import Player
-from app.models.progress import Progress, PlayerStats
+from app.models.progress import Progress
+from app.models.achievement import PlayerStats
 from app.schemas.progress import (
     ProgressCreate,
     ProgressUpdate,
