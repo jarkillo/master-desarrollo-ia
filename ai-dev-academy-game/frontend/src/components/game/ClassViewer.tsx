@@ -77,8 +77,8 @@ export const ClassViewer = () => {
 
   const handleNextClass = () => {
     if (nextClass && selectedModuleNumber !== null) {
-      const { setCurrentView, selectClass } = useGameStore.getState();
-      selectClass(nextClass.module, nextClass.class);
+      const { selectClass } = useGameStore.getState();
+      selectClass(selectedModuleNumber, nextClass.class_number);
     }
   };
 
