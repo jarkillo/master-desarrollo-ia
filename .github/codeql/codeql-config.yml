@@ -1,0 +1,28 @@
+# CodeQL Configuration for AI Dev Academy Master Repository
+# Excludes intentionally vulnerable code examples used for educational purposes
+
+name: "CodeQL Config - Exclude Educational Vulnerable Examples"
+
+paths-ignore:
+  # Exclude all intentionally vulnerable example directories
+  - '**/ejemplos_vulnerables/**'
+  - '**/ejemplos_vulnerables_*/**'
+
+  # Exclude intentionally buggy files for educational purposes
+  - '**/tareas_bugs.py'
+  - '**/tareas_bugs*.py'
+  - '**/cli-tareas/tareas_bugs*.py'
+
+  # Exclude test fixtures with intentional vulnerabilities
+  - '**/tests/fixtures/vulnerable_*.py'
+
+  # Exclude virtual environments and dependencies
+  - '**/.venv/**'
+  - '**/venv/**'
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+
+# Configure query suites
+queries:
+  - uses: security-and-quality
