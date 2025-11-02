@@ -1,6 +1,7 @@
 /**
  * BugHuntResults - Display game results and statistics
  */
+import { useTranslation } from 'react-i18next';
 import type { BugHuntSubmitResponse } from '../types/bugHunt';
 import './BugHuntResults.css';
 
@@ -15,6 +16,8 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
   onPlayAgain,
   onViewLeaderboard,
 }) => {
+  const { t } = useTranslation();
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -22,11 +25,11 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
   };
 
   const getPerformanceRating = (accuracy: number): string => {
-    if (accuracy === 100 && results.is_perfect) return '🏆 Perfect!';
-    if (accuracy >= 90) return '🌟 Excellent!';
-    if (accuracy >= 75) return '⭐ Great!';
-    if (accuracy >= 50) return '👍 Good!';
-    return '💪 Keep practicing!';
+    if (accuracy === 100 && results.is_perfect) return t('bugHunt.results.performance.perfect');
+    if (accuracy >= 90) return t('bugHunt.results.performance.excellent');
+    if (accuracy >= 75) return t('bugHunt.results.performance.great');
+    if (accuracy >= 50) return t('bugHunt.results.performance.good');
+    return t('bugHunt.results.performance.keepPracticing');
   };
 
   return (
@@ -34,13 +37,13 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
       <div className="results-container">
         {results.is_perfect && (
           <div className="perfect-banner">
-            <h2>🏆 PERFECT GAME! 🏆</h2>
-            <p>You found all bugs with no false positives!</p>
+            <h2>🏆 {t('bugHunt.results.perfectBanner')} 🏆</h2>
+            <p>{t('bugHunt.results.perfectDesc')}</p>
           </div>
         )}
 
         <div className="results-header">
-          <h1>Game Results</h1>
+          <h1>{t('bugHunt.results.gameResults')}</h1>
           <p className="performance-rating">
             {getPerformanceRating(results.accuracy)}
           </p>
@@ -50,13 +53,13 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
           <div className="stat-card primary">
             <div className="stat-icon">🎯</div>
             <div className="stat-value">{results.score}</div>
-            <div className="stat-label">Score</div>
+            <div className="stat-label">{t('bugHunt.results.score')}</div>
           </div>
 
           <div className="stat-card primary">
             <div className="stat-icon">⭐</div>
             <div className="stat-value">{results.xp_earned}</div>
-            <div className="stat-label">XP Earned</div>
+            <div className="stat-label">{t('bugHunt.results.xpEarned')}</div>
           </div>
 
           <div className="stat-card">
@@ -64,26 +67,26 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
             <div className="stat-value">
               {results.bugs_found}/{results.bugs_total}
             </div>
-            <div className="stat-label">Bugs Found</div>
+            <div className="stat-label">{t('bugHunt.results.bugsFound')}</div>
           </div>
 
           <div className="stat-card">
             <div className="stat-icon">📊</div>
             <div className="stat-value">{results.accuracy.toFixed(1)}%</div>
-            <div className="stat-label">Accuracy</div>
+            <div className="stat-label">{t('bugHunt.results.accuracy')}</div>
           </div>
 
           <div className="stat-card">
             <div className="stat-icon">⏱️</div>
             <div className="stat-value">{formatTime(results.time_seconds)}</div>
-            <div className="stat-label">Time</div>
+            <div className="stat-label">{t('bugHunt.results.time')}</div>
           </div>
 
           {results.performance_bonus > 0 && (
             <div className="stat-card bonus">
               <div className="stat-icon">🚀</div>
               <div className="stat-value">+{results.performance_bonus}</div>
-              <div className="stat-label">Speed Bonus</div>
+              <div className="stat-label">{t('bugHunt.results.speedBonus')}</div>
             </div>
           )}
         </div>

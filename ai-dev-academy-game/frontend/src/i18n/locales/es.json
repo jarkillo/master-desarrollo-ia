@@ -1,0 +1,154 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "retry": "Reintentar",
+    "back": "Volver",
+    "close": "Cerrar",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
+  },
+  "bugHunt": {
+    "title": "Caza de Bugs",
+    "subtitle": "¡Encuentra bugs en el código y gana XP!",
+    "start": {
+      "selectDifficulty": "Selecciona Dificultad",
+      "random": "Aleatorio",
+      "randomDesc": "¡Sorpréndeme!",
+      "easy": "Fácil",
+      "easyDesc": "1-2 bugs, patrones básicos",
+      "medium": "Medio",
+      "mediumDesc": "2-3 bugs, complejidad moderada",
+      "hard": "Difícil",
+      "hardDesc": "3+ bugs, patrones avanzados",
+      "startGame": "Comenzar Juego",
+      "howToPlay": "Cómo Jugar",
+      "instructions": {
+        "1": "Lee el código cuidadosamente",
+        "2": "Haz clic en las líneas que crees que tienen bugs",
+        "3": "Envía tus respuestas antes de que se acabe el tiempo",
+        "4": "¡Gana XP basado en precisión y velocidad!"
+      }
+    },
+    "game": {
+      "timeRemaining": "Tiempo restante",
+      "bugsSelected": "Bugs seleccionados",
+      "lineNumber": "Línea {{number}}",
+      "clickToSelect": "Haz clic en una línea para marcarla como bug",
+      "submitAnswers": "Enviar Respuestas",
+      "giveUp": "Rendirse"
+    },
+    "results": {
+      "perfectBanner": "¡JUEGO PERFECTO!",
+      "perfectDesc": "¡Encontraste todos los bugs sin falsos positivos!",
+      "gameResults": "Resultados del Juego",
+      "performance": {
+        "perfect": "🏆 ¡Perfecto!",
+        "excellent": "🌟 ¡Excelente!",
+        "great": "⭐ ¡Genial!",
+        "good": "👍 ¡Bien!",
+        "keepPracticing": "💪 ¡Sigue practicando!"
+      },
+      "score": "Puntuación",
+      "xpEarned": "XP Ganado",
+      "bugsFound": "Bugs Encontrados",
+      "accuracy": "Precisión",
+      "time": "Tiempo",
+      "falsePositives": "Falsos Positivos",
+      "speedBonus": "Bono de Velocidad",
+      "bugsMissed": "{{count}} bug perdido",
+      "bugsMissed_plural": "{{count}} bugs perdidos",
+      "falsePositivesCount": "{{count}} falso positivo",
+      "falsePositivesCount_plural": "{{count}} falsos positivos",
+      "bugDetails": "Detalles de los Bugs",
+      "lineLabel": "Línea {{line}}",
+      "found": "Encontrado",
+      "missed": "Perdido",
+      "incorrect": "Incorrecto",
+      "bugType": "Tipo",
+      "playAgain": "Jugar de Nuevo",
+      "viewLeaderboard": "Ver Tabla de Clasificación",
+      "achievements": "Logros Desbloqueados"
+    },
+    "leaderboard": {
+      "title": "Tabla de Clasificación",
+      "allDifficulties": "Todas las Dificultades",
+      "rank": "Puesto",
+      "player": "Jugador",
+      "score": "Puntuación",
+      "bugs": "Bugs",
+      "accuracy": "Precisión",
+      "time": "Tiempo",
+      "date": "Fecha",
+      "noEntries": "No hay entradas todavía. ¡Sé el primero!",
+      "loadingError": "Error al cargar la tabla. Por favor, inténtalo de nuevo.",
+      "backToMenu": "Volver al Menú"
+    },
+    "errors": {
+      "startFailed": "Error al iniciar el juego. Por favor, inténtalo de nuevo.",
+      "submitFailed": "Error al enviar respuestas. Por favor, inténtalo de nuevo.",
+      "loadFailed": "Error al cargar datos. Por favor, inténtalo de nuevo.",
+      "networkError": "Error de red. Verifica tu conexión.",
+      "unexpectedError": "Ocurrió un error inesperado."
+    }
+  },
+  "home": {
+    "title": "AI Dev Academy",
+    "subtitle": "Elige tu aventura",
+    "mainGame": {
+      "title": "Juego Principal",
+      "description": "Completa módulos, desbloquea logros y sube de nivel tus habilidades",
+      "button": "Jugar Ahora"
+    },
+    "bugHunt": {
+      "title": "Caza de Bugs",
+      "description": "Encuentra bugs en fragmentos de código y compite en la tabla de clasificación",
+      "button": "Cazar Bugs"
+    }
+  },
+  "game": {
+    "dashboard": {
+      "welcome": "Bienvenido, {{username}}",
+      "level": "Nivel {{level}}",
+      "xp": "XP: {{current}} / {{next}}",
+      "stats": {
+        "classesCompleted": "Clases Completadas",
+        "exercisesCompleted": "Ejercicios Completados",
+        "bugHuntWins": "Victorias Bug Hunt",
+        "currentStreak": "Racha Actual"
+      },
+      "quickActions": {
+        "title": "Acciones Rápidas",
+        "continueClass": "Continuar Clase",
+        "playBugHunt": "Jugar Bug Hunt",
+        "viewProgress": "Ver Progreso"
+      }
+    },
+    "modules": {
+      "module": "Módulo {{number}}",
+      "class": "Clase {{number}}",
+      "locked": "Bloqueado",
+      "inProgress": "En Progreso",
+      "completed": "Completado",
+      "xpReward": "{{xp}} XP"
+    }
+  },
+  "navigation": {
+    "home": "Inicio",
+    "progress": "Progreso",
+    "achievements": "Logros",
+    "leaderboard": "Clasificación",
+    "profile": "Perfil",
+    "settings": "Configuración"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "theme": "Tema",
+    "notifications": "Notificaciones",
+    "sound": "Sonido",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  }
+}
