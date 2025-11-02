@@ -45,6 +45,9 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 # Copy application code
 COPY --chown=appuser:appuser . .
 
+# Create data directory with correct permissions BEFORE switching to appuser
+RUN mkdir -p /app/data && chown -R appuser:appuser /app/data
+
 # Switch to non-root user
 USER appuser
 
