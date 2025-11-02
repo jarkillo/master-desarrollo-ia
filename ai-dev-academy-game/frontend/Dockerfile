@@ -39,9 +39,9 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Expose port 80
 EXPOSE 80
 
-# Health check
+# Health check (using curl which is more reliable with IPv4/IPv6)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+    CMD curl --fail --silent --show-error http://127.0.0.1/health || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
