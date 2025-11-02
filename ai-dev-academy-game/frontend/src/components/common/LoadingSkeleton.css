@@ -1,0 +1,325 @@
+/**
+ * LoadingSkeleton Styles
+ */
+
+/* Base skeleton styles */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Container */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Text Skeleton */
+.skeleton-text {
+  height: 16px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-text-short {
+  width: 60%;
+}
+
+/* Circle Skeleton (Avatar) */
+.skeleton-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/* Progress Bar Skeleton */
+.skeleton-progress-bar {
+  height: 8px;
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* Button Skeleton */
+.skeleton-back-btn {
+  width: 120px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+/* Title Skeleton */
+.skeleton-title {
+  height: 32px;
+  width: 70%;
+  margin: 1rem 0;
+  border-radius: 8px;
+}
+
+.skeleton-subtitle {
+  height: 24px;
+  width: 30%;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+}
+
+/* Card Skeleton */
+.skeleton-card {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-header {
+  height: 24px;
+  width: 40%;
+  border-radius: 6px;
+}
+
+/* Module Skeleton Wrapper */
+.skeleton-module-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.skeleton-module-header {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-classes-section {
+  margin-top: 2rem;
+}
+
+.skeleton-classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Class Card Skeleton */
+.skeleton-class-card {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-class-badge {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.skeleton-class-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-class-title {
+  height: 24px;
+  width: 60%;
+  border-radius: 6px;
+}
+
+.skeleton-class-meta {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.skeleton-badge {
+  height: 24px;
+  width: 80px;
+  border-radius: 12px;
+}
+
+/* Dashboard Skeleton */
+.skeleton-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.skeleton-dashboard-header {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-player-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.skeleton-player-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+/* Stats Grid Skeleton */
+.skeleton-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.skeleton-stat-card {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.skeleton-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.skeleton-stat-value {
+  height: 32px;
+  width: 80px;
+  border-radius: 6px;
+}
+
+/* XP Section Skeleton */
+.skeleton-xp-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modules Section Skeleton */
+.skeleton-modules-section {
+  margin-top: 2rem;
+}
+
+.skeleton-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .skeleton-module-wrapper,
+  .skeleton-dashboard {
+    padding: 1rem;
+  }
+
+  .skeleton-module-header,
+  .skeleton-dashboard-header,
+  .skeleton-xp-section {
+    padding: 1.5rem;
+  }
+
+  .skeleton-class-card {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .skeleton-class-badge {
+    width: 40px;
+    height: 40px;
+  }
+
+  .skeleton-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .skeleton-modules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .skeleton-module-wrapper,
+  .skeleton-dashboard {
+    padding: 0.75rem;
+  }
+
+  .skeleton-module-header,
+  .skeleton-dashboard-header,
+  .skeleton-xp-section,
+  .skeleton-class-card {
+    padding: 1rem;
+  }
+
+  .skeleton-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .skeleton-stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .skeleton-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading State Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: #f0f0f0;
+  }
+
+  .skeleton-class-badge {
+    animation: none;
+    background: #f0f0f0;
+  }
+}

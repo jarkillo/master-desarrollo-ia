@@ -4,11 +4,12 @@
 import { useGameStore } from '../../stores/gameStore';
 import { Dashboard } from './Dashboard';
 import { ModuleViewer } from './ModuleViewer';
+import { ClassViewer } from './ClassViewer';
 import { Notifications } from './Notifications';
 import './GameApp.css';
 
 export const GameApp = () => {
-  const { currentView } = useGameStore();
+  const { currentView, selectedModuleNumber, selectedClassNumber } = useGameStore();
 
   return (
     <div className="game-app">
@@ -29,7 +30,9 @@ export const GameApp = () => {
       <main className="game-main">
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'module' && <ModuleViewer />}
-        {currentView === 'class' && <ClassPlaceholder />}
+        {currentView === 'class' && selectedModuleNumber !== null && selectedClassNumber !== null && (
+          <ClassViewer />
+        )}
         {currentView === 'achievements' && <AchievementsPlaceholder />}
         {currentView === 'profile' && <ProfilePlaceholder />}
       </main>
@@ -43,13 +46,6 @@ export const GameApp = () => {
 };
 
 // Placeholder components for future development
-const ClassPlaceholder = () => (
-  <div className="placeholder">
-    <h2>Class Viewer</h2>
-    <p>This feature is coming soon! You'll be able to view class content and complete exercises here.</p>
-  </div>
-);
-
 const AchievementsPlaceholder = () => {
   const { setCurrentView, unlockedAchievements } = useGameStore();
 
