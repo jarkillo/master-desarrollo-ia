@@ -32,12 +32,16 @@
       }
     },
     "game": {
-      "timeRemaining": "Tiempo restante",
-      "bugsSelected": "Bugs seleccionados",
-      "lineNumber": "Línea {{number}}",
-      "clickToSelect": "Haz clic en una línea para marcarla como bug",
-      "submitAnswers": "Enviar Respuestas",
-      "giveUp": "Rendirse"
+      "bugs": "bugs",
+      "bugs_one": "bug",
+      "maxXp": "XP Máximo: {{xp}}",
+      "selectedLines": "Seleccionado: {{count}} línea",
+      "selectedLines_plural": "Seleccionado: {{count}} líneas",
+      "clickToSelect": "Haz clic en las líneas que crees que tienen bugs",
+      "submitting": "Enviando...",
+      "submitButton": "Enviar {{count}} Bug",
+      "submitButton_plural": "Enviar {{count}} Bugs",
+      "tip": "Consejo: Tómate tu tiempo, pero recuerda - ¡la velocidad afecta tu puntuación!"
     },
     "results": {
       "perfectBanner": "¡JUEGO PERFECTO!",
@@ -80,9 +84,12 @@
       "bugs": "Bugs",
       "accuracy": "Precisión",
       "time": "Tiempo",
+      "difficulty": "Dificultad",
       "date": "Fecha",
       "noEntries": "No hay entradas todavía. ¡Sé el primero!",
+      "loadingLeaderboard": "Cargando tabla de clasificación...",
       "loadingError": "Error al cargar la tabla. Por favor, inténtalo de nuevo.",
+      "showingEntries": "Mostrando top {{showing}} de {{total}} entradas",
       "backToMenu": "Volver al Menú"
     },
     "errors": {
@@ -111,12 +118,27 @@
     "dashboard": {
       "welcome": "Bienvenido, {{username}}",
       "level": "Nivel {{level}}",
+      "levelTitle": {
+        "juniorDev": "Junior Developer",
+        "midDev": "Mid Developer",
+        "seniorDev": "Senior Developer",
+        "techLead": "Tech Lead",
+        "architect": "Architect",
+        "cto": "CTO",
+        "legend": "Legend"
+      },
+      "profile": "Perfil",
+      "achievements": "Logros",
       "xp": "XP: {{current}} / {{next}}",
+      "xpToNextLevel": "{{xp}} XP para el siguiente nivel",
+      "yourProgress": "Tu Progreso",
+      "classes": "clases",
+      "recentAchievements": "Logros Recientes",
       "stats": {
         "classesCompleted": "Clases Completadas",
         "exercisesCompleted": "Ejercicios Completados",
         "bugHuntWins": "Victorias Bug Hunt",
-        "currentStreak": "Racha Actual"
+        "dayStreak": "Racha Diaria"
       },
       "quickActions": {
         "title": "Acciones Rápidas",
@@ -126,6 +148,7 @@
       }
     },
     "modules": {
+      "title": "Módulos",
       "module": "Módulo {{number}}",
       "class": "Clase {{number}}",
       "locked": "Bloqueado",

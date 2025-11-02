@@ -32,12 +32,16 @@
       }
     },
     "game": {
-      "timeRemaining": "Time remaining",
-      "bugsSelected": "Bugs selected",
-      "lineNumber": "Line {{number}}",
-      "clickToSelect": "Click on a line to mark it as a bug",
-      "submitAnswers": "Submit Answers",
-      "giveUp": "Give Up"
+      "bugs": "bugs",
+      "bugs_one": "bug",
+      "maxXp": "Max XP: {{xp}}",
+      "selectedLines": "Selected: {{count}} line",
+      "selectedLines_plural": "Selected: {{count}} lines",
+      "clickToSelect": "Click on lines you think have bugs",
+      "submitting": "Submitting...",
+      "submitButton": "Submit {{count}} Bug",
+      "submitButton_plural": "Submit {{count}} Bugs",
+      "tip": "Tip: Take your time, but remember - speed affects your score!"
     },
     "results": {
       "perfectBanner": "PERFECT GAME!",
@@ -80,9 +84,12 @@
       "bugs": "Bugs",
       "accuracy": "Accuracy",
       "time": "Time",
+      "difficulty": "Difficulty",
       "date": "Date",
       "noEntries": "No entries yet. Be the first!",
+      "loadingLeaderboard": "Loading leaderboard...",
       "loadingError": "Failed to load leaderboard. Please try again.",
+      "showingEntries": "Showing top {{showing}} of {{total}} entries",
       "backToMenu": "Back to Menu"
     },
     "errors": {
@@ -111,12 +118,27 @@
     "dashboard": {
       "welcome": "Welcome, {{username}}",
       "level": "Level {{level}}",
+      "levelTitle": {
+        "juniorDev": "Junior Developer",
+        "midDev": "Mid Developer",
+        "seniorDev": "Senior Developer",
+        "techLead": "Tech Lead",
+        "architect": "Architect",
+        "cto": "CTO",
+        "legend": "Legend"
+      },
+      "profile": "Profile",
+      "achievements": "Achievements",
       "xp": "XP: {{current}} / {{next}}",
+      "xpToNextLevel": "{{xp}} XP to next level",
+      "yourProgress": "Your Progress",
+      "classes": "classes",
+      "recentAchievements": "Recent Achievements",
       "stats": {
         "classesCompleted": "Classes Completed",
         "exercisesCompleted": "Exercises Completed",
         "bugHuntWins": "Bug Hunt Wins",
-        "currentStreak": "Current Streak"
+        "dayStreak": "Day Streak"
       },
       "quickActions": {
         "title": "Quick Actions",
@@ -126,6 +148,7 @@
       }
     },
     "modules": {
+      "title": "Modules",
       "module": "Module {{number}}",
       "class": "Class {{number}}",
       "locked": "Locked",

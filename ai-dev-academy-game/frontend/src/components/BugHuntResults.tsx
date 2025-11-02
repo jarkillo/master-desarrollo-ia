@@ -97,7 +97,7 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
               <div className="breakdown-item missed">
                 <span className="breakdown-icon">❌</span>
                 <span className="breakdown-text">
-                  {results.bugs_missed} bug{results.bugs_missed !== 1 ? 's' : ''} missed
+                  {t('bugHunt.results.bugsMissed', { count: results.bugs_missed })}
                 </span>
               </div>
             )}
@@ -105,7 +105,7 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
               <div className="breakdown-item false-positive">
                 <span className="breakdown-icon">⚠️</span>
                 <span className="breakdown-text">
-                  {results.false_positives} false positive{results.false_positives !== 1 ? 's' : ''}
+                  {t('bugHunt.results.falsePositivesCount', { count: results.false_positives })}
                 </span>
               </div>
             )}
@@ -113,7 +113,7 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
         )}
 
         <div className="results-details">
-          <h3>Bug Details</h3>
+          <h3>{t('bugHunt.results.bugDetails')}</h3>
           <div className="bug-results-list">
             {results.results.map((bug, index) => (
               <div
@@ -134,7 +134,9 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
                         : '❌'
                       : '⚠️'}
                   </span>
-                  <span className="bug-result-line">Line {bug.line}</span>
+                  <span className="bug-result-line">
+                    {t('bugHunt.results.lineLabel', { line: bug.line })}
+                  </span>
                   {bug.bug_type && (
                     <span className="bug-result-type">{bug.bug_type}</span>
                   )}
@@ -149,7 +151,7 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
 
         {results.achievements_unlocked.length > 0 && (
           <div className="achievements-section">
-            <h3>🏆 Achievements Unlocked!</h3>
+            <h3>🏆 {t('bugHunt.results.achievements')}</h3>
             <div className="achievements-list">
               {results.achievements_unlocked.map((achievement, index) => (
                 <div key={index} className="achievement-badge">
@@ -162,10 +164,10 @@ export const BugHuntResults: React.FC<BugHuntResultsProps> = ({
 
         <div className="results-actions">
           <button className="play-again-button" onClick={onPlayAgain}>
-            🎮 Play Again
+            🎮 {t('bugHunt.results.playAgain')}
           </button>
           <button className="leaderboard-button" onClick={onViewLeaderboard}>
-            📊 View Leaderboard
+            📊 {t('bugHunt.results.viewLeaderboard')}
           </button>
         </div>
       </div>
