@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GameApp } from './components/game/GameApp';
 import { BugHuntApp } from './components/BugHuntApp';
+import { LanguageSelector } from './components/common/LanguageSelector';
 import './i18n/config'; // Initialize i18n
 import './App.css';
 
@@ -25,6 +26,9 @@ function Home() {
 
   return (
     <div className="home">
+      <div className="home-header">
+        <LanguageSelector />
+      </div>
       <div className="home-container">
         <h1 className="home-title">
           <span className="home-icon">🤖</span>
