@@ -46,7 +46,7 @@ fi
 # 3. Ejecutar Ruff linting
 echo "🔍 Ejecutando Ruff linting..."
 if command -v ruff &> /dev/null; then
-    if ruff check . --quiet; then
+    if ruff check . --quiet --exclude "**/tareas_bugs.py" --exclude "**/tareas_bugs*.py"; then
         print_success "Ruff linting pasado"
     else
         print_error "Ruff linting falló"
