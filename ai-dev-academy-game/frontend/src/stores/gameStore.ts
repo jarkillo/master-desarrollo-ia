@@ -175,12 +175,14 @@ export const useGameStore = create<GameState>()(
         try {
           // Load or refresh module info if needed
           const state = get();
-          if (!state.currentModule || state.currentModule.module_number !== moduleNumber) {
-            const currentModule = await progressApi.getModuleInfo(moduleNumber);
+          let currentModule = state.currentModule;
+
+          if (!currentModule || currentModule.module_number !== moduleNumber) {
+            currentModule = await progressApi.getModuleInfo(moduleNumber);
             set({ currentModule });
           }
 
-          const classInfo = state.currentModule?.classes.find(
+          const classInfo = currentModule?.classes.find(
             (c) => c.class_number === classNumber
           );
 
