@@ -2,6 +2,7 @@
  * ModuleViewer - Shows all classes in a module with their status
  */
 import { useGameStore } from '../../stores/gameStore';
+import { LoadingSkeleton } from '../common/LoadingSkeleton';
 import './ModuleViewer.css';
 
 export const ModuleViewer = () => {
@@ -14,7 +15,7 @@ export const ModuleViewer = () => {
   } = useGameStore();
 
   if (!currentModule || selectedModuleNumber === null || !fullProgress) {
-    return <div className="module-loading">Loading module...</div>;
+    return <LoadingSkeleton type="module" count={1} />;
   }
 
   const moduleProgress = fullProgress.modules.find(

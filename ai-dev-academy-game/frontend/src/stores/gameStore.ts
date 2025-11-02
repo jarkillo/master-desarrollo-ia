@@ -11,8 +11,9 @@ import type {
   ViewMode,
   NotificationMessage,
   ModuleInfo,
+  ClassInfo,
 } from '../types/game';
-import { playerApi, progressApi, achievementApi } from '../services/gameApi';
+import { playerApi, progressApi, achievementApi, completeClass } from '../services/gameApi';
 
 interface GameState {
   // Current player
@@ -23,6 +24,10 @@ interface GameState {
   fullProgress: FullProgressResponse | null;
   currentModule: ModuleInfo | null;
   allModules: ModuleInfo[];
+
+  // Class viewer state
+  currentClassContent: ClassInfo | null;
+  exercisesCompleted: Set<string>;
 
   // Achievements
   unlockedAchievements: AchievementWithDetails[];
@@ -47,6 +52,9 @@ interface GameState {
   setCurrentView: (view: ViewMode) => void;
   selectModule: (moduleNumber: number) => Promise<void>;
   selectClass: (moduleNumber: number, classNumber: number) => void;
+  loadClassContent: (moduleNumber: number, classNumber: number) => Promise<void>;
+  toggleExerciseComplete: (exerciseId: string) => void;
+  completeCurrentClass: () => Promise<void>;
   addNotification: (notification: Omit<NotificationMessage, 'id' | 'timestamp'>) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
@@ -60,6 +68,8 @@ const initialState = {
   fullProgress: null,
   currentModule: null,
   allModules: [],
+  currentClassContent: null,
+  exercisesCompleted: new Set<string>(),
   unlockedAchievements: [],
   currentView: 'dashboard' as ViewMode,
   selectedModuleNumber: null,
@@ -158,6 +168,115 @@ export const useGameStore = create<GameState>()(
           selectedClassNumber: classNumber,
           currentView: 'class'
         });
+      },
+
+      loadClassContent: async (moduleNumber: number, classNumber: number) => {
+        set({ isLoading: true, error: null });
+        try {
+          // Load or refresh module info if needed
+          const state = get();
+          let currentModule = state.currentModule;
+
+          if (!currentModule || currentModule.module_number !== moduleNumber) {
+            currentModule = await progressApi.getModuleInfo(moduleNumber);
+            set({ currentModule });
+          }
+
+          const classInfo = currentModule?.classes.find(
+            (c) => c.class_number === classNumber
+          );
+
+          set({
+            currentClassContent: classInfo || null,
+            exercisesCompleted: new Set(),
+            isLoading: false
+          });
+        } catch (error) {
+          console.error('Failed to load class content:', error);
+          set({ error: 'Failed to load class content', isLoading: false });
+          throw error;
+        }
+      },
+
+      toggleExerciseComplete: (exerciseId: string) => {
+        set((state) => {
+          const newSet = new Set(state.exercisesCompleted);
+          if (newSet.has(exerciseId)) {
+            newSet.delete(exerciseId);
+          } else {
+            newSet.add(exerciseId);
+          }
+          return { exercisesCompleted: newSet };
+        });
+      },
+
+      completeCurrentClass: async () => {
+        const state = get();
+        const { player, fullProgress, selectedModuleNumber, selectedClassNumber } = state;
+
+        if (!player || selectedModuleNumber === null || selectedClassNumber === null || !fullProgress) {
+          throw new Error('Invalid state for completing class');
+        }
+
+        set({ isLoading: true, error: null });
+
+        try {
+          // Find the progress record for this class
+          const moduleProgress = fullProgress.modules.find(
+            (m) => m.module_number === selectedModuleNumber
+          );
+          const classProgress = moduleProgress?.classes.find(
+            (p) => p.class_number === selectedClassNumber
+          );
+
+          if (!classProgress) {
+            throw new Error('Class progress not found');
+          }
+
+          // Complete the class and check achievements
+          const result = await completeClass(
+            player.id,
+            classProgress.id,
+            selectedModuleNumber,
+            selectedClassNumber
+          );
+
+          // Update player XP
+          const updatedPlayer = await playerApi.getPlayer(player.id);
+          set({ player: updatedPlayer });
+
+          // Refresh progress
+          await get().loadFullProgress(player.id);
+
+          // Show notifications for XP and achievements
+          get().addNotification({
+            type: 'success',
+            message: `Class completed! +${result.xpEarned} XP earned`,
+          });
+
+          if (result.achievements.length > 0) {
+            result.achievements.forEach((achievement) => {
+              get().addNotification({
+                type: 'achievement',
+                message: `Achievement unlocked: ${achievement.title}`,
+                achievement,
+              });
+            });
+
+            // Refresh achievements list
+            await get().loadPlayerAchievements(player.id);
+          }
+
+          set({ isLoading: false });
+        } catch (error) {
+          console.error('Failed to complete class:', error);
+          set({ error: 'Failed to complete class', isLoading: false });
+          get().addNotification({
+            type: 'error',
+            message: 'Failed to complete class. Please try again.',
+          });
+          throw error;
+        }
       },
 
       addNotification: (notification) => {
