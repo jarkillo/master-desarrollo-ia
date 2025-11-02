@@ -6,7 +6,7 @@ from typing import List
 
 from app.database import get_db
 from app.models.player import Player
-from app.models.progress import PlayerStats
+from app.models.achievement import PlayerStats
 from app.schemas.player import (
     PlayerCreate,
     PlayerResponse,
