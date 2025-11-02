@@ -11,4 +11,4 @@ fi
 
 # Switch to appuser and execute the command passed to docker run
 echo "Starting application as appuser..."
-exec su-exec appuser "$@"
+exec gosu appuser "$@"

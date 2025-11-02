@@ -26,10 +26,10 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
-# Install runtime dependencies (including su-exec for secure user switching)
+# Install runtime dependencies (including gosu for secure user switching)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
-    su-exec \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual environment from builder
