@@ -24,6 +24,78 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
+# IMPORTANT: Specific routes (like /modules) MUST come BEFORE path parameter routes (like /{player_id})
+# Otherwise FastAPI will try to parse "modules" as a player_id integer and return 422
+
+
+@router.get("/modules", response_model=list[ModuleInfoResponse])
+async def get_all_modules():
+    """
+    Get all modules with their class information from the curriculum.
+
+    Returns curriculum metadata (not player progress).
+    """
+    modules = content_service.get_all_modules()
+
+    result = []
+    for module in modules:
+        classes = [
+            ClassInfoResponse(
+                class_number=c.class_number,
+                title=c.title,
+                description=c.description,
+                exercises_count=c.exercises_count,
+                xp_reward=c.xp_reward
+            )
+            for c in module.classes
+        ]
+
+        result.append(ModuleInfoResponse(
+            module_number=module.module_number,
+            title=module.title,
+            description=module.description,
+            total_classes=len(module.classes),
+            classes=classes
+        ))
+
+    return result
+
+
+@router.get("/modules/{module_number}", response_model=ModuleInfoResponse)
+async def get_module_info(module_number: int):
+    """
+    Get specific module information from the curriculum.
+
+    Returns curriculum metadata (not player progress).
+    """
+    module = content_service.get_module_info(module_number)
+
+    if not module:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Module {module_number} not found in curriculum"
+        )
+
+    classes = [
+        ClassInfoResponse(
+            class_number=c.class_number,
+            title=c.title,
+            description=c.description,
+            exercises_count=c.exercises_count,
+            xp_reward=c.xp_reward
+        )
+        for c in module.classes
+    ]
+
+    return ModuleInfoResponse(
+        module_number=module.module_number,
+        title=module.title,
+        description=module.description,
+        total_classes=len(module.classes),
+        classes=classes
+    )
+
+
 @router.post("/", response_model=ProgressResponse, status_code=status.HTTP_201_CREATED)
 async def create_or_unlock_class(
     progress_data: ProgressCreate,
@@ -403,71 +475,3 @@ async def get_next_unlockable(
         "class_number": None,
         "message": "Curriculum complete! Congratulations!"
     }
-
-
-@router.get("/modules", response_model=list[ModuleInfoResponse])
-async def get_all_modules():
-    """
-    Get all modules with their class information from the curriculum.
-
-    Returns curriculum metadata (not player progress).
-    """
-    modules = content_service.get_all_modules()
-
-    result = []
-    for module in modules:
-        classes = [
-            ClassInfoResponse(
-                class_number=c.class_number,
-                title=c.title,
-                description=c.description,
-                exercises_count=c.exercises_count,
-                xp_reward=c.xp_reward
-            )
-            for c in module.classes
-        ]
-
-        result.append(ModuleInfoResponse(
-            module_number=module.module_number,
-            title=module.title,
-            description=module.description,
-            total_classes=len(module.classes),
-            classes=classes
-        ))
-
-    return result
-
-
-@router.get("/modules/{module_number}", response_model=ModuleInfoResponse)
-async def get_module_info(module_number: int):
-    """
-    Get specific module information from the curriculum.
-
-    Returns curriculum metadata (not player progress).
-    """
-    module = content_service.get_module_info(module_number)
-
-    if not module:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Module {module_number} not found in curriculum"
-        )
-
-    classes = [
-        ClassInfoResponse(
-            class_number=c.class_number,
-            title=c.title,
-            description=c.description,
-            exercises_count=c.exercises_count,
-            xp_reward=c.xp_reward
-        )
-        for c in module.classes
-    ]
-
-    return ModuleInfoResponse(
-        module_number=module.module_number,
-        title=module.title,
-        description=module.description,
-        total_classes=len(module.classes),
-        classes=classes
-    )
