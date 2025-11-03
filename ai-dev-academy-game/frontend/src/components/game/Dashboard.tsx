@@ -19,6 +19,9 @@ export const Dashboard = () => {
     loadAllModules,
     selectModule,
     setCurrentView,
+    error,
+    isLoading,
+    reset,
   } = useGameStore();
 
   useEffect(() => {
@@ -33,7 +36,29 @@ export const Dashboard = () => {
     ]).catch(console.error);
   }, []);
 
-  if (!player || !playerStats || !fullProgress) {
+  // Show error state with option to reset and go back to setup
+  if (error && !player) {
+    return (
+      <div className="dashboard-error">
+        <div className="error-content">
+          <div className="error-icon">⚠️</div>
+          <h2>{t('common.error')}</h2>
+          <p>{error}</p>
+          <button
+            className="btn-primary"
+            onClick={() => {
+              reset();
+              window.location.reload();
+            }}
+          >
+            {t('game.dashboard.backToSetup')}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!player || !playerStats || !fullProgress || isLoading) {
     return <div className="dashboard-loading">{t('common.loading')}</div>;
   }
 

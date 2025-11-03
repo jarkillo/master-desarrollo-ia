@@ -1,0 +1,240 @@
+.player-setup {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.setup-container {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.setup-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.setup-header h1 {
+  font-size: 2.5rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.setup-subtitle {
+  font-size: 1.125rem;
+  color: #718096;
+  margin: 0;
+}
+
+/* Choice buttons */
+.setup-choices {
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+}
+
+.setup-choice-btn {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
+  border: 3px solid transparent;
+  border-radius: 15px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.setup-choice-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+}
+
+.setup-choice-btn.new-player {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.setup-choice-btn.new-player:hover {
+  border-color: #764ba2;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.setup-choice-btn.existing-player:hover {
+  border-color: #48bb78;
+}
+
+.choice-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.setup-choice-btn h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.setup-choice-btn p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+/* Form styles */
+.setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.form-group input {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input:disabled {
+  background-color: #f7fafc;
+  cursor: not-allowed;
+}
+
+.form-hint {
+  color: #718096;
+  font-size: 0.875rem;
+  margin-top: -0.25rem;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: #667eea;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.back-btn:hover {
+  color: #764ba2;
+  transform: translateX(-5px);
+}
+
+.error-message {
+  background-color: #fed7d7;
+  color: #c53030;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  border: 1px solid #fc8181;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .setup-container {
+    padding: 2rem;
+  }
+
+  .setup-header h1 {
+    font-size: 2rem;
+  }
+
+  .setup-icon {
+    font-size: 3rem;
+  }
+
+  .setup-choice-btn {
+    padding: 1.5rem;
+  }
+
+  .choice-icon {
+    font-size: 2.5rem;
+  }
+
+  .setup-choice-btn h2 {
+    font-size: 1.25rem;
+  }
+}

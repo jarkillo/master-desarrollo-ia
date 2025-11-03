@@ -7,11 +7,17 @@ import { Dashboard } from './Dashboard';
 import { ModuleViewer } from './ModuleViewer';
 import { ClassViewer } from './ClassViewer';
 import { Notifications } from './Notifications';
+import { PlayerSetup } from './PlayerSetup';
 import './GameApp.css';
 
 export const GameApp = () => {
   const { t } = useTranslation();
-  const { currentView, selectedModuleNumber, selectedClassNumber } = useGameStore();
+  const { player, currentView, selectedModuleNumber, selectedClassNumber } = useGameStore();
+
+  // Show PlayerSetup if no player is loaded
+  if (!player) {
+    return <PlayerSetup />;
+  }
 
   return (
     <div className="game-app">
