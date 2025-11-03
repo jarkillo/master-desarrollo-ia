@@ -11,7 +11,18 @@ class ClassInfo:
     description: str
     exercises_count: int
     xp_reward: int
+    difficulty: str = "intermediate"  # beginner, intermediate, advanced
+    estimated_time_minutes: int = 60  # Default 60 minutes
+    prerequisites: list[str] = None  # List of prerequisite descriptions
+    learning_objectives: list[str] = None  # Learning outcomes
     prerequisite: int | None = None  # Previous class number (None for first class)
+
+    def __post_init__(self):
+        """Initialize mutable default values."""
+        if self.prerequisites is None:
+            self.prerequisites = []
+        if self.learning_objectives is None:
+            self.learning_objectives = []
 
 
 @dataclass

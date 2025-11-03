@@ -87,6 +87,10 @@ class ClassInfoResponse(BaseModel):
     description: str
     exercises_count: int
     xp_reward: int
+    difficulty: str = "intermediate"
+    estimated_time_minutes: int = 60
+    prerequisites: list[str] = []
+    learning_objectives: list[str] = []
 
 
 class ModuleInfoResponse(BaseModel):

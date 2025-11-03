@@ -97,12 +97,16 @@ export const ModuleViewer = () => {
                     Class {classInfo.class_number}: {classInfo.title}
                   </h3>
                   <div className="class-meta">
-                    <span className={`difficulty ${classInfo.difficulty}`}>
-                      {classInfo.difficulty}
-                    </span>
-                    <span className="time-estimate">
-                      ⏱️ {classInfo.estimated_time_minutes} min
-                    </span>
+                    {classInfo.difficulty && (
+                      <span className={`difficulty ${classInfo.difficulty}`}>
+                        {classInfo.difficulty}
+                      </span>
+                    )}
+                    {classInfo.estimated_time_minutes && (
+                      <span className="time-estimate">
+                        ⏱️ {classInfo.estimated_time_minutes} min
+                      </span>
+                    )}
                     <span className="xp-reward">
                       ⭐ {classInfo.xp_reward} XP
                     </span>
@@ -113,7 +117,7 @@ export const ModuleViewer = () => {
                 <p className="class-description">{classInfo.description}</p>
 
                 {/* Learning Objectives */}
-                {classInfo.learning_objectives.length > 0 && (
+                {classInfo.learning_objectives && classInfo.learning_objectives.length > 0 && (
                   <div className="learning-objectives">
                     <strong>You will learn:</strong>
                     <ul>
