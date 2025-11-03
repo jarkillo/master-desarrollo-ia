@@ -2,6 +2,7 @@
  * BugHuntGame - Main game component with code display and bug selection
  */
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTimer } from '../hooks/useTimer';
 import type { BugHuntStartResponse } from '../types/bugHunt';
 import './BugHuntGame.css';
@@ -17,6 +18,7 @@ export const BugHuntGame: React.FC<BugHuntGameProps> = ({
   onSubmit,
   isSubmitting,
 }) => {
+  const { t } = useTranslation();
   const [selectedLines, setSelectedLines] = useState<Set<number>>(new Set());
   const { time, isRunning, pause } = useTimer(0, true);
 
@@ -78,8 +80,10 @@ export const BugHuntGame: React.FC<BugHuntGameProps> = ({
             >
               {gameData.difficulty.toUpperCase()}
             </span>
-            <span className="bugs-count">🐛 {gameData.bugs_count} bugs</span>
-            <span className="max-xp">⭐ Max XP: {gameData.max_xp}</span>
+            <span className="bugs-count">
+              🐛 {gameData.bugs_count} {t('bugHunt.game.bugs', { count: gameData.bugs_count })}
+            </span>
+            <span className="max-xp">⭐ {t('bugHunt.game.maxXp', { xp: gameData.max_xp })}</span>
           </div>
         </div>
 
@@ -89,14 +93,14 @@ export const BugHuntGame: React.FC<BugHuntGameProps> = ({
             <span className="timer-value">{formatTime(time)}</span>
           </div>
           <div className="selected-count">
-            Selected: {selectedLines.size} line{selectedLines.size !== 1 ? 's' : ''}
+            {t('bugHunt.game.selectedLines', { count: selectedLines.size })}
           </div>
         </div>
       </div>
 
       <div className="code-container">
         <div className="code-header">
-          <span>Click on lines you think have bugs</span>
+          <span>{t('bugHunt.game.clickToSelect')}</span>
         </div>
         <div className="code-display">
           {codeLines.map((line, index) => {
@@ -130,10 +134,10 @@ export const BugHuntGame: React.FC<BugHuntGameProps> = ({
           onClick={handleSubmit}
           disabled={isSubmitting || selectedLines.size === 0}
         >
-          {isSubmitting ? 'Submitting...' : `Submit ${selectedLines.size} Bug${selectedLines.size !== 1 ? 's' : ''}`}
+          {isSubmitting ? t('bugHunt.game.submitting') : t('bugHunt.game.submitButton', { count: selectedLines.size })}
         </button>
         <p className="hint">
-          Tip: Take your time, but remember - speed affects your score!
+          {t('bugHunt.game.tip')}
         </p>
       </div>
     </div>

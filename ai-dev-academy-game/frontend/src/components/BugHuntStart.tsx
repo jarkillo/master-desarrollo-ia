@@ -2,6 +2,7 @@
  * BugHuntStart - Component for selecting difficulty and starting the game
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Difficulty } from '../types/bugHunt';
 import './BugHuntStart.css';
 
@@ -14,6 +15,7 @@ export const BugHuntStart: React.FC<BugHuntStartProps> = ({
   onStart,
   isLoading,
 }) => {
+  const { t } = useTranslation();
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     Difficulty | undefined
   >(undefined);
@@ -25,29 +27,29 @@ export const BugHuntStart: React.FC<BugHuntStartProps> = ({
   const difficulties: Array<{ value: Difficulty; label: string; description: string }> = [
     {
       value: 'easy',
-      label: 'Easy',
-      description: '1-2 bugs, basic patterns',
+      label: t('bugHunt.start.easy'),
+      description: t('bugHunt.start.easyDesc'),
     },
     {
       value: 'medium',
-      label: 'Medium',
-      description: '2-3 bugs, moderate complexity',
+      label: t('bugHunt.start.medium'),
+      description: t('bugHunt.start.mediumDesc'),
     },
     {
       value: 'hard',
-      label: 'Hard',
-      description: '3+ bugs, advanced patterns',
+      label: t('bugHunt.start.hard'),
+      description: t('bugHunt.start.hardDesc'),
     },
   ];
 
   return (
     <div className="bug-hunt-start">
       <div className="start-container">
-        <h1 className="title">Bug Hunt</h1>
-        <p className="subtitle">Find bugs in code and earn XP!</p>
+        <h1 className="title">{t('bugHunt.title')}</h1>
+        <p className="subtitle">{t('bugHunt.subtitle')}</p>
 
         <div className="difficulty-section">
-          <h2>Select Difficulty</h2>
+          <h2>{t('bugHunt.start.selectDifficulty')}</h2>
           <div className="difficulty-options">
             <button
               className={`difficulty-card ${
@@ -57,8 +59,8 @@ export const BugHuntStart: React.FC<BugHuntStartProps> = ({
               disabled={isLoading}
             >
               <div className="difficulty-icon">🎲</div>
-              <div className="difficulty-label">Random</div>
-              <div className="difficulty-desc">Surprise me!</div>
+              <div className="difficulty-label">{t('bugHunt.start.random')}</div>
+              <div className="difficulty-desc">{t('bugHunt.start.randomDesc')}</div>
             </button>
             {difficulties.map((diff) => (
               <button
@@ -86,16 +88,16 @@ export const BugHuntStart: React.FC<BugHuntStartProps> = ({
           onClick={handleStart}
           disabled={isLoading}
         >
-          {isLoading ? 'Loading...' : 'Start Game'}
+          {isLoading ? t('common.loading') : t('bugHunt.start.startGame')}
         </button>
 
         <div className="instructions">
-          <h3>How to Play</h3>
+          <h3>{t('bugHunt.start.howToPlay')}</h3>
           <ul>
-            <li>Read the code carefully</li>
-            <li>Click on lines you think have bugs</li>
-            <li>Submit your answers before time runs out</li>
-            <li>Earn XP based on accuracy and speed!</li>
+            <li>{t('bugHunt.start.instructions.1')}</li>
+            <li>{t('bugHunt.start.instructions.2')}</li>
+            <li>{t('bugHunt.start.instructions.3')}</li>
+            <li>{t('bugHunt.start.instructions.4')}</li>
           </ul>
         </div>
       </div>

@@ -1,0 +1,250 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "back": "Back",
+    "close": "Close",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "bugHunt": {
+    "title": "Bug Hunt",
+    "subtitle": "Find bugs in code and earn XP!",
+    "start": {
+      "selectDifficulty": "Select Difficulty",
+      "random": "Random",
+      "randomDesc": "Surprise me!",
+      "easy": "Easy",
+      "easyDesc": "1-2 bugs, basic patterns",
+      "medium": "Medium",
+      "mediumDesc": "2-3 bugs, moderate complexity",
+      "hard": "Hard",
+      "hardDesc": "3+ bugs, advanced patterns",
+      "startGame": "Start Game",
+      "howToPlay": "How to Play",
+      "instructions": {
+        "1": "Read the code carefully",
+        "2": "Click on lines you think have bugs",
+        "3": "Submit your answers before time runs out",
+        "4": "Earn XP based on accuracy and speed!"
+      }
+    },
+    "game": {
+      "bugs": "bugs",
+      "bugs_one": "bug",
+      "maxXp": "Max XP: {{xp}}",
+      "selectedLines": "Selected: {{count}} line",
+      "selectedLines_plural": "Selected: {{count}} lines",
+      "clickToSelect": "Click on lines you think have bugs",
+      "submitting": "Submitting...",
+      "submitButton": "Submit {{count}} Bug",
+      "submitButton_plural": "Submit {{count}} Bugs",
+      "tip": "Tip: Take your time, but remember - speed affects your score!"
+    },
+    "results": {
+      "perfectBanner": "PERFECT GAME!",
+      "perfectDesc": "You found all bugs with no false positives!",
+      "gameResults": "Game Results",
+      "performance": {
+        "perfect": "🏆 Perfect!",
+        "excellent": "🌟 Excellent!",
+        "great": "⭐ Great!",
+        "good": "👍 Good!",
+        "keepPracticing": "💪 Keep practicing!"
+      },
+      "score": "Score",
+      "xpEarned": "XP Earned",
+      "bugsFound": "Bugs Found",
+      "accuracy": "Accuracy",
+      "time": "Time",
+      "falsePositives": "False Positives",
+      "speedBonus": "Speed Bonus",
+      "bugsMissed": "{{count}} bug missed",
+      "bugsMissed_plural": "{{count}} bugs missed",
+      "falsePositivesCount": "{{count}} false positive",
+      "falsePositivesCount_plural": "{{count}} false positives",
+      "bugDetails": "Bug Details",
+      "lineLabel": "Line {{line}}",
+      "found": "Found",
+      "missed": "Missed",
+      "incorrect": "Incorrect",
+      "bugType": "Type",
+      "playAgain": "Play Again",
+      "viewLeaderboard": "View Leaderboard",
+      "achievements": "Achievements Unlocked"
+    },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "allDifficulties": "All Difficulties",
+      "rank": "Rank",
+      "player": "Player",
+      "score": "Score",
+      "bugs": "Bugs",
+      "accuracy": "Accuracy",
+      "time": "Time",
+      "difficulty": "Difficulty",
+      "date": "Date",
+      "noEntries": "No entries yet. Be the first!",
+      "loadingLeaderboard": "Loading leaderboard...",
+      "loadingError": "Failed to load leaderboard. Please try again.",
+      "showingEntries": "Showing top {{showing}} of {{total}} entries",
+      "backToMenu": "Back to Menu"
+    },
+    "errors": {
+      "startFailed": "Failed to start game. Please try again.",
+      "submitFailed": "Failed to submit answers. Please try again.",
+      "loadFailed": "Failed to load data. Please try again.",
+      "networkError": "Network error. Check your connection.",
+      "unexpectedError": "An unexpected error occurred."
+    }
+  },
+  "home": {
+    "title": "AI Dev Academy",
+    "subtitle": "Choose your adventure",
+    "mainGame": {
+      "title": "Main Game",
+      "description": "Complete modules, unlock achievements, and level up your skills",
+      "button": "Play Now"
+    },
+    "bugHunt": {
+      "title": "Bug Hunt",
+      "description": "Find bugs in code snippets and compete on the leaderboard",
+      "button": "Hunt Bugs"
+    }
+  },
+  "game": {
+    "setup": {
+      "welcome": "Welcome to AI Dev Academy!",
+      "subtitle": "Your journey to becoming an AI-powered developer starts here",
+      "newPlayer": "New Player",
+      "newPlayerDesc": "Start your journey from scratch",
+      "existingPlayer": "Existing Player",
+      "existingPlayerDesc": "Continue your saved progress",
+      "createAccount": "Create New Account",
+      "createAccountDesc": "Choose a username to start your adventure",
+      "continueGame": "Continue Game",
+      "continueGameDesc": "Enter your player ID to continue",
+      "username": "Username",
+      "usernamePlaceholder": "Choose a unique username",
+      "usernameHint": "3-20 characters, letters and numbers only",
+      "playerId": "Player ID",
+      "playerIdHint": "Your unique player ID (number)",
+      "startJourney": "Start My Journey",
+      "loadGame": "Load Game",
+      "errors": {
+        "usernameRequired": "Username must be at least 3 characters",
+        "usernameTaken": "This username is already taken",
+        "createFailed": "Failed to create player. Please try again.",
+        "invalidPlayerId": "Invalid player ID",
+        "playerNotFound": "Player with that ID not found",
+        "loadFailed": "Failed to load player. Please try again."
+      }
+    },
+    "dashboard": {
+      "welcome": "Welcome, {{username}}",
+      "level": "Level {{level}}",
+      "backToSetup": "Back to Setup",
+      "levelTitle": {
+        "juniorDev": "Junior Developer",
+        "midDev": "Mid Developer",
+        "seniorDev": "Senior Developer",
+        "techLead": "Tech Lead",
+        "architect": "Architect",
+        "cto": "CTO",
+        "legend": "Legend"
+      },
+      "profile": "Profile",
+      "achievements": "Achievements",
+      "xp": "XP: {{current}} / {{next}}",
+      "xpToNextLevel": "{{xp}} XP to next level",
+      "yourProgress": "Your Progress",
+      "classes": "classes",
+      "recentAchievements": "Recent Achievements",
+      "stats": {
+        "classesCompleted": "Classes Completed",
+        "exercisesCompleted": "Exercises Completed",
+        "bugHuntWins": "Bug Hunt Wins",
+        "dayStreak": "Day Streak"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "continueClass": "Continue Class",
+        "playBugHunt": "Play Bug Hunt",
+        "viewProgress": "View Progress"
+      }
+    },
+    "modules": {
+      "title": "Modules",
+      "module": "Module {{number}}",
+      "moduleNotFound": "Module not found",
+      "backToDashboard": "Back to Dashboard",
+      "classesCompleted": "classes completed",
+      "classesTitle": "Classes",
+      "class": "Class {{number}}",
+      "locked": "Locked",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "xpReward": "{{xp}} XP",
+      "timeEstimate": "{{minutes}} min",
+      "youWillLearn": "You will learn:",
+      "exercisesCompleted": "{{count}} exercise completed",
+      "exercisesCompleted_plural": "{{count}} exercises completed",
+      "completedOn": "Completed on {{date}}",
+      "actions": {
+        "review": "Review",
+        "continue": "Continue",
+        "start": "Start"
+      }
+    },
+    "class": {
+      "loadingContent": "Loading class content...",
+      "errorLoading": "Error Loading Class",
+      "contentNotFound": "Class content not found",
+      "backToModule": "Back to Module",
+      "nextClass": "Next Class",
+      "completedBadge": "Completed",
+      "aboutThisClass": "About This Class",
+      "prerequisites": "Prerequisites",
+      "whatYouWillLearn": "What You'll Learn",
+      "exercises": "Exercises",
+      "exercisesCompleted": "completed",
+      "exercise": "Exercise",
+      "completing": "Completing...",
+      "completeClassButton": "Complete Class & Earn {{xp}} XP",
+      "completeAllExercises": "Complete all exercises to finish this class",
+      "classCompletedTitle": "Class Completed!",
+      "completedOnDate": "Completed on {{date}}",
+      "continueToNextClass": "Continue to Next Class",
+      "moduleCompleteMessage": "You've completed all classes in this module!"
+    },
+    "app": {
+      "logoText": "AI Dev Academy",
+      "footer": "Learn, code, grow.",
+      "allAchievements": "All Achievements",
+      "achievementsUnlocked": "You have unlocked {{count}} achievements!",
+      "achievementsComingSoon": "Full achievements gallery coming soon...",
+      "profile": "Profile",
+      "username": "Username",
+      "profileComingSoon": "Full profile editor coming soon..."
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "progress": "Progress",
+    "achievements": "Achievements",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "sound": "Sound",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}
