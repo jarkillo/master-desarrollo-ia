@@ -1,0 +1,19 @@
+# Railway Configuration
+# Docs: https://docs.railway.app/deploy/config-as-code
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "alembic upgrade head && uvicorn api.api:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Variables de entorno que Railway debe configurar:
+# - DATABASE_URL (automático si conectas PostgreSQL)
+# - JWT_SECRET (configurar manualmente)
+# - ENVIRONMENT=prod
+# - PORT (automático)

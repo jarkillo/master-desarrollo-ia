@@ -34,6 +34,12 @@ async def startup_event():
     init_db()
     print("Database initialized!")
 
+    # Seed initial data (default player if database is empty)
+    print("Checking for seed data...")
+    from app.seed_data import seed_default_player
+    seed_default_player()
+    print("Seed data check complete!")
+
 
 @app.get("/")
 async def root():

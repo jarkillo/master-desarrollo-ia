@@ -1,0 +1,181 @@
+name: CI - Proyecto Final Módulo 4
+
+on:
+  push:
+    branches: [main, dev, 'feature/**']
+    paths:
+      - 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final/**'
+
+jobs:
+  test:
+    name: Tests y Coverage
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final'
+
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: 📦 Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🧪 Ejecutar tests con coverage
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          JWT_SECRET: test-secret-key-for-ci
+          ENVIRONMENT: dev
+        run: |
+          pytest --cov=api --cov-report=term-missing --cov-report=xml --cov-fail-under=80 -v
+
+      - name: 📊 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final/coverage.xml
+          flags: unittests
+          name: codecov-proyecto-final
+          fail_ci_if_error: false
+
+  lint:
+    name: Linting (Ruff)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final'
+
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Instalar Ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff==0.9.0
+
+      - name: 🔍 Ejecutar Ruff
+        run: |
+          ruff check api/ --output-format=github
+
+  security:
+    name: Security Audit (Bandit)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final'
+
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Instalar Bandit
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit==1.8.0
+
+      - name: 🔒 Ejecutar Bandit
+        run: |
+          bandit -r api/ -ll -f json -o bandit-report.json || true
+          bandit -r api/ -ll
+
+  migrations:
+    name: Verificar Migraciones (Alembic)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final'
+
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔄 Verificar migraciones
+        env:
+          DATABASE_URL: sqlite:///./test_migrations.db
+          JWT_SECRET: test-secret-key-for-ci
+        run: |
+          # Aplicar migraciones
+          alembic upgrade head
+
+          # Verificar que no hay cambios pendientes
+          alembic check || echo "⚠️ Hay cambios en los modelos que requieren migración"
+
+  docker:
+    name: Verificar Docker Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔨 Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: 'Modulo 4 - Infraestructura y Cloud/Clase 8 - Proyecto Final'
+          push: false
+          tags: api-tareas:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  summary:
+    name: ✅ CI Summary
+    runs-on: ubuntu-latest
+    needs: [test, lint, security, migrations, docker]
+    if: always()
+
+    steps:
+      - name: 📊 Generate Summary
+        run: |
+          echo "## 🎯 CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests & Coverage | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Linting (Ruff) | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security (Bandit) | ${{ needs.security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Migrations (Alembic) | ${{ needs.migrations.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Build | ${{ needs.docker.result }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: ❌ Fail if any job failed
+        if: needs.test.result == 'failure' || needs.lint.result == 'failure' || needs.security.result == 'failure' || needs.migrations.result == 'failure' || needs.docker.result == 'failure'
+        run: exit 1

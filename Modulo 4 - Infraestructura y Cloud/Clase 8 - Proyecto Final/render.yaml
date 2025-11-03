@@ -1,0 +1,37 @@
+# Render Blueprint
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: tareas-db
+    env: docker
+    plan: free
+    region: oregon
+    databases:
+      - name: tareas_db
+        databaseName: tareas_db
+        user: postgres
+
+  # API Web Service
+  - type: web
+    name: tareas-api
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tareas-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+        sync: false
+      - key: ENVIRONMENT
+        value: prod
+      - key: DEBUG
+        value: false
+    buildCommand: "echo 'Building Docker image...'"
+    startCommand: "alembic upgrade head && uvicorn api.api:app --host 0.0.0.0 --port $PORT"

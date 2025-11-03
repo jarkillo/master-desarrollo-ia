@@ -316,11 +316,6 @@ export const useGameStore = create<GameState>()(
         selectedModuleNumber: state.selectedModuleNumber,
         selectedClassNumber: state.selectedClassNumber,
       }),
-      merge: (persistedState, currentState) => ({
-        ...initialState,
-        ...currentState,
-        ...(persistedState as object),
-      }),
     }
   )
 );

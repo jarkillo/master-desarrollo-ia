@@ -9,7 +9,7 @@ uvicorn[standard]==0.37.0
 pydantic==2.11.10
 
 # JWT authentication
-python-jose[cryptography]
+python-jose[cryptography]==3.5.0
 
 # Observability
 sentry-sdk[fastapi]

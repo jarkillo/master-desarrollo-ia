@@ -2,12 +2,10 @@
  * Dashboard - Main view showing player stats, progress, and next steps
  */
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../stores/gameStore';
 import './Dashboard.css';
 
 export const Dashboard = () => {
-  const { t } = useTranslation();
   const {
     player,
     playerStats,
@@ -19,9 +17,6 @@ export const Dashboard = () => {
     loadAllModules,
     selectModule,
     setCurrentView,
-    error,
-    isLoading,
-    reset,
   } = useGameStore();
 
   useEffect(() => {
@@ -36,35 +31,13 @@ export const Dashboard = () => {
     ]).catch(console.error);
   }, []);
 
-  // Show error state with option to reset and go back to setup
-  if (error && !player) {
-    return (
-      <div className="dashboard-error">
-        <div className="error-content">
-          <div className="error-icon">⚠️</div>
-          <h2>{t('common.error')}</h2>
-          <p>{error}</p>
-          <button
-            className="btn-primary"
-            onClick={() => {
-              reset();
-              window.location.reload();
-            }}
-          >
-            {t('game.dashboard.backToSetup')}
-          </button>
-        </div>
-      </div>
-    );
+  if (!player || !playerStats || !fullProgress) {
+    return <div className="dashboard-loading">Loading...</div>;
   }
 
-  if (!player || !playerStats || !fullProgress || isLoading) {
-    return <div className="dashboard-loading">{t('common.loading')}</div>;
-  }
-
-  const levelTitle = getLevelTitle(player.level, t);
+  const levelTitle = getLevelTitle(player.level);
   const xpProgress = getXPProgress(player.xp);
-  const recentAchievements = (unlockedAchievements || []).slice(-3).reverse();
+  const recentAchievements = unlockedAchievements.slice(-3).reverse();
 
   return (
     <div className="dashboard">
@@ -75,17 +48,17 @@ export const Dashboard = () => {
           <div className="player-details">
             <h1>{player.username}</h1>
             <div className="player-level">
-              {t('game.dashboard.level', { level: player.level })} • {levelTitle}
+              Level {player.level} • {levelTitle}
             </div>
           </div>
         </div>
 
         <div className="quick-actions">
           <button onClick={() => setCurrentView('profile')} className="btn-secondary">
-            {t('game.dashboard.profile')}
+            Profile
           </button>
           <button onClick={() => setCurrentView('achievements')} className="btn-secondary">
-            {t('game.dashboard.achievements')} ({(unlockedAchievements || []).length})
+            Achievements ({unlockedAchievements.length})
           </button>
         </div>
       </div>
@@ -95,34 +68,34 @@ export const Dashboard = () => {
         <div className="stat-card">
           <div className="stat-icon">🎓</div>
           <div className="stat-value">{playerStats.classes_completed}</div>
-          <div className="stat-label">{t('game.dashboard.stats.classesCompleted')}</div>
+          <div className="stat-label">Classes Completed</div>
         </div>
 
         <div className="stat-card">
           <div className="stat-icon">💪</div>
           <div className="stat-value">{playerStats.exercises_completed}</div>
-          <div className="stat-label">{t('game.dashboard.stats.exercisesCompleted')}</div>
+          <div className="stat-label">Exercises Done</div>
         </div>
 
         <div className="stat-card">
           <div className="stat-icon">🐛</div>
           <div className="stat-value">{playerStats.bug_hunt_wins}</div>
-          <div className="stat-label">{t('game.dashboard.stats.bugHuntWins')}</div>
+          <div className="stat-label">Bug Hunt Wins</div>
         </div>
 
         <div className="stat-card">
           <div className="stat-icon">🔥</div>
           <div className="stat-value">{playerStats.current_streak}</div>
-          <div className="stat-label">{t('game.dashboard.stats.dayStreak')}</div>
+          <div className="stat-label">Day Streak</div>
         </div>
       </div>
 
       {/* XP Progress */}
       <div className="xp-section">
         <div className="xp-header">
-          <span>{t('game.dashboard.level', { level: player.level })}</span>
+          <span>Level {player.level}</span>
           <span>{player.xp} XP</span>
-          <span>{t('game.dashboard.level', { level: player.level + 1 })}</span>
+          <span>Level {player.level + 1}</span>
         </div>
         <div className="xp-bar">
           <div
@@ -131,17 +104,17 @@ export const Dashboard = () => {
           />
         </div>
         <div className="xp-info">
-          {t('game.dashboard.xpToNextLevel', { xp: xpProgress.xpNeeded })}
+          {xpProgress.xpNeeded} XP to next level
         </div>
       </div>
 
       {/* Overall Progress */}
       <div className="progress-overview">
-        <h2>{t('game.dashboard.yourProgress')}</h2>
+        <h2>Your Progress</h2>
         <div className="overall-progress">
           <div className="progress-stats">
             <span>
-              {fullProgress.classes_completed} / {fullProgress.total_classes} {t('game.dashboard.classes')}
+              {fullProgress.classes_completed} / {fullProgress.total_classes} classes
             </span>
             <span>{Math.round(fullProgress.overall_progress_percentage)}%</span>
           </div>
@@ -156,7 +129,7 @@ export const Dashboard = () => {
 
       {/* Modules Grid */}
       <div className="modules-section">
-        <h2>{t('game.modules.title')}</h2>
+        <h2>Modules</h2>
         <div className="modules-grid">
           {fullProgress.modules.map((module) => (
             <div
@@ -169,7 +142,7 @@ export const Dashboard = () => {
               onClick={() => selectModule(module.module_number)}
             >
               <div className="module-header">
-                <h3>{t('game.modules.module', { number: module.module_number })}</h3>
+                <h3>Module {module.module_number}</h3>
                 {module.classes_completed === module.total_classes && (
                   <span className="completion-badge">✓</span>
                 )}
@@ -183,7 +156,7 @@ export const Dashboard = () => {
                   />
                 </div>
                 <div className="module-progress-text">
-                  {module.classes_completed} / {module.total_classes} {t('game.dashboard.classes')}
+                  {module.classes_completed} / {module.total_classes} classes
                 </div>
               </div>
             </div>
@@ -194,7 +167,7 @@ export const Dashboard = () => {
       {/* Recent Achievements */}
       {recentAchievements.length > 0 && (
         <div className="achievements-section">
-          <h2>{t('game.dashboard.recentAchievements')}</h2>
+          <h2>Recent Achievements</h2>
           <div className="achievements-grid">
             {recentAchievements.map((achievement) => (
               <div
@@ -219,14 +192,14 @@ export const Dashboard = () => {
 };
 
 // Helper functions
-function getLevelTitle(level: number, t: (key: string) => string): string {
-  if (level <= 5) return t('game.dashboard.levelTitle.juniorDev');
-  if (level <= 10) return t('game.dashboard.levelTitle.midDev');
-  if (level <= 15) return t('game.dashboard.levelTitle.seniorDev');
-  if (level <= 20) return t('game.dashboard.levelTitle.techLead');
-  if (level <= 25) return t('game.dashboard.levelTitle.architect');
-  if (level <= 30) return t('game.dashboard.levelTitle.cto');
-  return t('game.dashboard.levelTitle.legend');
+function getLevelTitle(level: number): string {
+  if (level <= 5) return 'Junior Developer';
+  if (level <= 10) return 'Mid Developer';
+  if (level <= 15) return 'Senior Developer';
+  if (level <= 20) return 'Tech Lead';
+  if (level <= 25) return 'Architect';
+  if (level <= 30) return 'CTO';
+  return 'Legend';
 }
 
 function getXPProgress(xp: number): {

@@ -1,0 +1,61 @@
+name: Deploy to Production
+
+# Este workflow es OPCIONAL y solo se ejecuta manualmente
+# Para deployment automático, configura Railway o Render desde su UI
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy to Railway
+        if: github.event.inputs.environment == 'production'
+        run: |
+          echo "🚂 Deployment a Railway se hace automáticamente desde el dashboard"
+          echo "📍 Visita: https://railway.app/"
+          echo ""
+          echo "O instala Railway CLI y ejecuta:"
+          echo "  npm i -g @railway/cli"
+          echo "  railway link"
+          echo "  railway up"
+
+      - name: 🚀 Deploy to Render
+        if: github.event.inputs.environment == 'staging'
+        run: |
+          echo "🎨 Deployment a Render se hace automáticamente desde el dashboard"
+          echo "📍 Visita: https://render.com/"
+          echo ""
+          echo "O usa el blueprint render.yaml:"
+          echo "  - Conecta tu repo de GitHub"
+          echo "  - Render detecta render.yaml automáticamente"
+          echo "  - Deploy automático en cada push a main"
+
+      - name: ✅ Deployment Info
+        run: |
+          echo "## 📦 Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Verify deployment in Railway/Render dashboard" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run migrations: \`alembic upgrade head\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Test health endpoint: \`/health\`" >> $GITHUB_STEP_SUMMARY
+          echo "4. Check logs for errors" >> $GITHUB_STEP_SUMMARY
