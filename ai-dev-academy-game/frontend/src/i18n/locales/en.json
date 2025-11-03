@@ -115,9 +115,37 @@
     }
   },
   "game": {
+    "setup": {
+      "welcome": "Welcome to AI Dev Academy!",
+      "subtitle": "Your journey to becoming an AI-powered developer starts here",
+      "newPlayer": "New Player",
+      "newPlayerDesc": "Start your journey from scratch",
+      "existingPlayer": "Existing Player",
+      "existingPlayerDesc": "Continue your saved progress",
+      "createAccount": "Create New Account",
+      "createAccountDesc": "Choose a username to start your adventure",
+      "continueGame": "Continue Game",
+      "continueGameDesc": "Enter your player ID to continue",
+      "username": "Username",
+      "usernamePlaceholder": "Choose a unique username",
+      "usernameHint": "3-20 characters, letters and numbers only",
+      "playerId": "Player ID",
+      "playerIdHint": "Your unique player ID (number)",
+      "startJourney": "Start My Journey",
+      "loadGame": "Load Game",
+      "errors": {
+        "usernameRequired": "Username must be at least 3 characters",
+        "usernameTaken": "This username is already taken",
+        "createFailed": "Failed to create player. Please try again.",
+        "invalidPlayerId": "Invalid player ID",
+        "playerNotFound": "Player with that ID not found",
+        "loadFailed": "Failed to load player. Please try again."
+      }
+    },
     "dashboard": {
       "welcome": "Welcome, {{username}}",
       "level": "Level {{level}}",
+      "backToSetup": "Back to Setup",
       "levelTitle": {
         "juniorDev": "Junior Developer",
         "midDev": "Mid Developer",

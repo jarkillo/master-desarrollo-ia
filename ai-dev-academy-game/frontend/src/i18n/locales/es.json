@@ -115,9 +115,37 @@
     }
   },
   "game": {
+    "setup": {
+      "welcome": "¡Bienvenido a AI Dev Academy!",
+      "subtitle": "Tu viaje para convertirte en un desarrollador experto en IA comienza aquí",
+      "newPlayer": "Nuevo Jugador",
+      "newPlayerDesc": "Comienza tu viaje desde cero",
+      "existingPlayer": "Jugador Existente",
+      "existingPlayerDesc": "Continúa tu progreso guardado",
+      "createAccount": "Crear Nueva Cuenta",
+      "createAccountDesc": "Elige un nombre de usuario para comenzar tu aventura",
+      "continueGame": "Continuar Juego",
+      "continueGameDesc": "Ingresa tu ID de jugador para continuar",
+      "username": "Nombre de Usuario",
+      "usernamePlaceholder": "Elige un nombre único",
+      "usernameHint": "3-20 caracteres, solo letras y números",
+      "playerId": "ID de Jugador",
+      "playerIdHint": "Tu ID de jugador único (número)",
+      "startJourney": "Comenzar Mi Viaje",
+      "loadGame": "Cargar Juego",
+      "errors": {
+        "usernameRequired": "El nombre de usuario debe tener al menos 3 caracteres",
+        "usernameTaken": "Este nombre de usuario ya está en uso",
+        "createFailed": "Error al crear jugador. Por favor, inténtalo de nuevo.",
+        "invalidPlayerId": "ID de jugador inválido",
+        "playerNotFound": "No se encontró jugador con ese ID",
+        "loadFailed": "Error al cargar jugador. Por favor, inténtalo de nuevo."
+      }
+    },
     "dashboard": {
       "welcome": "Bienvenido, {{username}}",
       "level": "Nivel {{level}}",
+      "backToSetup": "Volver a Configuración",
       "levelTitle": {
         "juniorDev": "Junior Developer",
         "midDev": "Mid Developer",
