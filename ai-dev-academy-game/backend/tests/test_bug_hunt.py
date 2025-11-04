@@ -173,13 +173,8 @@ def test_submit_bug_hunt_partial_score(test_player):
     correct_lines = [bug["line"] for bug in template.bugs]
 
     # If template has multiple bugs, submit only first one; otherwise submit none
-    if len(correct_lines) > 1:
-        partial_lines = [correct_lines[0]]
-        expected_accuracy_range = (0, 100)  # Between 0 and 100 (not inclusive)
-    else:
-        # For single bug template, submit empty to test 0% accuracy
-        partial_lines = []
-        expected_accuracy_range = (0, 0)  # Exactly 0%
+    # For single bug template, submit empty to test 0% accuracy
+    partial_lines = [correct_lines[0]] if len(correct_lines) > 1 else []
 
     # Submit partial answer
     submit_response = client.post(
