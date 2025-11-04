@@ -70,10 +70,10 @@ def seed_default_player():
         # Commit all changes
         db.commit()
 
-        print(f"✅ Default player created successfully!")
+        print("✅ Default player created successfully!")
         print(f"   - Username: {demo_player.username}")
         print(f"   - Player ID: {demo_player.id}")
-        print(f"   - Initial class unlocked: Module 0, Class 0")
+        print("   - Initial class unlocked: Module 0, Class 0")
 
     except Exception as e:
         db.rollback()
