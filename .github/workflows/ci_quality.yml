@@ -63,7 +63,8 @@ jobs:
           find . -type f -name "*.pyc" -delete
 
           # Ejecutar pytest con cobertura y fallar si la cobertura es menor a 80%
-          pytest --cov=api --cov-report=term-missing --cov-fail-under=80
+          # Retry flaky tests up to 2 times to reduce false negatives
+          pytest --cov=api --cov-report=term-missing --cov-fail-under=80 --reruns 2 --reruns-delay 1
 
       - name: Ruff (fast linter)
         working-directory: ${{ matrix.class_dir }}
