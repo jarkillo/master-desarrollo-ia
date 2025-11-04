@@ -48,7 +48,7 @@ sudo sh get-docker.sh
 
 # Install Docker Compose
 sudo apt-get update
-sudo apt-get install docker-compose-plugin
+sudo apt-get install docker compose-plugin
 
 # Verify installations
 docker --version
@@ -126,7 +126,7 @@ Seed data check complete!
 
 ```bash
 # Check containers are running
-docker-compose ps
+docker compose ps
 
 # Should show:
 #   backend   Up
@@ -175,10 +175,10 @@ api/progress/modules:1  Failed to load resource: the server responded with a sta
 ```bash
 # Force complete rebuild
 cd ai-dev-academy-game
-docker-compose down
+docker compose down
 docker rmi $(docker images -q ai-dev-academy-game*)  # Remove all game images
-docker-compose build --no-cache
-docker-compose up -d
+docker compose build --no-cache
+docker compose up -d
 ```
 
 ---
@@ -187,7 +187,7 @@ docker-compose up -d
 
 After deployment, verify:
 
-- ✅ Containers are running: `docker-compose ps`
+- ✅ Containers are running: `docker compose ps`
 - ✅ Backend health check passes: `curl http://localhost:8000/health`
 - ✅ Player endpoint returns data: `curl http://localhost:8000/api/player/1`
 - ✅ Modules endpoint returns array: `curl http://localhost:8000/api/progress/modules`

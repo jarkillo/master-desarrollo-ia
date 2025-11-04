@@ -19,13 +19,13 @@ echo ""
 
 # Step 2: Stop containers
 echo "🛑 Step 2/6: Stopping running containers..."
-docker-compose down
+docker compose down
 echo "✅ Containers stopped"
 echo ""
 
 # Step 3: Remove old images (force rebuild)
 echo "🗑️  Step 3/6: Removing old images to force rebuild..."
-docker-compose rm -f
+docker compose rm -f
 docker rmi ai-dev-academy-game-backend:latest 2>/dev/null || true
 docker rmi ai-dev-academy-game-frontend:latest 2>/dev/null || true
 echo "✅ Old images removed"
@@ -33,13 +33,13 @@ echo ""
 
 # Step 4: Build new images (no cache)
 echo "🔨 Step 4/6: Building new images (this may take 2-3 minutes)..."
-docker-compose build --no-cache
+docker compose build --no-cache
 echo "✅ New images built"
 echo ""
 
 # Step 5: Start containers
 echo "▶️  Step 5/6: Starting containers..."
-docker-compose up -d
+docker compose up -d
 echo "✅ Containers started"
 echo ""
 
@@ -58,7 +58,7 @@ echo ""
 # Show logs to verify seed data
 echo "📋 Backend startup logs (checking seed data):"
 echo "--------------------------------------------"
-docker-compose logs backend | tail -20
+docker compose logs backend | tail -20
 echo ""
 
 echo "✅ DEPLOYMENT COMPLETE"
@@ -67,11 +67,11 @@ echo ""
 echo "🌐 Game should be available at: http://your-vps-ip"
 echo ""
 echo "📊 To check status:"
-echo "   docker-compose ps"
+echo "   docker compose ps"
 echo ""
 echo "📝 To view logs:"
-echo "   docker-compose logs -f backend"
-echo "   docker-compose logs -f frontend"
+echo "   docker compose logs -f backend"
+echo "   docker compose logs -f frontend"
 echo ""
 echo "🔍 To verify player was created:"
 echo "   curl http://localhost:8000/api/player/1"
