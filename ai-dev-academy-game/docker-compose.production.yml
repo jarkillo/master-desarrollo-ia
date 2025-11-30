@@ -10,8 +10,6 @@ services:
       dockerfile: Dockerfile
     container_name: ai-dev-academy-backend
     restart: unless-stopped
-    expose:
-      - "8000"
     volumes:
       - backend-data:/app/data
     environment:
