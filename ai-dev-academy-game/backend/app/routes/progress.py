@@ -97,7 +97,11 @@ async def get_module_info(module_number: int):
             title=c.title,
             description=c.description,
             exercises_count=c.exercises_count,
-            xp_reward=c.xp_reward
+            xp_reward=c.xp_reward,
+            difficulty=c.difficulty,
+            estimated_time_minutes=c.estimated_time_minutes,
+            prerequisites=c.prerequisites,
+            learning_objectives=c.learning_objectives
         )
         for c in module.classes
     ]
@@ -242,6 +246,7 @@ async def get_full_progress(
 
             if prog:
                 class_progress = ClassProgress(
+                    id=prog.id,  # Include progress ID for frontend
                     class_number=class_info.class_number,
                     status=prog.status,
                     exercises_completed=prog.exercises_completed,
@@ -253,6 +258,7 @@ async def get_full_progress(
             else:
                 # Class not yet unlocked
                 class_progress = ClassProgress(
+                    id=None,  # No progress record yet
                     class_number=class_info.class_number,
                     status=ProgressStatus.LOCKED,
                     exercises_completed=0,
@@ -330,6 +336,7 @@ async def get_module_progress(
 
         if prog:
             class_progress = ClassProgress(
+                id=prog.id,  # Include progress ID for frontend
                 class_number=class_info.class_number,
                 status=prog.status,
                 exercises_completed=prog.exercises_completed,
@@ -339,6 +346,7 @@ async def get_module_progress(
                 completed_count += 1
         else:
             class_progress = ClassProgress(
+                id=None,  # No progress record yet
                 class_number=class_info.class_number,
                 status=ProgressStatus.LOCKED,
                 exercises_completed=0,

@@ -55,6 +55,7 @@ class ProgressResponse(BaseModel):
 
 class ClassProgress(BaseModel):
     """Schema for a single class progress summary."""
+    id: int | None = None  # Progress record ID (None if locked)
     class_number: int
     status: ProgressStatus
     exercises_completed: int = 0

@@ -1,10 +1,24 @@
 /**
  * ClassViewer - Shows class content with exercises and completion tracking
+ * Professional corporate design for IT professionals
  */
 import { useState, useEffect } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Circle,
+  Clock,
+  Award,
+  Target,
+  BookOpen,
+  AlertCircle,
+  Loader2,
+  Trophy,
+} from 'lucide-react';
 import { useGameStore } from '../../stores/gameStore';
 import type { ClassInfo } from '../../types/game';
-import './ClassViewer.css';
+import ClassContentViewer from './ClassContentViewer';
 
 export const ClassViewer = () => {
   const {
@@ -14,7 +28,6 @@ export const ClassViewer = () => {
     fullProgress,
     player,
     loadClassContent,
-    toggleExerciseComplete,
     completeCurrentClass,
     setCurrentView,
     isLoading,
@@ -22,7 +35,8 @@ export const ClassViewer = () => {
   } = useGameStore();
 
   const [classContent, setClassContent] = useState<ClassInfo | null>(null);
-  const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
+  const [readingSectionsViewed, setReadingSectionsViewed] = useState(0);
+  const [readingSectionsTotal, setReadingSectionsTotal] = useState(0);
 
   useEffect(() => {
     if (selectedModuleNumber !== null && selectedClassNumber !== null) {
@@ -48,19 +62,6 @@ export const ClassViewer = () => {
     }
   };
 
-  const handleToggleExercise = (exerciseId: string) => {
-    setCompletedExercises((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(exerciseId)) {
-        newSet.delete(exerciseId);
-      } else {
-        newSet.add(exerciseId);
-      }
-      return newSet;
-    });
-    toggleExerciseComplete(exerciseId);
-  };
-
   const handleCompleteClass = async () => {
     if (!player || selectedModuleNumber === null || selectedClassNumber === null) return;
 
@@ -84,33 +85,50 @@ export const ClassViewer = () => {
 
   if (isLoading && !classContent) {
     return (
-      <div className="class-viewer-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading class content...</p>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+          <p className="text-lg text-gray-600 dark:text-gray-400">Cargando contenido...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="class-viewer-error">
-        <div className="error-icon">⚠️</div>
-        <h2>Error Loading Class</h2>
-        <p>{error}</p>
-        <button onClick={handleBack} className="btn-back">
-          Back to Module
-        </button>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center max-w-md">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+            Error al Cargar la Clase
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
+          <button
+            onClick={handleBack}
+            className="px-5 py-2.5 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+          >
+            Volver al Módulo
+          </button>
+        </div>
       </div>
     );
   }
 
   if (!classContent || selectedModuleNumber === null || selectedClassNumber === null) {
     return (
-      <div className="class-viewer-error">
-        <p>Class content not found</p>
-        <button onClick={handleBack} className="btn-back">
-          Back to Module
-        </button>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center max-w-md">
+          <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+            Contenido de la clase no encontrado
+          </p>
+          <button
+            onClick={handleBack}
+            className="px-5 py-2.5 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+          >
+            Volver al Módulo
+          </button>
+        </div>
       </div>
     );
   }
@@ -123,95 +141,116 @@ export const ClassViewer = () => {
     (p) => p.class_number === selectedClassNumber
   );
 
-  // Generate exercise list (for demo purposes - in production, these would come from backend)
-  const exercises = classContent.learning_objectives.map((objective, idx) => ({
-    id: `exercise-${selectedModuleNumber}-${selectedClassNumber}-${idx}`,
-    title: `Exercise ${idx + 1}`,
-    description: objective,
-    completed: completedExercises.has(`exercise-${selectedModuleNumber}-${selectedClassNumber}-${idx}`),
-  }));
-
-  const allExercisesCompleted = exercises.length > 0 && exercises.every((ex) => ex.completed);
   const isCompleted = classProgress?.status === 'completed';
+  const hasReadAllContent = readingSectionsViewed === readingSectionsTotal && readingSectionsTotal > 0;
 
   // Check if there's a next class
   const nextClass = currentModule?.classes.find(
     (c) => c.class_number === selectedClassNumber + 1
   );
 
+  const getDifficultyLabel = (difficulty: string) => {
+    const labels: Record<string, string> = {
+      beginner: 'Principiante',
+      intermediate: 'Intermedio',
+      advanced: 'Avanzado',
+    };
+    return labels[difficulty] || difficulty;
+  };
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
-        return 'var(--color-success)';
+        return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
       case 'intermediate':
-        return 'var(--color-warning)';
+        return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
       case 'advanced':
-        return 'var(--color-error)';
+        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
       default:
-        return 'var(--color-text-secondary)';
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
   return (
-    <div className="class-viewer">
+    <div className="max-w-5xl mx-auto">
       {/* Navigation */}
-      <div className="class-nav">
-        <button onClick={handleBack} className="btn-back">
-          ← Back to Module
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 px-4 py-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Volver al Módulo
         </button>
         {nextClass && isCompleted && (
-          <button onClick={handleNextClass} className="btn-next">
-            Next Class →
+          <button
+            onClick={handleNextClass}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+          >
+            Siguiente Clase
+            <ArrowRight className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {/* Class Header */}
-      <div className="class-header">
-        <div className="class-header-content">
-          <div className="class-title-section">
-            <h1 className="class-title">
-              Class {selectedClassNumber}: {classContent.title}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 mb-8">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex-1">
+            <h1 className="text-3xl font-semibold text-gray-900 dark:text-white mb-2">
+              Clase {selectedClassNumber}: {classContent.title}
             </h1>
-            {isCompleted && <span className="completion-badge">✅ Completed</span>}
+            {isCompleted && (
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-md text-sm font-medium">
+                <CheckCircle2 className="w-4 h-4" />
+                Completada
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="class-meta">
-            <span
-              className="difficulty-badge"
-              style={{ backgroundColor: getDifficultyColor(classContent.difficulty) }}
-            >
-              {classContent.difficulty}
-            </span>
-            <span className="meta-item">
-              <span className="meta-icon">⏱️</span>
-              {classContent.estimated_time_minutes} min
-            </span>
-            <span className="meta-item">
-              <span className="meta-icon">⭐</span>
-              {classContent.xp_reward} XP
-            </span>
-          </div>
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          <span
+            className={`px-3 py-1 rounded-md font-medium ${getDifficultyColor(
+              classContent.difficulty
+            )}`}
+          >
+            {getDifficultyLabel(classContent.difficulty)}
+          </span>
+          <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+            <Clock className="w-4 h-4" />
+            {classContent.estimated_time_minutes} min
+          </span>
+          <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+            <Award className="w-4 h-4" />
+            {classContent.xp_reward} XP
+          </span>
         </div>
       </div>
 
       {/* Class Content */}
-      <div className="class-content">
+      <div className="space-y-8">
         {/* Description */}
-        <section className="content-section">
-          <h2>About This Class</h2>
-          <p className="class-description">{classContent.description}</p>
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            Acerca de esta Clase
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+            {classContent.description}
+          </p>
         </section>
 
         {/* Prerequisites */}
         {classContent.prerequisites.length > 0 && (
-          <section className="content-section prerequisites">
-            <h2>Prerequisites</h2>
-            <ul className="prerequisites-list">
+          <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Requisitos Previos
+            </h2>
+            <ul className="space-y-2">
               {classContent.prerequisites.map((prereq, idx) => (
-                <li key={idx}>
-                  <span className="prereq-icon">✓</span>
-                  {prereq}
+                <li key={idx} className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span>{prereq}</span>
                 </li>
               ))}
             </ul>
@@ -220,86 +259,65 @@ export const ClassViewer = () => {
 
         {/* Learning Objectives */}
         {classContent.learning_objectives.length > 0 && (
-          <section className="content-section learning-objectives">
-            <h2>What You'll Learn</h2>
-            <ul className="objectives-list">
+          <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Qué Aprenderás
+            </h2>
+            <ul className="space-y-2">
               {classContent.learning_objectives.map((objective, idx) => (
-                <li key={idx}>
-                  <span className="objective-icon">🎯</span>
-                  {objective}
+                <li key={idx} className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
+                  <Target className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>{objective}</span>
                 </li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Exercises */}
-        <section className="content-section exercises">
-          <h2>Exercises</h2>
-          <div className="exercises-progress">
-            <span>
-              {completedExercises.size} / {exercises.length} completed
-            </span>
-            <div className="exercises-progress-bar">
-              <div
-                className="exercises-progress-fill"
-                style={{
-                  width: `${exercises.length > 0 ? (completedExercises.size / exercises.length) * 100 : 0}%`,
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="exercises-list">
-            {exercises.map((exercise) => (
-              <div
-                key={exercise.id}
-                className={`exercise-item ${exercise.completed ? 'completed' : ''}`}
-              >
-                <label className="exercise-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={exercise.completed}
-                    onChange={() => handleToggleExercise(exercise.id)}
-                    disabled={isCompleted}
-                  />
-                  <span className="checkbox-custom"></span>
-                </label>
-                <div className="exercise-content">
-                  <h3 className="exercise-title">{exercise.title}</h3>
-                  <p className="exercise-description">{exercise.description}</p>
-                </div>
-                {exercise.completed && (
-                  <span className="exercise-complete-icon">✓</span>
-                )}
-              </div>
-            ))}
-          </div>
+        {/* Educational Content */}
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            Contenido de la Clase
+          </h2>
+          <ClassContentViewer
+            moduleNumber={selectedModuleNumber}
+            classNumber={selectedClassNumber}
+            onReadingProgress={(viewed, total) => {
+              setReadingSectionsViewed(viewed);
+              setReadingSectionsTotal(total);
+            }}
+          />
         </section>
+
+        {/* TODO: Exercises section - to be implemented with real exercises from markdown */}
 
         {/* Complete Class Button */}
         {!isCompleted && (
-          <div className="complete-section">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
             <button
               onClick={handleCompleteClass}
-              className="btn-complete-class"
-              disabled={!allExercisesCompleted || isLoading}
+              disabled={!hasReadAllContent || isLoading}
+              className={`px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center gap-3 mx-auto ${
+                hasReadAllContent && !isLoading
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              }`}
             >
               {isLoading ? (
                 <>
-                  <span className="btn-spinner"></span>
-                  Completing...
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Completando...
                 </>
               ) : (
                 <>
-                  <span className="btn-icon">🎉</span>
-                  Complete Class & Earn {classContent.xp_reward} XP
+                  <Trophy className="w-5 h-5" />
+                  Completar Clase y Ganar {classContent.xp_reward} XP
                 </>
               )}
             </button>
-            {!allExercisesCompleted && (
-              <p className="complete-hint">
-                Complete all exercises to finish this class
+            {!hasReadAllContent && readingSectionsTotal > 0 && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+                Lee todas las secciones del contenido para completar la clase ({readingSectionsViewed}/{readingSectionsTotal} leídas)
               </p>
             )}
           </div>
@@ -307,14 +325,16 @@ export const ClassViewer = () => {
 
         {/* Completion Info */}
         {isCompleted && classProgress?.completed_at && (
-          <div className="completion-info">
-            <div className="completion-message">
-              <span className="completion-icon">🎉</span>
+          <div className="bg-green-50 dark:bg-green-900/10 border-2 border-green-500 rounded-lg p-8">
+            <div className="flex items-start gap-4 mb-6">
+              <Trophy className="w-8 h-8 text-green-600 dark:text-green-400 flex-shrink-0" />
               <div>
-                <h3>Class Completed!</h3>
-                <p>
-                  Completed on{' '}
-                  {new Date(classProgress.completed_at).toLocaleDateString('en-US', {
+                <h3 className="text-xl font-semibold text-green-900 dark:text-green-100 mb-1">
+                  ¡Clase Completada!
+                </h3>
+                <p className="text-green-700 dark:text-green-300">
+                  Completado el{' '}
+                  {new Date(classProgress.completed_at).toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -323,13 +343,20 @@ export const ClassViewer = () => {
               </div>
             </div>
             {nextClass ? (
-              <button onClick={handleNextClass} className="btn-next-class">
-                Continue to Next Class →
+              <button
+                onClick={handleNextClass}
+                className="w-full px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              >
+                Continuar con la Siguiente Clase
+                <ArrowRight className="w-5 h-5" />
               </button>
             ) : (
-              <p className="module-complete-message">
-                🏆 You've completed all classes in this module!
-              </p>
+              <div className="text-center">
+                <p className="text-lg font-semibold text-green-900 dark:text-green-100 flex items-center justify-center gap-2">
+                  <Trophy className="w-6 h-6" />
+                  ¡Has completado todas las clases de este módulo!
+                </p>
+              </div>
             )}
           </div>
         )}
