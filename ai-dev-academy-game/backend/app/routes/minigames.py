@@ -50,7 +50,7 @@ async def start_bug_hunt(
     try:
         template: BugTemplate = get_random_template(difficulty=request.difficulty)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
+        raise HTTPException(status_code=400, detail=str(e))
 
     # Create game session
     started_at = datetime.utcnow()
@@ -163,8 +163,8 @@ async def submit_bug_hunt(
     # Get template to validate answers
     try:
         template = get_template_by_id(game_session.template_id)
-    except ValueError as e:
-        raise HTTPException(status_code=500, detail="Template not found") from e
+    except ValueError:
+        raise HTTPException(status_code=500, detail="Template not found")
 
     # Extract correct bug lines from template
     correct_bug_lines = {bug["line"] for bug in template.bugs}
