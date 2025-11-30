@@ -1,9 +1,9 @@
 /**
  * CourseCard - Individual course card component
- * NFLOW-2: Professional glassmorphism design with conversion optimization
+ * NFLOW-2: Professional glassmorphism design with honest value messaging
  */
 import { Link } from 'react-router-dom';
-import { BookOpen, Lock, Clock, CheckCircle2, Star, Users, ArrowRight } from 'lucide-react';
+import { BookOpen, Lock, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
 import type { Course } from '../../types/course';
 
 interface CourseCardProps {
@@ -14,22 +14,25 @@ export const CourseCard = ({ course }: CourseCardProps) => {
   const isAvailable = course.status === 'available';
   const isComingSoon = course.status === 'coming_soon';
 
-  // Mock data - In production, this would come from the API
-  const courseExtras = {
-    rating: 4.8,
-    students: isAvailable ? 350 : 0,
-    features: isAvailable
-      ? [
-          'Proyectos prácticos del mundo real',
-          'Asistencia de IA personalizada 24/7',
-          'Certificado al completar',
-        ]
-      : [
-          'Pipeline de datos a escala',
-          'Airflow y orquestación',
-          'Warehousing moderno',
-        ],
+  // Real course features - no fake data
+  const courseFeatures = {
+    'master-ia': [
+      'Fundamentos de IA aplicada al desarrollo',
+      'Proyectos prácticos con FastAPI y React',
+      'Integración con Claude, GPT y otras IAs',
+    ],
+    'data-engineering': [
+      'Pipeline de datos a escala empresarial',
+      'Airflow, DBT y orquestación moderna',
+      'Data Warehousing con Snowflake/BigQuery',
+    ],
   };
+
+  const features = courseFeatures[course.id as keyof typeof courseFeatures] || [
+    'Contenido estructurado y progresivo',
+    'Ejercicios prácticos en cada módulo',
+    'Acceso al código fuente completo',
+  ];
 
   // Status badge configuration
   const getStatusBadge = () => {
@@ -93,13 +96,8 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           }
         `}
       >
-        {/* Status Badge & Popular Tag */}
+        {/* Status Badge */}
         <div className="absolute top-6 right-6 flex gap-2">
-          {isAvailable && course.id === 'master-ia' && (
-            <span className="px-3 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg">
-              ⭐ Popular
-            </span>
-          )}
           <span
             className={`
               inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold shadow-md
@@ -134,29 +132,14 @@ export const CourseCard = ({ course }: CourseCardProps) => {
           {course.name}
         </h3>
 
-        {/* Rating & Students (if available) */}
-        {isAvailable && (
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center gap-1" role="group" aria-label={`Calificación ${courseExtras.rating} de 5 estrellas`}>
-              <Star className="w-4 h-4 fill-amber-400 text-amber-400" aria-hidden="true" />
-              <span className="font-semibold text-gray-900 dark:text-white">{courseExtras.rating}</span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">(250+ reviews)</span>
-            </div>
-            <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-              <Users className="w-4 h-4" aria-hidden="true" />
-              <span>{courseExtras.students}+ estudiantes</span>
-            </div>
-          </div>
-        )}
-
         {/* Course Description */}
-        <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
           {course.description}
         </p>
 
         {/* Course Features */}
         <div className="mb-6 space-y-2">
-          {courseExtras.features.map((feature, index) => (
+          {features.map((feature, index) => (
             <div key={index} className="flex items-start gap-2">
               <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
               <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
@@ -193,18 +176,14 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                 focus:outline-none focus:ring-4 focus:ring-primary/50
                 overflow-hidden
               "
-              aria-label={`Comenzar el curso ${course.name} gratis`}
+              aria-label={`Comenzar el curso ${course.name}`}
             >
               {/* Button shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000" />
 
               <span className="relative flex items-center justify-center gap-2">
-                Comenzar Gratis
+                Comenzar Curso
                 <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" aria-hidden="true" />
-              </span>
-
-              <span className="block text-xs font-normal mt-1 opacity-90">
-                Sin tarjeta de crédito
               </span>
             </Link>
           ) : isComingSoon ? (
@@ -224,7 +203,7 @@ export const CourseCard = ({ course }: CourseCardProps) => {
                 </span>
               </button>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
-                Sé el primero en saberlo • Notifícame
+                Estamos trabajando en este curso
               </p>
             </div>
           ) : (

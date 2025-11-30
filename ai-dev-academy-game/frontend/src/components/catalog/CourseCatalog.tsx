@@ -1,9 +1,9 @@
 /**
  * CourseCatalog - Main course catalog component
- * NFLOW-2: Professional design with marketing, accessibility, and conversion optimization
+ * NFLOW-2: Professional design with honest, value-focused messaging
  */
 import { useState, useEffect } from 'react';
-import { BookOpen, Users, Trophy, Zap } from 'lucide-react';
+import { BookOpen, Code, Zap, Award } from 'lucide-react';
 import { CourseCard } from './CourseCard';
 import { fetchCourses } from '../../services/catalogApi';
 import type { Course } from '../../types/course';
@@ -74,50 +74,50 @@ export const CourseCatalog = () => {
           <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed">
             Domina el desarrollo moderno con la inteligencia artificial como tu asistente personal.
             <span className="block mt-2 text-lg text-gray-600 dark:text-gray-400">
-              Proyectos reales. Aprendizaje práctico. Resultados profesionales.
+              Proyectos reales. Aprendizaje práctico. Contenido de calidad.
             </span>
           </p>
 
-          {/* Stats Section - Social Proof */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
+          {/* Value Propositions - Honest Features */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
             <div
               className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               role="group"
-              aria-label="Estadística de estudiantes activos"
+              aria-label="Aprendizaje práctico con proyectos reales"
             >
-              <Users className="w-8 h-8 text-primary mx-auto mb-2" aria-hidden="true" />
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">500+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Estudiantes Activos</div>
+              <Code className="w-8 h-8 text-primary mx-auto mb-2" aria-hidden="true" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">Proyectos Reales</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Aprende haciendo</div>
             </div>
 
             <div
               className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               role="group"
-              aria-label="Estadística de proyectos completados"
+              aria-label="Contenido estructurado en módulos"
             >
-              <Trophy className="w-8 h-8 text-secondary mx-auto mb-2" aria-hidden="true" />
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">1,200+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Proyectos Completados</div>
+              <BookOpen className="w-8 h-8 text-secondary mx-auto mb-2" aria-hidden="true" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">Bien Estructurado</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Paso a paso</div>
             </div>
 
             <div
               className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               role="group"
-              aria-label="Estadística de módulos disponibles"
+              aria-label="Asistencia de IA integrada"
             >
-              <BookOpen className="w-8 h-8 text-accent mx-auto mb-2" aria-hidden="true" />
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">30+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Módulos Disponibles</div>
+              <Zap className="w-8 h-8 text-accent mx-auto mb-2" aria-hidden="true" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">IA Integrada</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Tu asistente 24/7</div>
             </div>
 
             <div
               className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               role="group"
-              aria-label="Estadística de tasa de éxito"
+              aria-label="A tu propio ritmo"
             >
-              <Zap className="w-8 h-8 text-primary mx-auto mb-2" aria-hidden="true" />
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">94%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Tasa de Éxito</div>
+              <Award className="w-8 h-8 text-primary mx-auto mb-2" aria-hidden="true" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">A Tu Ritmo</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Sin presiones</div>
             </div>
           </div>
         </header>
@@ -148,19 +148,12 @@ export const CourseCatalog = () => {
           )}
         </main>
 
-        {/* Trust Section */}
+        {/* Footer - Open Source & Transparency */}
         <footer className="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700" role="contentinfo">
           <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Confiado por desarrolladores de empresas líderes
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Proyecto educativo de código abierto. Aprende desarrollo moderno con IA.
             </p>
-            <div className="flex flex-wrap justify-center gap-8 items-center opacity-60">
-              {/* Placeholder para logos de empresas */}
-              <div className="text-2xl font-bold text-gray-400">Google</div>
-              <div className="text-2xl font-bold text-gray-400">Microsoft</div>
-              <div className="text-2xl font-bold text-gray-400">Amazon</div>
-              <div className="text-2xl font-bold text-gray-400">Meta</div>
-            </div>
           </div>
         </footer>
       </div>
