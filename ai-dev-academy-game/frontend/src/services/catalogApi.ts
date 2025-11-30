@@ -33,9 +33,9 @@ export const fetchAllCoursesProgress = async (
  */
 export const validateCourseId = async (courseId: string): Promise<boolean> => {
   try {
-    const { courses } = await fetchCourses();
+    const courses = await fetchCourses();
     return courses.some(
-      (course) => course.course_id === courseId && course.status === 'available'
+      (course) => course.id === courseId && course.status === 'available'
     );
   } catch (error) {
     console.error('[Catalog API] Error validating course ID:', error);

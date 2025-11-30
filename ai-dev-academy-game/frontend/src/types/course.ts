@@ -8,25 +8,18 @@
 // ============================================
 
 export type CourseStatus = 'available' | 'coming_soon' | 'maintenance';
-export type CourseDifficulty = 'beginner' | 'intermediate' | 'advanced';
 
 export interface Course {
-  course_id: string;
-  title: string;
+  id: string;
+  name: string;
   description: string;
   icon: string;
   status: CourseStatus;
-  difficulty: CourseDifficulty;
-  estimated_hours: number;
-  total_modules: number;
-  total_classes: number;
-  tags: string[];
+  modules: number;
 }
 
-export interface CourseListResponse {
-  total_courses: number;
-  courses: Course[];
-}
+// Backend returns array directly, not wrapped object
+export type CourseListResponse = Course[];
 
 export interface CourseProgress {
   course_id: string;
