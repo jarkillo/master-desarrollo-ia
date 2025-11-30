@@ -1,9 +1,9 @@
 /**
  * Dashboard - Main view showing player stats, progress, and next steps
- * Professional Tailwind design with "Suggested Next" card and XP animations
+ * Professional corporate design for IT professionals
  */
 import { useEffect } from 'react';
-import { Trophy, BookOpen, Dumbbell, Bug, Flame, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
+import { Trophy, BookOpen, Dumbbell, Bug, Flame, TrendingUp, ArrowRight, Star, User as UserIcon } from 'lucide-react';
 import { useGameStore } from '../../stores/gameStore';
 
 export const Dashboard = () => {
@@ -36,8 +36,8 @@ export const Dashboard = () => {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
-          <div className="inline-block w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-lg text-gray-600 dark:text-gray-400">Loading your progress...</p>
+          <div className="inline-block w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-lg text-gray-600 dark:text-gray-400">Cargando tu progreso...</p>
         </div>
       </div>
     );
@@ -56,24 +56,29 @@ export const Dashboard = () => {
     }
   };
 
-  return (
-    <div className="space-y-8">
-      {/* Welcome Header with Player Info */}
-      <div className="bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
-        {/* Animated background effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
+  // Avatar display function - same logic as ProfilePlaceholder
+  const getAvatarDisplay = () => {
+    if (!player?.avatar || player.avatar === 'default.png' || player.avatar.includes('.png')) {
+      return <UserIcon className="w-14 h-14 text-white" />;
+    }
+    return <span className="text-5xl">{player.avatar}</span>;
+  };
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+  return (
+    <div className="space-y-6">
+      {/* Welcome Header with Player Info */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-6xl shadow-xl border-4 border-white/30">
-              {player.avatar}
+            <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center border-4 border-blue-100 dark:border-blue-900">
+              {getAvatarDisplay()}
             </div>
             <div>
-              <h1 className="text-4xl font-extrabold mb-2">
-                Welcome back, {player.username}!
+              <h1 className="text-3xl font-semibold text-gray-900 dark:text-white mb-1">
+                Bienvenido/a, {player.username}
               </h1>
-              <div className="flex items-center gap-3 text-white/90 text-lg">
-                <span className="font-semibold">Level {player.level}</span>
+              <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 text-base">
+                <span className="font-medium">Nivel {player.level}</span>
                 <span>•</span>
                 <span>{levelTitle}</span>
               </div>
@@ -83,16 +88,16 @@ export const Dashboard = () => {
           <div className="flex gap-3">
             <button
               onClick={() => useGameStore.getState().setCurrentView('profile')}
-              className="px-6 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 hover:scale-105"
+              className="px-5 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
-              View Profile
+              Ver Perfil
             </button>
             <button
               onClick={() => useGameStore.getState().setCurrentView('achievements')}
-              className="px-6 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+              className="px-5 py-2.5 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
               <Trophy className="w-5 h-5" aria-hidden="true" />
-              Achievements ({unlockedAchievements.length})
+              Logros ({unlockedAchievements.length})
             </button>
           </div>
         </div>
@@ -101,128 +106,116 @@ export const Dashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          icon={<BookOpen className="w-8 h-8" aria-hidden="true" />}
+          icon={<BookOpen className="w-7 h-7" aria-hidden="true" />}
           value={playerStats.classes_completed}
-          label="Classes Completed"
-          color="from-blue-500 to-cyan-500"
+          label="Clases Completadas"
+          color="blue"
         />
         <StatCard
-          icon={<Dumbbell className="w-8 h-8" aria-hidden="true" />}
+          icon={<Dumbbell className="w-7 h-7" aria-hidden="true" />}
           value={playerStats.exercises_completed}
-          label="Exercises Done"
-          color="from-purple-500 to-pink-500"
+          label="Ejercicios Realizados"
+          color="purple"
         />
         <StatCard
-          icon={<Bug className="w-8 h-8" aria-hidden="true" />}
+          icon={<Bug className="w-7 h-7" aria-hidden="true" />}
           value={playerStats.bug_hunt_wins}
-          label="Bug Hunt Wins"
-          color="from-green-500 to-emerald-500"
+          label="Victorias Bug Hunt"
+          color="green"
         />
         <StatCard
-          icon={<Flame className="w-8 h-8" aria-hidden="true" />}
+          icon={<Flame className="w-7 h-7" aria-hidden="true" />}
           value={playerStats.current_streak}
-          label="Day Streak"
-          color="from-orange-500 to-red-500"
+          label="Racha de Días"
+          color="orange"
         />
       </div>
 
-      {/* XP Progress Section with Animation */}
-      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl p-6 shadow-2xl">
+      {/* XP Progress Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <TrendingUp className="w-6 h-6 text-primary" aria-hidden="true" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Progress</h2>
+            <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Tu Progreso</h2>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-600 dark:text-gray-400">Next Level</div>
-            <div className="text-2xl font-bold text-primary">{xpProgress.xpNeeded} XP</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Siguiente Nivel</div>
+            <div className="text-xl font-semibold text-blue-600 dark:text-blue-400">{xpProgress.xpNeeded} XP</div>
           </div>
         </div>
 
-        {/* Animated XP Bar */}
+        {/* XP Progress Bar */}
         <div className="relative">
-          <div className="flex justify-between text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            <span>Level {player.level}</span>
-            <span className="text-primary">{player.xp} XP</span>
-            <span>Level {player.level + 1}</span>
+          <div className="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <span>Nivel {player.level}</span>
+            <span className="text-blue-600 dark:text-blue-400">{player.xp} XP</span>
+            <span>Nivel {player.level + 1}</span>
           </div>
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden relative">
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+              className="h-full bg-blue-600 rounded-full transition-all duration-500"
               style={{ width: `${xpProgress.progressPercentage}%` }}
-            >
-              {/* Animated shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-            </div>
+            ></div>
           </div>
           <div className="text-center mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {Math.round(xpProgress.progressPercentage)}% to next level
+            {Math.round(xpProgress.progressPercentage)}% para el siguiente nivel
           </div>
         </div>
       </div>
 
-      {/* Suggested Next Card - PROMINENT */}
+      {/* Suggested Next Card */}
       {nextRecommendedClass && (
-        <div className="relative group">
-          {/* Animated gradient border */}
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-secondary to-accent rounded-2xl opacity-75 group-hover:opacity-100 blur transition duration-1000 animate-pulse"></div>
-
-          <div className="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
-            <div className="flex items-start gap-4 mb-4">
-              <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-                <Sparkles className="w-8 h-8 text-white" aria-hidden="true" />
+        <div className="bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-14 h-14 rounded-lg bg-blue-600 flex items-center justify-center">
+              <BookOpen className="w-7 h-7 text-white" aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-md">
+                  RECOMENDADO A CONTINUACIÓN
+                </span>
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">
-                    RECOMMENDED NEXT
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {nextRecommendedClass.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  {nextRecommendedClass.description}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <span className="text-lg">{nextRecommendedClass.difficulty}</span>
-                    {nextRecommendedClass.estimatedTime}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    ⭐ {nextRecommendedClass.xpReward} XP
-                  </span>
-                </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                {nextRecommendedClass.title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-3">
+                {nextRecommendedClass.description}
+              </p>
+              <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                <span className="flex items-center gap-1">
+                  <span className="text-base">{nextRecommendedClass.difficulty}</span>
+                  {nextRecommendedClass.estimatedTime}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                  {nextRecommendedClass.xpReward} XP
+                </span>
               </div>
             </div>
-
-            <button
-              onClick={handleStartNextClass}
-              className="w-full group/btn relative px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:scale-[1.02] overflow-hidden"
-            >
-              {/* Button shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000"></div>
-
-              <span className="relative flex items-center justify-center gap-2">
-                Continue Learning
-                <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" aria-hidden="true" />
-              </span>
-            </button>
           </div>
+
+          <button
+            onClick={handleStartNextClass}
+            className="w-full px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+          >
+            Continuar Aprendiendo
+            <ArrowRight className="w-5 h-5" aria-hidden="true" />
+          </button>
         </div>
       )}
 
       {/* Overall Progress */}
-      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl p-6 shadow-2xl">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Course Progress</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Progreso del Curso</h2>
         <div className="space-y-3">
-          <div className="flex justify-between text-sm font-semibold text-gray-700 dark:text-gray-300">
-            <span>{fullProgress.classes_completed} / {fullProgress.total_classes} classes</span>
-            <span className="text-primary">{Math.round(fullProgress.overall_progress_percentage)}%</span>
+          <div className="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span>{fullProgress.classes_completed} / {fullProgress.total_classes} clases</span>
+            <span className="text-blue-600 dark:text-blue-400">{Math.round(fullProgress.overall_progress_percentage)}%</span>
           </div>
-          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all duration-1000 ease-out"
+              className="h-full bg-blue-600 rounded-full transition-all duration-500"
               style={{ width: `${fullProgress.overall_progress_percentage}%` }}
             ></div>
           </div>
@@ -231,16 +224,16 @@ export const Dashboard = () => {
 
       {/* Modules Grid */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Modules</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Módulos</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {fullProgress.modules.map((module) => (
             <button
               key={module.module_number}
               onClick={() => selectModule(module.module_number)}
-              className={`group relative text-left rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] ${
+              className={`relative text-left rounded-lg p-6 transition-colors ${
                 module.classes_completed === 0
-                  ? 'bg-gray-100/90 dark:bg-gray-700/50 cursor-not-allowed opacity-60'
-                  : 'bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-lg hover:shadow-2xl cursor-pointer'
+                  ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed opacity-60'
+                  : 'bg-white dark:bg-gray-800 shadow hover:shadow-md cursor-pointer'
               } ${
                 module.classes_completed === module.total_classes
                   ? 'ring-2 ring-green-500'
@@ -249,27 +242,27 @@ export const Dashboard = () => {
               disabled={module.classes_completed === 0}
             >
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-bold text-primary">Module {module.module_number}</h3>
+                <h3 className="text-base font-semibold text-blue-600 dark:text-blue-400">Módulo {module.module_number}</h3>
                 {module.classes_completed === module.total_classes && (
-                  <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">
+                  <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">
                     ✓
                   </div>
                 )}
               </div>
 
-              <p className="text-gray-900 dark:text-white font-semibold mb-4">
+              <p className="text-gray-900 dark:text-white font-medium mb-4 text-sm">
                 {module.module_title}
               </p>
 
               <div className="space-y-2">
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
+                    className="h-full bg-blue-600 rounded-full transition-all duration-500"
                     style={{ width: `${module.module_progress_percentage}%` }}
                   ></div>
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                  {module.classes_completed} / {module.total_classes} classes
+                <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
+                  {module.classes_completed} / {module.total_classes} clases
                 </div>
               </div>
             </button>
@@ -281,12 +274,12 @@ export const Dashboard = () => {
       {recentAchievements.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recent Achievements</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Logros Recientes</h2>
             <button
               onClick={() => useGameStore.getState().setCurrentView('achievements')}
-              className="text-primary hover:text-primary-600 font-semibold flex items-center gap-1 group"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-1 group"
             >
-              View All
+              Ver Todos
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </button>
           </div>
@@ -294,20 +287,20 @@ export const Dashboard = () => {
             {recentAchievements.map((achievement) => (
               <div
                 key={achievement.id}
-                className={`relative overflow-hidden rounded-2xl p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border-l-4 ${getBorderColor(achievement.rarity)}`}
+                className={`rounded-lg p-5 bg-white dark:bg-gray-800 shadow hover:shadow-md transition-shadow border-l-4 ${getBorderColor(achievement.rarity)}`}
               >
                 <div className="flex items-start gap-4">
-                  <div className="text-5xl flex-shrink-0">
+                  <div className="text-4xl flex-shrink-0">
                     {achievement.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1 text-sm">
                       {achievement.title}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                       {achievement.description}
                     </p>
-                    <div className="text-sm font-semibold text-green-600 dark:text-green-400">
+                    <div className="text-xs font-medium text-green-600 dark:text-green-400">
                       +{achievement.xp_reward} XP
                     </div>
                   </div>
@@ -326,35 +319,42 @@ interface StatCardProps {
   icon: React.ReactNode;
   value: number;
   label: string;
-  color: string;
+  color: 'blue' | 'purple' | 'green' | 'orange';
 }
 
+const getColorClasses = (color: StatCardProps['color']) => {
+  const colors = {
+    blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+    purple: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
+    green: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
+    orange: 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
+  };
+  return colors[color];
+};
+
 const StatCard = ({ icon, value, label, color }: StatCardProps) => (
-  <div className="group relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
-    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${color} opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity`}></div>
-    <div className="relative">
-      <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${color} text-white shadow-lg mb-4`}>
-        {icon}
-      </div>
-      <div className="text-4xl font-extrabold text-gray-900 dark:text-white mb-1">
-        {value}
-      </div>
-      <div className="text-sm text-gray-600 dark:text-gray-400">
-        {label}
-      </div>
+  <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-5 hover:shadow-md transition-shadow">
+    <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg ${getColorClasses(color)} mb-3`}>
+      {icon}
+    </div>
+    <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+      {value}
+    </div>
+    <div className="text-sm text-gray-600 dark:text-gray-400">
+      {label}
     </div>
   </div>
 );
 
 // Helper Functions
 function getLevelTitle(level: number): string {
-  if (level <= 5) return 'Junior Developer';
-  if (level <= 10) return 'Mid Developer';
-  if (level <= 15) return 'Senior Developer';
+  if (level <= 5) return 'Desarrollador Junior';
+  if (level <= 10) return 'Desarrollador Mid';
+  if (level <= 15) return 'Desarrollador Senior';
   if (level <= 20) return 'Tech Lead';
-  if (level <= 25) return 'Architect';
+  if (level <= 25) return 'Arquitecto';
   if (level <= 30) return 'CTO';
-  return 'Legend';
+  return 'Leyenda';
 }
 
 function getXPProgress(xp: number): {
