@@ -20,6 +20,9 @@ interface GameState {
   player: Player | null;
   playerStats: PlayerStats | null;
 
+  // Course context (NFLOW-2)
+  courseId: string;
+
   // Progress data
   fullProgress: FullProgressResponse | null;
   currentModule: ModuleInfo | null;
@@ -43,6 +46,7 @@ interface GameState {
   error: string | null;
 
   // Actions
+  setCourseId: (courseId: string) => void;
   setPlayer: (player: Player) => void;
   setPlayerStats: (stats: PlayerStats) => void;
   loadPlayer: (playerId: number) => Promise<void>;
@@ -65,6 +69,7 @@ interface GameState {
 const initialState = {
   player: null,
   playerStats: null,
+  courseId: 'master-ia', // NFLOW-2: Default course
   fullProgress: null,
   currentModule: null,
   allModules: [],
@@ -83,6 +88,8 @@ export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
       ...initialState,
+
+      setCourseId: (courseId) => set({ courseId }),
 
       setPlayer: (player) => set({ player }),
 
@@ -106,7 +113,8 @@ export const useGameStore = create<GameState>()(
       loadFullProgress: async (playerId: number) => {
         set({ isLoading: true, error: null });
         try {
-          const fullProgress = await progressApi.getFullProgress(playerId);
+          const { courseId } = get(); // NFLOW-2: Get current courseId from store
+          const fullProgress = await progressApi.getFullProgress(playerId, courseId);
           set({ fullProgress, isLoading: false });
         } catch (error) {
           console.error('Failed to load progress:', error);
@@ -118,7 +126,8 @@ export const useGameStore = create<GameState>()(
       loadPlayerAchievements: async (playerId: number) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await achievementApi.getPlayerAchievements(playerId);
+          const { courseId } = get(); // NFLOW-2: Get current courseId from store
+          const response = await achievementApi.getPlayerAchievements(playerId, courseId);
           set({
             unlockedAchievements: response.achievements,
             isLoading: false
@@ -133,7 +142,8 @@ export const useGameStore = create<GameState>()(
       loadAllModules: async () => {
         set({ isLoading: true, error: null });
         try {
-          const allModules = await progressApi.getAllModules();
+          const { courseId } = get(); // NFLOW-2: Get current courseId from store
+          const allModules = await progressApi.getAllModules(courseId);
           set({ allModules, isLoading: false });
         } catch (error) {
           console.error('Failed to load modules:', error);
@@ -147,7 +157,8 @@ export const useGameStore = create<GameState>()(
       selectModule: async (moduleNumber: number) => {
         set({ isLoading: true, error: null });
         try {
-          const currentModule = await progressApi.getModuleInfo(moduleNumber);
+          const { courseId } = get(); // NFLOW-2: Get current courseId from store
+          const currentModule = await progressApi.getModuleInfo(moduleNumber, courseId);
           set({
             currentModule,
             selectedModuleNumber: moduleNumber,
@@ -176,9 +187,10 @@ export const useGameStore = create<GameState>()(
           // Load or refresh module info if needed
           const state = get();
           let currentModule = state.currentModule;
+          const { courseId } = state; // NFLOW-2: Get current courseId from store
 
           if (!currentModule || currentModule.module_number !== moduleNumber) {
-            currentModule = await progressApi.getModuleInfo(moduleNumber);
+            currentModule = await progressApi.getModuleInfo(moduleNumber, courseId);
             set({ currentModule });
           }
 
@@ -212,7 +224,7 @@ export const useGameStore = create<GameState>()(
 
       completeCurrentClass: async () => {
         const state = get();
-        const { player, fullProgress, selectedModuleNumber, selectedClassNumber } = state;
+        const { player, fullProgress, selectedModuleNumber, selectedClassNumber, courseId } = state;
 
         if (!player || selectedModuleNumber === null || selectedClassNumber === null || !fullProgress) {
           throw new Error('Invalid state for completing class');
@@ -233,12 +245,13 @@ export const useGameStore = create<GameState>()(
             throw new Error('Class progress not found');
           }
 
-          // Complete the class and check achievements
+          // Complete the class and check achievements (NFLOW-2: pass courseId)
           const result = await completeClass(
             player.id,
             classProgress.id,
             selectedModuleNumber,
-            selectedClassNumber
+            selectedClassNumber,
+            courseId
           );
 
           // Update player XP

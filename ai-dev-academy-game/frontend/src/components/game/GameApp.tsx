@@ -1,6 +1,9 @@
 /**
  * GameApp - Main AI Dev Academy Game application
+ * NFLOW-2: Receive courseId from URL parameter
  */
+import { useEffect } from 'react';
+import { useParams, Navigate } from 'react-router-dom';
 import { useGameStore } from '../../stores/gameStore';
 import { Dashboard } from './Dashboard';
 import { ModuleViewer } from './ModuleViewer';
@@ -9,7 +12,20 @@ import { Notifications } from './Notifications';
 import './GameApp.css';
 
 export const GameApp = () => {
-  const { currentView, selectedModuleNumber, selectedClassNumber } = useGameStore();
+  const { courseId } = useParams<{ courseId: string }>();
+  const { currentView, selectedModuleNumber, selectedClassNumber, setCourseId } = useGameStore();
+
+  // Set courseId in store when component mounts or courseId changes
+  useEffect(() => {
+    if (courseId) {
+      setCourseId(courseId);
+    }
+  }, [courseId, setCourseId]);
+
+  // If no courseId in URL (should not happen due to redirect), show error
+  if (!courseId) {
+    return <Navigate to="/game/master-ia" replace />;
+  }
 
   return (
     <div className="game-app">
