@@ -1,9 +1,9 @@
 """Bug Hunt - Plantillas de bugs en Español."""
 
-from typing import Any
+from typing import Dict, List, Any
 
 # Traducciones de bug templates en Español
-BUG_TEMPLATES_ES: dict[str, dict[str, Any]] = {
+BUG_TEMPLATES_ES: Dict[str, Dict[str, Any]] = {
     "bug_001": {
         "title": "Error de Límite en Bucle",
         "description": "Encuentra el error off-by-one en esta iteración de lista",

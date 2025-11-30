@@ -1,8 +1,0 @@
-# Ruff configuration for AI Dev Academy Game backend
-
-[lint]
-# Ignore B008 (function calls in argument defaults)
-# This is the standard FastAPI pattern for dependency injection:
-# async def endpoint(db: Session = Depends(get_db))
-# It's safe and recommended by FastAPI documentation
-ignore = ["B008"]

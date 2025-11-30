@@ -1,12 +1,11 @@
 """Internationalization module for AI Dev Academy backend."""
 
-from typing import Any
-
-from .bug_templates_en import BUG_TEMPLATES_EN
+from typing import Dict, Any
 from .bug_templates_es import BUG_TEMPLATES_ES
+from .bug_templates_en import BUG_TEMPLATES_EN
 
 
-def get_bug_template_i18n(template_id: str, language: str = "es") -> dict[str, Any]:
+def get_bug_template_i18n(template_id: str, language: str = "es") -> Dict[str, Any]:
     """
     Get translated bug template metadata.
 

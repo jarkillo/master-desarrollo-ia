@@ -34,5 +34,5 @@ def verificar_jwt(
     try:
         payload = jwt.decode(token, secret, algorithms=["HS256"])
         return payload  # lo puedes inyectar en el endpoint si lo necesitas
-    except JWTError as e:
-        raise HTTPException(status_code=401, detail="Token inválido o expirado") from e
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
