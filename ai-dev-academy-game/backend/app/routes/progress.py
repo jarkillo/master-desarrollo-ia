@@ -29,32 +29,47 @@ router = APIRouter()
 
 
 @router.get("/modules", response_model=list[ModuleInfoResponse])
-async def get_all_modules():
+async def get_all_modules(course_id: str = "master-ia"):
     """
     Get all modules with their class information from the curriculum.
 
+    Args:
+        course_id: Course identifier (default: "master-ia" for backward compatibility)
+
     Returns curriculum metadata (not player progress).
+
+    NFLOW-1: Added course_id parameter to support multi-course platform.
+    Default value maintains backward compatibility with existing frontend.
     """
-    modules = content_service.get_all_modules()
+    from app.core.course_manager import course_manager
+
+    course = course_manager.get_course(course_id)
+    if not course:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Course '{course_id}' not found"
+        )
+
+    modules = course.get_modules()
 
     result = []
     for module in modules:
         classes = [
             ClassInfoResponse(
-                class_number=c.class_number,
-                title=c.title,
-                description=c.description,
-                exercises_count=c.exercises_count,
-                xp_reward=c.xp_reward
+                class_number=c["id"],
+                title=c["title"],
+                description=c["description"],
+                exercises_count=c["exercises_count"],
+                xp_reward=c["xp_reward"]
             )
-            for c in module.classes
+            for c in module["classes"]
         ]
 
         result.append(ModuleInfoResponse(
-            module_number=module.module_number,
-            title=module.title,
-            description=module.description,
-            total_classes=len(module.classes),
+            module_number=module["id"],
+            title=module["name"],
+            description=module["description"],
+            total_classes=len(module["classes"]),
             classes=classes
         ))
 
