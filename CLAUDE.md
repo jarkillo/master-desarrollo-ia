@@ -775,3 +775,446 @@ If you're continuing this project, prioritize:
 - ✅ CI/CD matrix updated (5 new classes added)
 
 See review documents for detailed action items and estimates.
+
+---
+
+## NeuralFlow - Multi-Course Educational SaaS Platform
+
+**⚠️ IMPORTANT**: The AI Dev Academy game is being evolved into **NeuralFlow** (neuralflow.es), a multi-course educational SaaS platform. This is an active development project separate from the master's degree curriculum.
+
+**🚨 CRITICAL WORKFLOW RULE:**
+Before working on ANY NeuralFlow feature, you MUST:
+1. Check Linear issues status (use `neuralflow-linear-manager` agent)
+2. Verify dependency order (see execution phases below)
+3. Ensure prerequisite issues are completed (status: "Done")
+4. Never start dependent issues until prerequisites are merged
+5. Follow the recommended execution order (5 phases)
+
+**Execution Phases:**
+```
+Phase 1 (Core Infrastructure): NFLOW-1 → NFLOW-2 → NFLOW-3
+Phase 2 (Testing & Deploy):    NFLOW-5 → NFLOW-8
+Phase 3 (Content):              NFLOW-4 (can be parallel)
+Phase 4 (Enhancements):         NFLOW-6 → NFLOW-7
+Phase 5 (Documentation):        NFLOW-9
+```
+
+### Project Overview
+
+**NeuralFlow** is a platform that hosts multiple educational courses:
+- **Master IA** (existing: AI-assisted development)
+- **Data Engineering** (planned: data pipelines, ETL, analytics)
+- Future courses as the platform grows
+
+**Tech Stack:**
+- **Backend:** FastAPI + SQLAlchemy + SQLite (migrating to PostgreSQL)
+- **Frontend:** React 18 + TypeScript + Vite + Zustand
+- **Deployment:** Easypanel (Docker Compose + Traefik reverse proxy)
+- **Auth:** JWT with bcrypt password hashing
+- **Database:** SQLite (current), PostgreSQL (planned migration)
+
+### Linear Project Management
+
+All NeuralFlow development is tracked in Linear:
+- **Team:** cursos-neuralflow
+- **Total Issues:** 9 (covering full multi-course migration)
+
+**Core Platform Issues (3):**
+  - **NFLOW-1:** Backend multi-curso con adapter pattern (High priority, 4-6h)
+  - **NFLOW-2:** Frontend catálogo de cursos (High priority, 3-5h)
+  - **NFLOW-3:** Database migration - añadir course_id (Medium priority, 2-3h)
+
+**Content & Testing (2):**
+  - **NFLOW-4:** Crear contenido curricular para Data Engineering (High priority, 40-60h)
+  - **NFLOW-5:** Implementar tests E2E para flujos multi-curso (High priority, 8-12h)
+
+**Features & Analytics (2):**
+  - **NFLOW-6:** Analytics y tracking multi-curso (Medium priority, 12-16h)
+  - **NFLOW-7:** Sistema de achievements específicos por curso (Medium priority, 10-14h)
+
+**Infrastructure & Documentation (2):**
+  - **NFLOW-8:** Configuración de deployment y variables de entorno multi-curso (High priority, 6-8h)
+  - **NFLOW-9:** Documentación completa multi-curso (Medium priority, 8-12h)
+
+**Total Estimated Time:** 93-131 hours (~112 hours average, ~14 working days at 8h/day)
+
+### Development Workflow for NeuralFlow
+
+**Important Constraints:**
+- ✅ Must work with Easypanel (Traefik already configured, no Nginx needed)
+- ✅ Use `docker-compose.production.yml` with `expose` (not `ports`)
+- ✅ All changes must be backward compatible (existing Master IA must work)
+- ✅ Default `course_id` is "master-ia" for all endpoints
+- ✅ Incremental migration (no big bang rewrites)
+- ✅ Cannot rename `ai-dev-academy-game/` directory (breaks deployment paths)
+
+**Architecture Principles:**
+1. **Conservative over Clever** - Incremental changes, proven patterns
+2. **Multi-Course from Day 1** - Every new feature supports multiple courses
+3. **Fail-Safe Architecture** - Every migration has a rollback plan
+4. **Developer Experience** - Clear separation of concerns (core, courses, routes)
+
+### NeuralFlow Specialized Agents
+
+The repository includes **12 specialized agents** for NeuralFlow development located in `.claude/agents/`:
+
+**Development Agents (5):**
+1. **neuralflow-architect.md** - Solution architect for multi-course platform decisions
+2. **neuralflow-implementer.md** - Implements features following established patterns
+3. **tdd-neuralflow.md** - Test-Driven Development specialist (RED-GREEN-REFACTOR)
+4. **neuralflow-security-auditor.md** - Security auditing (OWASP, JWT, CORS, secrets)
+5. **neuralflow-qa.md** - Quality Assurance (UAT, regression, cross-browser testing)
+
+**Frontend & UX Agents (3):**
+6. **neuralflow-frontend-expert.md** - React 18 + TypeScript + Zustand expert
+7. **neuralflow-ui-expert.md** - UI design, design system, component library
+8. **neuralflow-accessibility.md** - Accessibility specialist (WCAG 2.1 AA compliance)
+
+**Product & Marketing Agents (3):**
+9. **neuralflow-infoproduct-expert.md** - Educational product design, course structure
+10. **neuralflow-marketing.md** - Marketing strategy, funnels, acquisition campaigns
+11. **neuralflow-copywriting.md** - Conversion copywriting for developers
+
+**Management Agent (1):**
+12. **neuralflow-linear-manager.md** - Linear project management, issue tracking
+
+### When to Use NeuralFlow Agents
+
+**Use these agents when:**
+- Working on multi-course platform features
+- Implementing NFLOW-1, NFLOW-2, or NFLOW-3 issues
+- Making architectural decisions for NeuralFlow
+- Adding new courses or course-related features
+- Designing/implementing frontend components
+- Writing marketing materials or course content
+- Managing Linear issues and project workflow
+
+**Do NOT use for:**
+- Master's degree curriculum development (use educational agents instead)
+- Individual class implementations in Modules 1-5
+- General Python/FastAPI questions (use educational agents)
+
+### NeuralFlow Directory Structure
+
+```
+ai-dev-academy-game/
+├── backend/
+│   ├── app/
+│   │   ├── core/              # Shared infrastructure (auth, db, config)
+│   │   │   ├── auth.py
+│   │   │   ├── database.py
+│   │   │   ├── config.py
+│   │   │   └── course_manager.py  # NFLOW-1: Course registration
+│   │   ├── courses/           # Course-specific implementations
+│   │   │   ├── master_ia.py   # NFLOW-1: Master IA adapter
+│   │   │   └── data_engineering.py  # NFLOW-1: Data Eng stub
+│   │   ├── models/            # SQLAlchemy models
+│   │   ├── routes/            # FastAPI endpoints
+│   │   │   ├── auth.py
+│   │   │   ├── catalog.py     # NFLOW-1: GET /api/courses
+│   │   │   └── ...
+│   │   ├── services/          # Business logic
+│   │   └── main.py
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── catalog/       # NFLOW-2: Course catalog
+│   │   │   │   ├── CourseCatalog.tsx
+│   │   │   │   └── CourseCard.tsx
+│   │   │   ├── auth/
+│   │   │   ├── game/
+│   │   │   └── common/
+│   │   ├── services/
+│   │   │   ├── api.ts
+│   │   │   ├── authApi.ts
+│   │   │   ├── gameApi.ts
+│   │   │   └── catalogApi.ts  # NFLOW-2: Catalog API calls
+│   │   ├── stores/
+│   │   │   ├── authStore.ts
+│   │   │   ├── gameStore.ts
+│   │   │   └── catalogStore.ts  # NFLOW-2: Catalog state
+│   │   └── types/
+│   │       └── course.ts      # NFLOW-2: Course TypeScript types
+│   └── Dockerfile
+└── docker-compose.production.yml  # Easypanel deployment config
+```
+
+### All Migration Issues (Linear)
+
+**Phase 1: Core Infrastructure**
+
+**NFLOW-1: Backend multi-curso con adapter pattern** (High, 4-6h)
+- Create `CourseManager` to register and retrieve courses
+- Add `course_id` parameter to all endpoints (default: "master-ia")
+- Implement adapter pattern: `MasterIACourse`, `DataEngineeringCourse`
+- Create `GET /api/courses` endpoint
+- **Status:** Backlog
+
+**NFLOW-2: Frontend catálogo de cursos** (High, 3-5h)
+- Create `CourseCatalog` React component
+- Implement `CourseCard` with course status badges
+- Add routing: `/catalog` and `/game/:courseId`
+- Backward compatibility: `/game` redirects to `/game/master-ia`
+- **Depends on:** NFLOW-1
+- **Status:** Backlog
+
+**NFLOW-3: Database migration - añadir course_id** (Medium, 2-3h)
+- Alembic migration to add `course_id` to `Progress` and `Achievement` tables
+- Default value: "master-ia" (backward compatible)
+- Backfill existing records
+- **Depends on:** NFLOW-2
+- **Status:** Backlog (delayed until Data Engineering ready)
+
+**Phase 2: Testing & Deployment**
+
+**NFLOW-5: Implementar tests E2E para flujos multi-curso** (High, 8-12h)
+- Playwright/Cypress setup for end-to-end testing
+- Test scenarios: new user flow, course switching, progress isolation
+- Test backward compatibility (default course behavior)
+- CI/CD integration for E2E tests
+- **Depends on:** NFLOW-1, NFLOW-2
+- **Status:** Backlog
+
+**NFLOW-8: Configuración de deployment y variables de entorno multi-curso** (High, 6-8h)
+- Update `docker-compose.production.yml` with course environment variables
+- Health checks for multi-course endpoints
+- Deploy scripts (Easypanel configuration)
+- Backup and rollback procedures
+- **Depends on:** NFLOW-3
+- **Status:** Backlog
+
+**Phase 3: Content Creation**
+
+**NFLOW-4: Crear contenido curricular para Data Engineering** (High, 40-60h)
+- 5 modules: ETL Foundations, Databases at Scale, Airflow, Data Warehousing, Final Project
+- 20-25 classes with exercises
+- Data Engineering final project (end-to-end pipeline)
+- Integration with existing content system
+- **Status:** Backlog (can be done in parallel with Phase 1-2)
+
+**Phase 4: Enhancement Features**
+
+**NFLOW-6: Analytics y tracking multi-curso** (Medium, 12-16h)
+- Google Analytics 4 integration with course_id tracking
+- Per-course metrics dashboard (admin view)
+- Event tracking: course_start, class_complete, achievement_unlock
+- Privacy-compliant analytics (GDPR)
+- **Depends on:** NFLOW-3
+- **Status:** Backlog
+
+**NFLOW-7: Sistema de achievements específicos por curso** (Medium, 10-14h)
+- 15 achievements per course (Master IA, Data Engineering)
+- 5 cross-course achievements
+- Achievement badges and social sharing
+- Leaderboard by course
+- **Depends on:** NFLOW-6
+- **Status:** Backlog
+
+**Phase 5: Documentation**
+
+**NFLOW-9: Documentación completa multi-curso** (Medium, 8-12h)
+- Update README.md with multi-course architecture
+- ARCHITECTURE.md explaining adapter pattern and course system
+- DEPLOY.md with Easypanel multi-course deployment guide
+- API documentation (Swagger/OpenAPI) with course_id parameter examples
+- **Status:** Backlog
+
+### NeuralFlow Development Commands
+
+**Backend (from ai-dev-academy-game/backend/):**
+```bash
+# Start backend development server
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+# Run backend tests
+pytest
+
+# Run with coverage
+pytest --cov=app --cov-report=term-missing
+```
+
+**Frontend (from ai-dev-academy-game/frontend/):**
+```bash
+# Install dependencies
+npm install
+
+# Start frontend development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run frontend tests
+npm run test
+```
+
+**Docker (from ai-dev-academy-game/):**
+```bash
+# Build and run with docker-compose
+docker-compose up --build
+
+# Production build (Easypanel uses this)
+docker-compose -f docker-compose.production.yml up -d
+```
+
+### Working with NeuralFlow
+
+**⚠️ CRITICAL: Check Issue Dependencies Before Starting**
+
+**Recommended execution order (5 phases):**
+
+```
+Phase 1 (Core Infrastructure):
+NFLOW-1 → NFLOW-2 → NFLOW-3
+
+Phase 2 (Testing & Deploy):
+NFLOW-5 → NFLOW-8
+
+Phase 3 (Content - Parallel):
+NFLOW-4
+
+Phase 4 (Enhancements):
+NFLOW-6 → NFLOW-7
+
+Phase 5 (Documentation):
+NFLOW-9
+```
+
+**Why this order matters:**
+- **Phase 1 is sequential**: NFLOW-2 needs NFLOW-1 (backend endpoints), NFLOW-3 needs NFLOW-2 (UI to test with)
+- **Phase 2 validates Phase 1**: E2E tests ensure multi-course works before deployment config
+- **Phase 3 can be parallel**: Content creation doesn't block infrastructure work
+- **Phase 4 builds on Phase 1**: Analytics and achievements need the multi-course foundation
+- **Phase 5 is last**: Documentation captures the final implemented system
+- Breaking this order will cause merge conflicts, failed tests, and rework
+
+**Before starting ANY work:**
+1. ✅ **Check Linear** - Use **neuralflow-linear-manager** agent to:
+   - List current issues: `mcp__linear__list_issues` with team "cursos-neuralflow"
+   - Check issue status (Todo/In Progress/Done)
+   - Verify which issues are already completed
+2. ✅ **Verify dependencies** - Ensure prerequisite issues are DONE
+   - NFLOW-1 must be Done before starting NFLOW-2
+   - NFLOW-2 must be Done before starting NFLOW-3
+3. ✅ **Consult architect** - Use **neuralflow-architect** agent for design decisions
+4. ✅ **Create feature branch** - Use format: `feature/nflow-X-description`
+5. ✅ **Review constraints** - Backward compatibility, Easypanel, no directory renames
+
+**Example 1: Starting work on NFLOW-2 (Frontend catalog)**
+```bash
+# WRONG: Start without checking
+git checkout -b feature/nflow-2-catalog  # ❌ May not be ready
+
+# RIGHT: Check Linear first
+# Use neuralflow-linear-manager to verify:
+# - NFLOW-1 status is "Done" ✅ (prerequisite completed)
+# - NFLOW-2 status is "Todo" or "Backlog" ✅
+# - No blockers reported ✅
+# THEN create branch
+git checkout -b feature/nflow-2-catalog  # ✅ Safe to proceed
+```
+
+**Example 2: Starting work on NFLOW-6 (Analytics)**
+```bash
+# WRONG: Start too early
+git checkout -b feature/nflow-6-analytics  # ❌ NFLOW-3 not done yet
+
+# RIGHT: Verify entire dependency chain
+# Use neuralflow-linear-manager to verify:
+# - NFLOW-1 status is "Done" ✅ (Phase 1 complete)
+# - NFLOW-2 status is "Done" ✅ (Phase 1 complete)
+# - NFLOW-3 status is "Done" ✅ (NFLOW-6 depends on this)
+# - NFLOW-6 status is "Todo" or "Backlog" ✅
+# THEN create branch
+git checkout -b feature/nflow-6-analytics  # ✅ Safe to proceed
+```
+
+**Example 3: Working on NFLOW-4 (Content) in parallel**
+```bash
+# NFLOW-4 can be done in parallel with Phase 1-2
+# Use neuralflow-linear-manager to verify:
+# - NFLOW-4 status is "Todo" or "Backlog" ✅
+# - No dependencies blocking ✅ (content creation is independent)
+git checkout -b feature/nflow-4-data-eng-content  # ✅ Can start anytime
+```
+
+**During implementation:**
+1. Use **neuralflow-implementer** for code generation
+2. Use **tdd-neuralflow** for writing tests first
+3. Use **neuralflow-security-auditor** for auth/data changes
+4. Use **neuralflow-qa** before creating PR
+
+**After implementation:**
+1. Create PR with Linear issue reference (e.g., "Closes NFLOW-1")
+2. Run smoke tests
+3. **DO NOT MERGE** - User (human) reviews and merges
+
+### Recommended Agents by Issue
+
+**NFLOW-1 (Backend multi-curso):**
+- neuralflow-architect (design CourseManager pattern)
+- neuralflow-implementer (implement adapters)
+- tdd-neuralflow (write tests first)
+- neuralflow-security-auditor (validate endpoint security)
+
+**NFLOW-2 (Frontend catalog):**
+- neuralflow-frontend-expert (React components, Zustand state)
+- neuralflow-ui-expert (CourseCard design, responsive layout)
+- neuralflow-accessibility (WCAG compliance)
+- neuralflow-implementer (implementation)
+
+**NFLOW-3 (Database migration):**
+- neuralflow-architect (migration strategy)
+- neuralflow-implementer (Alembic migration)
+- neuralflow-security-auditor (data integrity checks)
+- tdd-neuralflow (test migration rollback)
+
+**NFLOW-4 (Data Engineering content):**
+- neuralflow-infoproduct-expert (course structure, exercises)
+- neuralflow-copywriting (course descriptions, marketing)
+- neuralflow-implementer (content integration)
+
+**NFLOW-5 (E2E tests):**
+- neuralflow-qa (test strategy, Playwright/Cypress setup)
+- tdd-neuralflow (test scenarios)
+- neuralflow-implementer (test implementation)
+
+**NFLOW-6 (Analytics):**
+- neuralflow-architect (analytics architecture)
+- neuralflow-implementer (Google Analytics integration)
+- neuralflow-security-auditor (privacy compliance, GDPR)
+
+**NFLOW-7 (Achievements):**
+- neuralflow-ui-expert (badge design, social sharing UI)
+- neuralflow-frontend-expert (React achievement components)
+- neuralflow-implementer (achievement logic)
+
+**NFLOW-8 (Deployment config):**
+- neuralflow-architect (deployment strategy)
+- neuralflow-implementer (docker-compose updates)
+- neuralflow-security-auditor (environment secrets validation)
+
+**NFLOW-9 (Documentation):**
+- neuralflow-architect (architecture diagrams)
+- neuralflow-copywriting (README, guides)
+- neuralflow-infoproduct-expert (API documentation)
+
+### NeuralFlow vs. Master's Curriculum
+
+**NeuralFlow (ai-dev-academy-game/):**
+- Production SaaS platform
+- Multi-course support
+- Real users, real data
+- Deployed to neuralflow.es
+- Use NeuralFlow agents
+
+**Master's Curriculum (Modulo 0-5/):**
+- Educational content
+- Progressive learning modules
+- Self-contained class examples
+- Use educational agents
+
+**DO NOT confuse these two projects.** They have different purposes, different agents, and different workflows.
+
+---
