@@ -75,26 +75,36 @@ export const playerApi = {
 export const progressApi = {
   /**
    * Create or unlock a class
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  createProgress: async (data: ProgressCreate): Promise<Progress> => {
-    const response = await axios.post<Progress>(`${API_BASE_URL}/progress/`, data);
+  createProgress: async (data: ProgressCreate, courseId: string = 'master-ia'): Promise<Progress> => {
+    const response = await axios.post<Progress>(`${API_BASE_URL}/progress/`, data, {
+      params: { course_id: courseId }
+    });
     return response.data;
   },
 
   /**
    * Get full progress for a player
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getFullProgress: async (playerId: number): Promise<FullProgressResponse> => {
-    const response = await axios.get<FullProgressResponse>(`${API_BASE_URL}/progress/${playerId}`);
+  getFullProgress: async (playerId: number, courseId: string = 'master-ia'): Promise<FullProgressResponse> => {
+    const response = await axios.get<FullProgressResponse>(`${API_BASE_URL}/progress/${playerId}`, {
+      params: { course_id: courseId }
+    });
     return response.data;
   },
 
   /**
    * Get progress for a specific module
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getModuleProgress: async (playerId: number, moduleNumber: number): Promise<Progress[]> => {
+  getModuleProgress: async (playerId: number, moduleNumber: number, courseId: string = 'master-ia'): Promise<Progress[]> => {
     const response = await axios.get<Progress[]>(
-      `${API_BASE_URL}/progress/${playerId}/module/${moduleNumber}`
+      `${API_BASE_URL}/progress/${playerId}/module/${moduleNumber}`,
+      {
+        params: { course_id: courseId }
+      }
     );
     return response.data;
   },
@@ -109,27 +119,37 @@ export const progressApi = {
 
   /**
    * Get next unlockable class
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getNextUnlockable: async (playerId: number): Promise<NextUnlockableClass | null> => {
+  getNextUnlockable: async (playerId: number, courseId: string = 'master-ia'): Promise<NextUnlockableClass | null> => {
     const response = await axios.get<NextUnlockableClass | null>(
-      `${API_BASE_URL}/progress/${playerId}/next-unlockable`
+      `${API_BASE_URL}/progress/${playerId}/next-unlockable`,
+      {
+        params: { course_id: courseId }
+      }
     );
     return response.data;
   },
 
   /**
    * Get all modules info
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getAllModules: async (): Promise<ModuleInfo[]> => {
-    const response = await axios.get<ModuleInfo[]>(`${API_BASE_URL}/progress/modules`);
+  getAllModules: async (courseId: string = 'master-ia'): Promise<ModuleInfo[]> => {
+    const response = await axios.get<ModuleInfo[]>(`${API_BASE_URL}/progress/modules`, {
+      params: { course_id: courseId }
+    });
     return response.data;
   },
 
   /**
    * Get specific module info
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getModuleInfo: async (moduleNumber: number): Promise<ModuleInfo> => {
-    const response = await axios.get<ModuleInfo>(`${API_BASE_URL}/progress/modules/${moduleNumber}`);
+  getModuleInfo: async (moduleNumber: number, courseId: string = 'master-ia'): Promise<ModuleInfo> => {
+    const response = await axios.get<ModuleInfo>(`${API_BASE_URL}/progress/modules/${moduleNumber}`, {
+      params: { course_id: courseId }
+    });
     return response.data;
   },
 };
@@ -141,40 +161,55 @@ export const progressApi = {
 export const achievementApi = {
   /**
    * Get all available achievements
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getAllAchievements: async (): Promise<AllAchievementsResponse> => {
-    const response = await axios.get<AllAchievementsResponse>(`${API_BASE_URL}/achievements/`);
+  getAllAchievements: async (courseId: string = 'master-ia'): Promise<AllAchievementsResponse> => {
+    const response = await axios.get<AllAchievementsResponse>(`${API_BASE_URL}/achievements/`, {
+      params: { course_id: courseId }
+    });
     return response.data;
   },
 
   /**
    * Get player's unlocked achievements
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  getPlayerAchievements: async (playerId: number): Promise<PlayerAchievementsResponse> => {
+  getPlayerAchievements: async (playerId: number, courseId: string = 'master-ia'): Promise<PlayerAchievementsResponse> => {
     const response = await axios.get<PlayerAchievementsResponse>(
-      `${API_BASE_URL}/achievements/player/${playerId}`
+      `${API_BASE_URL}/achievements/player/${playerId}`,
+      {
+        params: { course_id: courseId }
+      }
     );
     return response.data;
   },
 
   /**
    * Manually unlock an achievement (for testing)
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  unlockAchievement: async (playerId: number, achievementId: string): Promise<AchievementWithDetails> => {
+  unlockAchievement: async (playerId: number, achievementId: string, courseId: string = 'master-ia'): Promise<AchievementWithDetails> => {
     const response = await axios.post<AchievementWithDetails>(
       `${API_BASE_URL}/achievements/unlock`,
-      { player_id: playerId, achievement_id: achievementId }
+      { player_id: playerId, achievement_id: achievementId },
+      {
+        params: { course_id: courseId }
+      }
     );
     return response.data;
   },
 
   /**
    * Check and auto-unlock achievements after an action
+   * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
    */
-  checkAchievements: async (data: CheckAchievementsRequest): Promise<CheckAchievementsResponse> => {
+  checkAchievements: async (data: CheckAchievementsRequest, courseId: string = 'master-ia'): Promise<CheckAchievementsResponse> => {
     const response = await axios.post<CheckAchievementsResponse>(
       `${API_BASE_URL}/achievements/check`,
-      data
+      data,
+      {
+        params: { course_id: courseId }
+      }
     );
     return response.data;
   },
@@ -186,12 +221,14 @@ export const achievementApi = {
 
 /**
  * Complete a class and check for achievements
+ * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
  */
 export const completeClass = async (
   playerId: number,
   progressId: number,
   moduleNumber: number,
-  classNumber: number
+  classNumber: number,
+  courseId: string = 'master-ia'
 ): Promise<{
   progress: Progress;
   achievements: AchievementWithDetails[];
@@ -205,7 +242,7 @@ export const completeClass = async (
     player_id: playerId,
     action_type: 'complete_class',
     action_data: { module_number: moduleNumber, class_number: classNumber },
-  });
+  }, courseId);
 
   return {
     progress,
@@ -216,8 +253,9 @@ export const completeClass = async (
 
 /**
  * Initialize a new player with first class unlocked
+ * NFLOW-2: Added courseId parameter (defaults to 'master-ia')
  */
-export const initializePlayer = async (username: string, avatar: string = 'default.png'): Promise<{
+export const initializePlayer = async (username: string, avatar: string = 'default.png', courseId: string = 'master-ia'): Promise<{
   player: Player;
   stats: PlayerStats;
   firstClass: Progress;
@@ -234,7 +272,7 @@ export const initializePlayer = async (username: string, avatar: string = 'defau
     module_number: 0,
     class_number: 0,
     status: 'unlocked',
-  });
+  }, courseId);
 
   return { player, stats, firstClass };
 };
