@@ -5,9 +5,8 @@
  */
 import { useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { BookOpen, Award, User, LogOut, Home } from 'lucide-react';
+import { Award, User, Home } from 'lucide-react';
 import { useGameStore } from '../../stores/gameStore';
-import { useAuthStore } from '../../stores/authStore';
 import { Dashboard } from './Dashboard';
 import { ModuleViewer } from './ModuleViewer';
 import { ClassViewer } from './ClassViewer';
@@ -16,7 +15,6 @@ import { Notifications } from './Notifications';
 export const GameApp = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const { currentView, selectedModuleNumber, selectedClassNumber, setCourseId } = useGameStore();
-  const { logout } = useAuthStore();
 
   // Set courseId in store when component mounts or courseId changes
   useEffect(() => {
@@ -29,10 +27,6 @@ export const GameApp = () => {
   if (!courseId) {
     return <Navigate to="/game/master-ia" replace />;
   }
-
-  const handleLogout = () => {
-    logout();
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -89,15 +83,6 @@ export const GameApp = () => {
               >
                 <User className="w-4 h-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Profile</span>
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                aria-label="Cerrar sesión"
-              >
-                <LogOut className="w-4 h-4" aria-hidden="true" />
-                <span className="hidden sm:inline">Logout</span>
               </button>
             </nav>
           </div>
