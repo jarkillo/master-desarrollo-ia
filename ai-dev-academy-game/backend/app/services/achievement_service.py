@@ -365,14 +365,12 @@ def _check_bug_hunt_achievements(
         unlocked.append(_unlock_achievement(player_id, "bug_hunt_10_wins", db))
 
     # Perfect game (100% accuracy)
-    if action_data and "accuracy" in action_data:
-        if "bug_hunt_perfect" not in existing_ids and action_data["accuracy"] == 100:
-            unlocked.append(_unlock_achievement(player_id, "bug_hunt_perfect", db))
+    if action_data and "accuracy" in action_data and "bug_hunt_perfect" not in existing_ids and action_data["accuracy"] == 100:
+        unlocked.append(_unlock_achievement(player_id, "bug_hunt_perfect", db))
 
     # Speed demon (under 60 seconds)
-    if action_data and "time_seconds" in action_data:
-        if "bug_hunt_speed_demon" not in existing_ids and action_data["time_seconds"] < 60:
-            unlocked.append(_unlock_achievement(player_id, "bug_hunt_speed_demon", db))
+    if action_data and "time_seconds" in action_data and "bug_hunt_speed_demon" not in existing_ids and action_data["time_seconds"] < 60:
+        unlocked.append(_unlock_achievement(player_id, "bug_hunt_speed_demon", db))
 
     return [a for a in unlocked if a is not None]
 

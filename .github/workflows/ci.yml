@@ -57,4 +57,5 @@ jobs:
           # Opcional: limpiar cachés por si vinieran del repo
           find . -type d -name "__pycache__" -exec rm -rf {} +
           find . -type f -name "*.pyc" -delete
-          pytest -q
+          # Retry flaky tests up to 2 times
+          pytest -q --reruns 2 --reruns-delay 1

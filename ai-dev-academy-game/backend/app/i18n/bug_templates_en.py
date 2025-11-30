@@ -1,9 +1,9 @@
 """Bug Hunt - Bug templates in English."""
 
-from typing import Dict, List, Any
+from typing import Any
 
 # Bug template translations in English
-BUG_TEMPLATES_EN: Dict[str, Dict[str, Any]] = {
+BUG_TEMPLATES_EN: dict[str, dict[str, Any]] = {
     "bug_001": {
         "title": "Loop Boundary Error",
         "description": "Find the off-by-one error in this list iteration",
