@@ -187,7 +187,7 @@ export const useGameStore = create<GameState>()(
           // Load or refresh module info if needed
           const state = get();
           let currentModule = state.currentModule;
-          const { courseId } = state; // NFLOW-2: Get current courseId from store
+          const { courseId, player, fullProgress } = state; // NFLOW-2: Get current courseId from store
 
           if (!currentModule || currentModule.module_number !== moduleNumber) {
             currentModule = await progressApi.getModuleInfo(moduleNumber, courseId);
@@ -197,6 +197,36 @@ export const useGameStore = create<GameState>()(
           const classInfo = currentModule?.classes.find(
             (c) => c.class_number === classNumber
           );
+
+          // Create progress record if it doesn't exist
+          if (player && fullProgress) {
+            const moduleProgress = fullProgress.modules.find(
+              (m) => m.module_number === moduleNumber
+            );
+            const classProgress = moduleProgress?.classes.find(
+              (c) => c.class_number === classNumber
+            );
+
+            // If class is unlocked but has no progress record, create it
+            if (!classProgress || classProgress.status === 'locked') {
+              try {
+                await progressApi.createProgress({
+                  player_id: player.id,
+                  module_number: moduleNumber,
+                  class_number: classNumber,
+                  status: 'in_progress',
+                }, courseId);
+
+                // Refresh progress after creating
+                await get().loadFullProgress(player.id);
+              } catch (error: any) {
+                // If progress already exists (409), ignore the error
+                if (error.response?.status !== 409) {
+                  console.error('Failed to create progress:', error);
+                }
+              }
+            }
+          }
 
           set({
             currentClassContent: classInfo || null,

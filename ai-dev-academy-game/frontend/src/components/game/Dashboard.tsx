@@ -50,8 +50,11 @@ export const Dashboard = () => {
   // Find next recommended class
   const nextRecommendedClass = findNextRecommendedClass(fullProgress);
 
-  const handleStartNextClass = () => {
+  const handleStartNextClass = async () => {
     if (nextRecommendedClass) {
+      // First select the module to load its full information
+      await selectModule(nextRecommendedClass.moduleNumber);
+      // Then select the class
       selectClass(nextRecommendedClass.moduleNumber, nextRecommendedClass.classNumber);
     }
   };

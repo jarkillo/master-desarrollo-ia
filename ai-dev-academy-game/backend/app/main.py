@@ -2,7 +2,7 @@
 
 from app.config import get_settings
 from app.database import init_db
-from app.routes import achievements, catalog, minigames, player, progress
+from app.routes import achievements, catalog, content, minigames, player, progress
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -59,6 +59,7 @@ async def health_check():
 
 # Include routers
 app.include_router(catalog.router)  # No prefix, already has /api in router
+app.include_router(content.router, prefix="/api/content", tags=["content"])
 app.include_router(minigames.router, prefix="/api/minigames", tags=["minigames"])
 app.include_router(player.router, prefix="/api/player", tags=["player"])
 app.include_router(progress.router, prefix="/api/progress", tags=["progress"])

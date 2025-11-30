@@ -41,12 +41,93 @@ CURRICULUM: dict[int, ModuleInfo] = {
         title="IA Development Foundations",
         description="AI tools setup, prompt engineering, first agents, Git + IA workflow",
         classes=[
-            ClassInfo(0, "Intro al Desarrollo con IA", "Introducción al desarrollo asistido por IA", 3, 100),
-            ClassInfo(1, "Setup de Herramientas IA", "Configuración de herramientas", 5, 150),
-            ClassInfo(2, "Primeros Agentes", "Crear tus primeros agentes de IA", 4, 200),
-            ClassInfo(3, "Git + IA Workflow", "Flujo de trabajo con Git y IA", 6, 250),
-            ClassInfo(4, "Prompt Engineering Básico", "Fundamentos de prompt engineering", 8, 300),
-            ClassInfo(5, "Context Engineering", "Gestión de contexto en IA", 7, 350),
+            ClassInfo(
+                class_number=0,
+                title="Intro al Desarrollo con IA",
+                description="Introducción al desarrollo asistido por IA",
+                exercises_count=3,
+                xp_reward=100,
+                learning_objectives=[
+                    "Comprender qué es el desarrollo asistido por IA y su impacto en la productividad",
+                    "Identificar los diferentes tipos de asistentes de IA (ChatGPT, Claude, Copilot)",
+                    "Configurar tu primer entorno de trabajo con herramientas de IA"
+                ]
+            ),
+            ClassInfo(
+                class_number=1,
+                title="Setup de Herramientas IA",
+                description="Configuración de herramientas",
+                exercises_count=5,
+                xp_reward=150,
+                learning_objectives=[
+                    "Instalar y configurar GitHub Copilot en VS Code",
+                    "Configurar Claude Code o Cursor para desarrollo asistido",
+                    "Configurar acceso a APIs de OpenAI o Anthropic",
+                    "Crear tu primer proyecto con asistencia de IA",
+                    "Entender las mejores prácticas de seguridad con APIs"
+                ]
+            ),
+            ClassInfo(
+                class_number=2,
+                title="Primeros Agentes",
+                description="Crear tus primeros agentes de IA",
+                exercises_count=4,
+                xp_reward=200,
+                learning_objectives=[
+                    "Comprender qué es un agente de IA y cómo funciona",
+                    "Crear tu primer agente simple para automatizar tareas",
+                    "Configurar prompts efectivos para agentes especializados",
+                    "Integrar agentes en tu flujo de desarrollo"
+                ]
+            ),
+            ClassInfo(
+                class_number=3,
+                title="Git + IA Workflow",
+                description="Flujo de trabajo con Git y IA",
+                exercises_count=6,
+                xp_reward=250,
+                learning_objectives=[
+                    "Usar IA para escribir mensajes de commit descriptivos",
+                    "Generar descripciones de Pull Request automáticamente",
+                    "Revisar código con asistencia de IA",
+                    "Resolver conflictos de merge con ayuda de IA",
+                    "Crear hooks de Git inteligentes",
+                    "Automatizar workflows de Git con IA"
+                ]
+            ),
+            ClassInfo(
+                class_number=4,
+                title="Prompt Engineering Básico",
+                description="Fundamentos de prompt engineering",
+                exercises_count=8,
+                xp_reward=300,
+                learning_objectives=[
+                    "Entender los principios fundamentales del prompt engineering",
+                    "Escribir prompts claros y específicos",
+                    "Usar técnicas de few-shot learning",
+                    "Estructurar prompts con roles y contexto",
+                    "Manejar limitaciones de contexto",
+                    "Iterar y mejorar prompts basándose en resultados",
+                    "Crear plantillas de prompts reutilizables",
+                    "Evaluar la calidad de las respuestas de IA"
+                ]
+            ),
+            ClassInfo(
+                class_number=5,
+                title="Context Engineering",
+                description="Gestión de contexto en IA",
+                exercises_count=7,
+                xp_reward=350,
+                learning_objectives=[
+                    "Entender cómo funciona el contexto en modelos de lenguaje",
+                    "Gestionar el límite de tokens de contexto eficientemente",
+                    "Usar técnicas de chunking para documentos largos",
+                    "Implementar estrategias de retrieval (RAG)",
+                    "Crear sistemas de memoria para agentes",
+                    "Optimizar el contexto para diferentes tareas",
+                    "Medir y mejorar la relevancia del contexto"
+                ]
+            ),
         ]
     ),
     1: ModuleInfo(

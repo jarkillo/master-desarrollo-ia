@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useGameStore } from '../../stores/gameStore';
 import type { ClassInfo } from '../../types/game';
+import ClassContentViewer from './ClassContentViewer';
 
 export const ClassViewer = () => {
   const {
@@ -27,7 +28,6 @@ export const ClassViewer = () => {
     fullProgress,
     player,
     loadClassContent,
-    toggleExerciseComplete,
     completeCurrentClass,
     setCurrentView,
     isLoading,
@@ -35,7 +35,8 @@ export const ClassViewer = () => {
   } = useGameStore();
 
   const [classContent, setClassContent] = useState<ClassInfo | null>(null);
-  const [completedExercises, setCompletedExercises] = useState<Set<string>>(new Set());
+  const [readingSectionsViewed, setReadingSectionsViewed] = useState(0);
+  const [readingSectionsTotal, setReadingSectionsTotal] = useState(0);
 
   useEffect(() => {
     if (selectedModuleNumber !== null && selectedClassNumber !== null) {
@@ -59,19 +60,6 @@ export const ClassViewer = () => {
     } catch (err) {
       console.error('Failed to load class content:', err);
     }
-  };
-
-  const handleToggleExercise = (exerciseId: string) => {
-    setCompletedExercises((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(exerciseId)) {
-        newSet.delete(exerciseId);
-      } else {
-        newSet.add(exerciseId);
-      }
-      return newSet;
-    });
-    toggleExerciseComplete(exerciseId);
   };
 
   const handleCompleteClass = async () => {
@@ -153,18 +141,8 @@ export const ClassViewer = () => {
     (p) => p.class_number === selectedClassNumber
   );
 
-  // Generate exercise list (for demo purposes - in production, these would come from backend)
-  const exercises = classContent.learning_objectives.map((objective, idx) => ({
-    id: `exercise-${selectedModuleNumber}-${selectedClassNumber}-${idx}`,
-    title: `Ejercicio ${idx + 1}`,
-    description: objective,
-    completed: completedExercises.has(
-      `exercise-${selectedModuleNumber}-${selectedClassNumber}-${idx}`
-    ),
-  }));
-
-  const allExercisesCompleted = exercises.length > 0 && exercises.every((ex) => ex.completed);
   const isCompleted = classProgress?.status === 'completed';
+  const hasReadAllContent = readingSectionsViewed === readingSectionsTotal && readingSectionsTotal > 0;
 
   // Check if there's a next class
   const nextClass = currentModule?.classes.find(
@@ -296,81 +274,31 @@ export const ClassViewer = () => {
           </section>
         )}
 
-        {/* Exercises */}
+        {/* Educational Content */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Ejercicios</h2>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              {completedExercises.size} / {exercises.length} completados
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-600 rounded-full transition-all duration-500"
-                style={{
-                  width: `${
-                    exercises.length > 0 ? (completedExercises.size / exercises.length) * 100 : 0
-                  }%`,
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {exercises.map((exercise) => (
-              <div
-                key={exercise.id}
-                className={`p-5 rounded-lg border-2 transition-colors ${
-                  exercise.completed
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/10'
-                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50'
-                }`}
-              >
-                <label className="flex items-start gap-4 cursor-pointer">
-                  <div className="flex-shrink-0 mt-1">
-                    {exercise.completed ? (
-                      <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
-                    ) : (
-                      <Circle className="w-6 h-6 text-gray-400" />
-                    )}
-                    <input
-                      type="checkbox"
-                      checked={exercise.completed}
-                      onChange={() => handleToggleExercise(exercise.id)}
-                      disabled={isCompleted}
-                      className="sr-only"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3
-                      className={`font-semibold mb-1 ${
-                        exercise.completed
-                          ? 'text-green-700 dark:text-green-400 line-through'
-                          : 'text-gray-900 dark:text-white'
-                      }`}
-                    >
-                      {exercise.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {exercise.description}
-                    </p>
-                  </div>
-                </label>
-              </div>
-            ))}
-          </div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            Contenido de la Clase
+          </h2>
+          <ClassContentViewer
+            moduleNumber={selectedModuleNumber}
+            classNumber={selectedClassNumber}
+            onReadingProgress={(viewed, total) => {
+              setReadingSectionsViewed(viewed);
+              setReadingSectionsTotal(total);
+            }}
+          />
         </section>
+
+        {/* TODO: Exercises section - to be implemented with real exercises from markdown */}
 
         {/* Complete Class Button */}
         {!isCompleted && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
             <button
               onClick={handleCompleteClass}
-              disabled={!allExercisesCompleted || isLoading}
+              disabled={!hasReadAllContent || isLoading}
               className={`px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center gap-3 mx-auto ${
-                allExercisesCompleted && !isLoading
+                hasReadAllContent && !isLoading
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
                   : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
               }`}
@@ -387,9 +315,9 @@ export const ClassViewer = () => {
                 </>
               )}
             </button>
-            {!allExercisesCompleted && (
+            {!hasReadAllContent && readingSectionsTotal > 0 && (
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-                Completa todos los ejercicios para finalizar esta clase
+                Lee todas las secciones del contenido para completar la clase ({readingSectionsViewed}/{readingSectionsTotal} leídas)
               </p>
             )}
           </div>
