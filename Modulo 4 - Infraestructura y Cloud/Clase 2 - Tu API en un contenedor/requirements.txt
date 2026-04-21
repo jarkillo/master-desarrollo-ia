@@ -15,7 +15,7 @@ python-jose[cryptography]==3.5.0
 sentry-sdk[fastapi]
 
 # Testing (development)
-pytest==8.4.2
+pytest==9.0.3
 pytest-cov
 httpx==0.27.2
 
